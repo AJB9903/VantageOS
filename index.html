@@ -1,495 +1,154 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>VANTAGE // Strategic Execution Engine</title>
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=Space+Mono:ital,wght@0,400;0,700;1,400&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="styles.css" />
-</head>
-<body>
+'use strict';
 
-  <!-- ======================================================
-       AUTH SCREEN
-  ====================================================== -->
-  <div id="auth-screen" class="auth-screen hidden">
-    <div class="auth-panel">
-      <div class="auth-logo">
-        <span class="logo-mark">V</span>
-        <div>
-          <h1>VANTAGE</h1>
-          <p class="auth-tagline">STRATEGIC EXECUTION ENGINE</p>
-        </div>
-      </div>
-      <div class="auth-divider"></div>
-      <div id="auth-error" class="auth-error hidden"></div>
-      <form id="auth-form" autocomplete="off">
-        <div class="field-group">
-          <label class="field-label" for="auth-email">EMAIL</label>
-          <input id="auth-email" class="field-input" type="email" placeholder="operator@domain.com" required />
-        </div>
-        <div class="field-group">
-          <label class="field-label" for="auth-password">PASSWORD</label>
-          <input id="auth-password" class="field-input" type="password" placeholder="••••••••" required />
-        </div>
-        <div class="auth-actions">
-          <button type="submit" id="btn-signin" class="btn btn-primary btn-full">
-            <span class="btn-text">INITIALIZE SESSION</span>
-            <span class="btn-loader hidden"></span>
-          </button>
-          <button type="button" id="btn-signup" class="btn btn-ghost btn-full">CREATE OPERATOR PROFILE</button>
-        </div>
-      </form>
-    </div>
-    <div class="auth-bg-grid"></div>
-  </div>
+const MAX_HABITS = 3;
+const STRIPE_LINK = 'https://buy.stripe.com/test_yourlinkhere'; // REPLACE THIS
 
-  <!-- ======================================================
-       MAIN APPLICATION SHELL
-  ====================================================== -->
-  <div id="app-shell" class="app-shell hidden">
+const STATE = {
+  habits: JSON.parse(localStorage.getItem('vantage_habits')) || [],
+  logs: JSON.parse(localStorage.getItem('vantage_logs')) || {},
+  ui: { activeView: 'dashboard' }
+};
 
-    <!-- SIDEBAR (Desktop) -->
-    <nav class="sidebar" id="sidebar">
-      <div class="sidebar-header">
-        <span class="logo-mark-sm">V</span>
-        <span class="sidebar-title">VANTAGE</span>
-      </div>
+function todayISO() {
+  return new Date().toISOString().slice(0, 10);
+}
 
-      <div class="nav-links">
-        <button class="nav-item active" data-view="dashboard">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-          <span>DASHBOARD</span>
-        </button>
-        <button class="nav-item" data-view="habits">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-          <span>HABITS</span>
-        </button>
-        <button class="nav-item" data-view="goals">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-          <span>GOALS</span>
-        </button>
-        <button class="nav-item" data-view="analytics">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-          <span>ANALYTICS</span>
-        </button>
-        <button class="nav-item" data-view="advisor">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-          <span>AI ADVISOR</span>
-        </button>
-      </div>
+function saveState() {
+  localStorage.setItem('vantage_habits', JSON.stringify(STATE.habits));
+  localStorage.setItem('vantage_logs', JSON.stringify(STATE.logs));
+}
 
-      <div class="sidebar-footer">
-        <div id="sidebar-score" class="sidebar-score">
-          <span class="score-label">TODAY</span>
-          <span class="score-value" id="sidebar-score-val">--</span>
-        </div>
-        <button class="nav-item" data-view="settings">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 010 14.14M4.93 4.93a10 10 0 000 14.14"/></svg>
-          <span>SETTINGS</span>
-        </button>
-        <button class="nav-item nav-signout" id="btn-signout">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
-          <span>SIGN OUT</span>
-        </button>
-      </div>
-    </nav>
+function calculateScore() {
+  if (!STATE.habits.length) return 0;
+  const today = todayISO();
+  const todayLogs = STATE.logs[today] || [];
+  let doneCount = 0;
+  
+  STATE.habits.forEach(h => {
+    if (todayLogs.includes(h.id)) doneCount++;
+  });
+  
+  return Math.round((doneCount / STATE.habits.length) * 100);
+}
 
-    <!-- MAIN CONTENT AREA -->
-    <main class="main-content" id="main-content">
+const UI = {
+  navigate(view) {
+    document.querySelectorAll('.view').forEach(v => v.classList.add('hidden'));
+    document.getElementById(`view-${view}`).classList.remove('hidden');
+    document.querySelectorAll('[data-view]').forEach(btn => btn.classList.toggle('active', btn.dataset.view === view));
+    if (view === 'dashboard') UI.renderDashboard();
+    if (view === 'habits') UI.renderHabits();
+  },
 
-      <!-- GLOBAL HEADER (Mobile) -->
-      <header class="mobile-header">
-        <span class="logo-mark-sm">V</span>
-        <span class="mobile-title">VANTAGE</span>
-        <div id="mobile-score" class="mobile-score-badge">--</div>
-      </header>
+  renderDashboard() {
+    document.getElementById('dashboard-date').textContent = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'long', day: 'numeric' }).toUpperCase();
+    
+    const score = calculateScore();
+    document.getElementById('kpi-score-today').textContent = `${score}%`;
+    document.getElementById('sidebar-score-val').textContent = `${score}%`;
+    
+    const container = document.getElementById('today-habits-list');
+    if (!STATE.habits.length) {
+      container.innerHTML = `<div class="empty-state"><p>No habits configured.</p></div>`;
+      return;
+    }
 
-      <!-- SYSTEM BREACH BANNER -->
-      <div id="breach-banner" class="breach-banner hidden">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-        <span id="breach-banner-text">SYSTEM BREACH DETECTED</span>
-      </div>
-
-      <!-- LOADING OVERLAY -->
-      <div id="loading-overlay" class="loading-overlay hidden">
-        <div class="loading-spinner"></div>
-        <span class="loading-text">LOADING...</span>
-      </div>
-
-      <!-- ---- VIEWS ---- -->
-
-      <!-- DASHBOARD VIEW -->
-      <section id="view-dashboard" class="view active">
-        <div class="view-header">
-          <div>
-            <h2 class="view-title">DAILY OPERATIONS</h2>
-            <p class="view-date" id="dashboard-date"></p>
+    const today = todayISO();
+    const todayLogs = STATE.logs[today] || [];
+    
+    container.innerHTML = STATE.habits.map(h => {
+      const isDone = todayLogs.includes(h.id);
+      return `
+        <div class="habit-check-item ${isDone ? 'done' : ''}" data-id="${h.id}">
+          <div class="habit-checkbox">
+            <svg viewBox="0 0 12 12" fill="none" stroke="white" stroke-width="2"><polyline points="1,6 4,10 11,2"/></svg>
           </div>
-          <button class="btn btn-primary btn-sm" id="btn-daily-briefing">
-            AI BRIEFING
-          </button>
-        </div>
+          <span class="habit-check-name">${h.name}</span>
+        </div>`;
+    }).join('');
 
-        <div class="kpi-grid" id="kpi-grid">
-          <div class="kpi-card" id="kpi-today">
-            <span class="kpi-label">EXECUTION SCORE</span>
-            <span class="kpi-value" id="kpi-score-today">--</span>
-            <span class="kpi-sub">TODAY</span>
-          </div>
-          <div class="kpi-card" id="kpi-week">
-            <span class="kpi-label">WEEKLY AVG</span>
-            <span class="kpi-value" id="kpi-score-week">--</span>
-            <span class="kpi-sub">LAST 7 DAYS</span>
-          </div>
-          <div class="kpi-card" id="kpi-streak">
-            <span class="kpi-label">STREAK</span>
-            <span class="kpi-value" id="kpi-streak-val">0</span>
-            <span class="kpi-sub">DAYS &gt; 80%</span>
-          </div>
-          <div class="kpi-card" id="kpi-breaches">
-            <span class="kpi-label">BREACHES</span>
-            <span class="kpi-value breach-val" id="kpi-breach-count">0</span>
-            <span class="kpi-sub">THIS MONTH</span>
-          </div>
-        </div>
+    document.querySelectorAll('.habit-check-item').forEach(el => {
+      el.addEventListener('click', () => {
+        const id = el.dataset.id;
+        if (!STATE.logs[today]) STATE.logs[today] = [];
+        if (STATE.logs[today].includes(id)) {
+          STATE.logs[today] = STATE.logs[today].filter(x => x !== id);
+        } else {
+          STATE.logs[today].push(id);
+        }
+        saveState();
+        UI.renderDashboard();
+      });
+    });
+  },
 
-        <div class="section-header">
-          <h3 class="section-title">TODAY'S HABITS</h3>
-          <span class="section-meta" id="habits-completion-label"></span>
-        </div>
+  renderHabits() {
+    const tbody = document.getElementById('habits-tbody');
+    if (!STATE.habits.length) {
+      tbody.innerHTML = `<tr><td colspan="2"><div class="empty-state">No habits.</div></td></tr>`;
+      return;
+    }
+    
+    tbody.innerHTML = STATE.habits.map(h => `
+      <tr>
+        <td>${h.name}</td>
+        <td><button class="btn-icon danger btn-delete-habit" data-id="${h.id}">DELETE</button></td>
+      </tr>
+    `).join('');
 
-        <div id="today-habits-list" class="habits-checklist">
-          <!-- Populated by JS -->
-        </div>
+    document.querySelectorAll('.btn-delete-habit').forEach(btn => {
+      btn.addEventListener('click', () => {
+        STATE.habits = STATE.habits.filter(x => x.id !== btn.dataset.id);
+        saveState();
+        UI.renderHabits();
+      });
+    });
+  },
+  
+  openPaywall() { document.getElementById('modal-paywall').classList.remove('hidden'); },
+  closePaywall() { document.getElementById('modal-paywall').classList.add('hidden'); },
+  
+  openHabitModal() { 
+    document.getElementById('habit-name-field').value = '';
+    document.getElementById('modal-habit').classList.remove('hidden'); 
+  },
+  closeHabitModal() { document.getElementById('modal-habit').classList.add('hidden'); }
+};
 
-        <div class="section-header" style="margin-top: 2rem;">
-          <h3 class="section-title">ACTIVE GOALS</h3>
-          <button class="btn btn-ghost btn-sm" data-view="goals" id="btn-go-goals">VIEW ALL</button>
-        </div>
-        <div id="dashboard-goals" class="goals-mini-list">
-          <!-- Populated by JS -->
-        </div>
-      </section>
+document.addEventListener('DOMContentLoaded', () => {
+  document.querySelectorAll('[data-view]').forEach(btn => {
+    btn.addEventListener('click', () => UI.navigate(btn.dataset.view));
+  });
 
-      <!-- HABITS VIEW -->
-      <section id="view-habits" class="view hidden">
-        <div class="view-header">
-          <div>
-            <h2 class="view-title">HABIT ENGINE</h2>
-            <p class="view-sub">Stakes define execution weight</p>
-          </div>
-          <button class="btn btn-primary btn-sm" id="btn-add-habit">+ ADD HABIT</button>
-        </div>
+  document.getElementById('btn-add-habit').addEventListener('click', () => {
+    if (STATE.habits.length >= MAX_HABITS) {
+      UI.openPaywall();
+    } else {
+      UI.openHabitModal();
+    }
+  });
 
-        <div class="stakes-legend">
-          <span class="stake-badge stake-low">LOW x1</span>
-          <span class="stake-badge stake-med">MED x2</span>
-          <span class="stake-badge stake-high">HIGH x3</span>
-          <span class="stake-badge stake-crit">CRIT x5</span>
-        </div>
+  document.getElementById('btn-habit-save').addEventListener('click', () => {
+    const name = document.getElementById('habit-name-field').value.trim();
+    if (!name) return;
+    STATE.habits.push({ id: crypto.randomUUID(), name });
+    saveState();
+    UI.closeHabitModal();
+    UI.renderHabits();
+    UI.renderDashboard();
+  });
 
-        <div id="habits-list" class="habits-table-wrap">
-          <table class="data-table" id="habits-table">
-            <thead>
-              <tr>
-                <th>HABIT</th>
-                <th>STAKE</th>
-                <th>WEIGHT</th>
-                <th>7-DAY %</th>
-                <th>30-DAY %</th>
-                <th>ACTIONS</th>
-              </tr>
-            </thead>
-            <tbody id="habits-tbody">
-              <!-- Populated by JS -->
-            </tbody>
-          </table>
-        </div>
-      </section>
+  document.getElementById('btn-habit-cancel').addEventListener('click', UI.closeHabitModal);
+  document.getElementById('btn-paywall-close').addEventListener('click', UI.closePaywall);
+  
+  document.getElementById('btn-upgrade-stripe').addEventListener('click', () => {
+    window.location.href = STRIPE_LINK;
+  });
 
-      <!-- GOALS VIEW -->
-      <section id="view-goals" class="view hidden">
-        <div class="view-header">
-          <div>
-            <h2 class="view-title">GOAL MATRIX</h2>
-            <p class="view-sub">Weekly and monthly commitments</p>
-          </div>
-          <button class="btn btn-primary btn-sm" id="btn-add-goal">+ ADD GOAL</button>
-        </div>
+  document.getElementById('btn-clear-logs').addEventListener('click', () => {
+    localStorage.clear();
+    location.reload();
+  });
 
-        <div class="goals-columns">
-          <div class="goals-column">
-            <h3 class="column-header">WEEKLY</h3>
-            <div id="goals-weekly" class="goals-list">
-              <!-- Populated by JS -->
-            </div>
-          </div>
-          <div class="goals-column">
-            <h3 class="column-header">MONTHLY</h3>
-            <div id="goals-monthly" class="goals-list">
-              <!-- Populated by JS -->
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <!-- ANALYTICS VIEW -->
-      <section id="view-analytics" class="view hidden">
-        <div class="view-header">
-          <h2 class="view-title">TRAJECTORY ANALYSIS</h2>
-        </div>
-
-        <div class="charts-grid">
-          <div class="chart-card">
-            <div class="chart-header">
-              <h3 class="chart-title">GHOST CHART</h3>
-              <p class="chart-sub">Current month vs last month execution</p>
-            </div>
-            <div class="chart-wrap">
-              <canvas id="ghost-chart"></canvas>
-            </div>
-          </div>
-
-          <div class="chart-card">
-            <div class="chart-header">
-              <h3 class="chart-title">DRIFT CHART</h3>
-              <p class="chart-sub">Intent (planned) vs Actual (executed) — last 14 days</p>
-            </div>
-            <div class="chart-wrap">
-              <canvas id="drift-chart"></canvas>
-            </div>
-          </div>
-        </div>
-
-        <div class="section-header" style="margin-top: 2rem;">
-          <h3 class="section-title">HABIT PERFORMANCE BREAKDOWN</h3>
-        </div>
-        <div id="habit-breakdown-table" class="habits-table-wrap">
-          <table class="data-table">
-            <thead>
-              <tr>
-                <th>HABIT</th>
-                <th>STAKE</th>
-                <th>7D RATE</th>
-                <th>30D RATE</th>
-                <th>STATUS</th>
-              </tr>
-            </thead>
-            <tbody id="breakdown-tbody"></tbody>
-          </table>
-        </div>
-      </section>
-
-      <!-- AI ADVISOR VIEW -->
-      <section id="view-advisor" class="view hidden">
-        <div class="view-header">
-          <div>
-            <h2 class="view-title">AI ADVISOR</h2>
-            <p class="view-sub">Strategic gap analysis and root failure detection</p>
-          </div>
-        </div>
-
-        <div class="advisor-actions">
-          <button class="btn btn-primary" id="btn-daily-briefing-full">DAILY BRIEFING</button>
-          <button class="btn btn-outline" id="btn-weekly-diagnostic">WEEKLY DIAGNOSTIC</button>
-          <button class="btn btn-outline btn-crimson" id="btn-monthly-audit">MONTHLY AUDIT</button>
-        </div>
-
-        <div id="advisor-output" class="advisor-output">
-          <div class="advisor-placeholder">
-            <p>SELECT AN AUDIT TYPE TO ENGAGE THE ADVISOR.</p>
-            <p class="muted">The system will analyze your execution data against stated goals and return a diagnosis.</p>
-          </div>
-        </div>
-      </section>
-
-      <!-- SETTINGS VIEW -->
-      <section id="view-settings" class="view hidden">
-        <div class="view-header">
-          <h2 class="view-title">SYSTEM SETTINGS</h2>
-        </div>
-
-        <div class="settings-grid">
-          <div class="settings-card">
-            <h3 class="settings-card-title">API CONFIGURATION</h3>
-            <div class="field-group">
-              <label class="field-label">GROQ API KEY</label>
-              <input id="settings-groq-key" class="field-input" type="password" placeholder="gsk_..." />
-              <p class="field-hint">Get your key at console.groq.com. Stored locally only.</p>
-            </div>
-            <button class="btn btn-primary btn-sm" id="btn-save-settings">SAVE CONFIG</button>
-          </div>
-
-          <div class="settings-card">
-            <h3 class="settings-card-title">OPERATOR PROFILE</h3>
-            <p class="settings-info" id="settings-user-email">--</p>
-            <p class="field-hint">Authenticated via Supabase. Data is private and RLS-protected.</p>
-          </div>
-
-          <div class="settings-card danger-zone">
-            <h3 class="settings-card-title">DANGER ZONE</h3>
-            <p class="field-hint">Destructive actions cannot be undone.</p>
-            <button class="btn btn-outline btn-crimson btn-sm" id="btn-clear-logs">CLEAR ALL LOGS</button>
-          </div>
-        </div>
-      </section>
-
-    </main>
-
-    <!-- BOTTOM NAV (Mobile) -->
-    <nav class="bottom-nav" id="bottom-nav">
-      <button class="bnav-item active" data-view="dashboard">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><rect x="14" y="14" width="7" height="7"/></svg>
-        <span>DASH</span>
-      </button>
-      <button class="bnav-item" data-view="habits">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3L22 4"/><path d="M21 12v7a2 2 0 01-2 2H5a2 2 0 01-2-2V5a2 2 0 012-2h11"/></svg>
-        <span>HABITS</span>
-      </button>
-      <button class="bnav-item" data-view="goals">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg>
-        <span>GOALS</span>
-      </button>
-      <button class="bnav-item" data-view="analytics">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
-        <span>DATA</span>
-      </button>
-      <button class="bnav-item" data-view="advisor">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z"/></svg>
-        <span>AI</span>
-      </button>
-    </nav>
-
-  </div>
-
-  <!-- ======================================================
-       MODALS
-  ====================================================== -->
-
-  <!-- ADD / EDIT HABIT MODAL -->
-  <div id="modal-habit" class="modal-overlay hidden">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 class="modal-title" id="habit-modal-title">ADD HABIT</h3>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="habit-id-field" />
-        <div class="field-group">
-          <label class="field-label">HABIT NAME</label>
-          <input id="habit-name-field" class="field-input" type="text" placeholder="e.g. Deep Work Block" maxlength="80" required />
-        </div>
-        <div class="field-group">
-          <label class="field-label">STAKE LEVEL</label>
-          <div class="stake-selector" id="stake-selector">
-            <button type="button" class="stake-opt" data-stake="low">LOW</button>
-            <button type="button" class="stake-opt" data-stake="med">MED</button>
-            <button type="button" class="stake-opt" data-stake="high">HIGH</button>
-            <button type="button" class="stake-opt selected" data-stake="crit">CRIT</button>
-          </div>
-          <p id="stake-description" class="field-hint">CRIT: Weight x5. Missing this triggers a System Breach.</p>
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" id="btn-habit-cancel">CANCEL</button>
-        <button class="btn btn-primary" id="btn-habit-save">SAVE HABIT</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- ADD / EDIT GOAL MODAL -->
-  <div id="modal-goal" class="modal-overlay hidden">
-    <div class="modal-box">
-      <div class="modal-header">
-        <h3 class="modal-title" id="goal-modal-title">ADD GOAL</h3>
-      </div>
-      <div class="modal-body">
-        <input type="hidden" id="goal-id-field" />
-        <div class="field-group">
-          <label class="field-label">GOAL TITLE</label>
-          <input id="goal-title-field" class="field-input" type="text" placeholder="e.g. Finish Q3 Strategy Doc" maxlength="120" required />
-        </div>
-        <div class="field-group">
-          <label class="field-label">TYPE</label>
-          <div class="stake-selector">
-            <button type="button" class="stake-opt selected" data-goal-type="weekly">WEEKLY</button>
-            <button type="button" class="stake-opt" data-goal-type="monthly">MONTHLY</button>
-          </div>
-        </div>
-        <div class="field-group">
-          <label class="field-label">DEADLINE</label>
-          <input id="goal-deadline-field" class="field-input" type="date" required />
-        </div>
-        <div class="field-group">
-          <label class="field-label">INITIAL PROGRESS (0–10): <span id="goal-progress-display">0</span></label>
-          <input id="goal-progress-field" class="field-range" type="range" min="0" max="10" step="1" value="0" />
-        </div>
-      </div>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" id="btn-goal-cancel">CANCEL</button>
-        <button class="btn btn-primary" id="btn-goal-save">SAVE GOAL</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- SYSTEM BREACH MODAL (non-dismissible until logged) -->
-  <div id="modal-breach" class="modal-overlay breach-modal hidden">
-    <div class="modal-box breach-box">
-      <div class="breach-icon-wrap">
-        <svg class="breach-icon-svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
-      </div>
-      <h2 class="breach-title">SYSTEM BREACH</h2>
-      <p class="breach-sub">CRITICAL HABIT FAILURE DETECTED</p>
-      <div id="breach-habits-list" class="breach-list"></div>
-      <p class="breach-prompt">Log the root cause before proceeding.</p>
-      <textarea id="breach-note" class="field-input breach-textarea" placeholder="Root cause analysis. What failed? Why? What changes now?" rows="4"></textarea>
-      <button class="btn btn-crimson btn-full" id="btn-breach-acknowledge">ACKNOWLEDGE AND LOG</button>
-    </div>
-  </div>
-
-  <!-- MONTHLY AUDIT MODAL (mandatory) -->
-  <div id="modal-monthly-audit" class="modal-overlay audit-modal hidden">
-    <div class="modal-box audit-box">
-      <div class="modal-header">
-        <h3 class="modal-title">MONTHLY TRAJECTORY AUDIT</h3>
-        <p class="modal-sub" id="audit-month-label"></p>
-      </div>
-      <div id="audit-ai-output" class="audit-ai-content">
-        <div class="loading-block">
-          <div class="loading-spinner"></div>
-          <span>Analyzing execution data...</span>
-        </div>
-      </div>
-      <div class="audit-commitments">
-        <h4 class="field-label">NEXT-CYCLE COMMITMENTS (3 required)</h4>
-        <input class="field-input" id="commit-1" type="text" placeholder="Commitment 1" />
-        <input class="field-input" id="commit-2" type="text" placeholder="Commitment 2" />
-        <input class="field-input" id="commit-3" type="text" placeholder="Commitment 3" />
-      </div>
-      <button class="btn btn-crimson btn-full" id="btn-audit-close">COMMIT AND CLOSE</button>
-    </div>
-  </div>
-
-  <!-- CONFIRM MODAL -->
-  <div id="modal-confirm" class="modal-overlay hidden">
-    <div class="modal-box confirm-box">
-      <h3 class="modal-title" id="confirm-title">CONFIRM ACTION</h3>
-      <p class="modal-sub" id="confirm-message"></p>
-      <div class="modal-footer">
-        <button class="btn btn-ghost" id="btn-confirm-cancel">CANCEL</button>
-        <button class="btn btn-crimson" id="btn-confirm-ok">CONFIRM</button>
-      </div>
-    </div>
-  </div>
-
-  <!-- TOAST NOTIFICATIONS -->
-  <div id="toast-container" class="toast-container"></div>
-
-  <!-- SCRIPTS -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
-  <script src="app.js" type="module"></script>
-</body>
-</html>
+  UI.renderDashboard();
+});
