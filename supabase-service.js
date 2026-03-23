@@ -1,6 +1,6 @@
 // ─── SUPABASE SERVICE ─────────────────────────────────────────────────────────
-const SUPA_URL = 'https://xvpkrehegoblwnluzrra.supabase.co';
-const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Inh2cGtyZWhlZ29ibHdubHV6cnJhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzEzMzA1NTQsImV4cCI6MjA4NjkwNjU1NH0.POGB7kXbysC0id7wX3Gd5ovhVFCFnPY5mHkccvd-8VY';
+const SUPA_URL = 'https://eqzcdcdnddjufuwmwbml.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxemNkY2RuZGRqdWZ1d213Ym1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyOTM1NzEsImV4cCI6MjA4OTg2OTU3MX0.cGBJxtuReOrU7_jz6Na-zhgR92nGIYJVgno22vqjqDA';
 const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
 
 async function loadUserSettings() {
