@@ -1048,11 +1048,12 @@ function renderHabitList(dk) {
     scoreEl.style.color = c;
     scoreEl.textContent = score + '% execution';
   }
-  // Breach banner
-  const breached = S.habits.filter(h => {
+ // Only show breach banner after at least one habit has been checked today
+  const anyChecked = S.habits.some(h => d.habits[h]);
+  const breached = anyChecked ? S.habits.filter(h => {
     const s = S.habitStakes[h]||'medium';
     return (s==='critical'||s==='high') && !d.habits[h];
-  });
+  }) : [];
   let breachBanner = document.getElementById('breach-banner');
   if (!breachBanner) {
     breachBanner = document.createElement('div');
