@@ -264,10 +264,63 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 </style>
 </head>
 <body>
+<div id="auth-screen">
+  <div class="auth-box">
+    <div class="auth-logo">VANTAGE<span>.</span></div>
+    <div class="auth-sub">Strategic Objective Tracker</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchAuthTab('signup')">Create Account</button>
+    </div>
+    <div class="auth-field">
+      <label class="auth-label">Email</label>
+      <input type="email" class="inp" id="auth-email" placeholder="you@email.com"/>
+    </div>
+    <div class="auth-field">
+      <label class="auth-label">Password</label>
+      <input type="password" class="inp" id="auth-password" placeholder="••••••••"/>
+    </div>
+    <div class="auth-field" id="confirm-field" style="display:none">
+      <label class="auth-label">Confirm Password</label>
+      <input type="password" class="inp" id="auth-confirm" placeholder="••••••••"/>
+    </div>
+    <button class="auth-btn" id="auth-submit-btn" onclick="handleAuth()">Sign In</button>
+    <div class="auth-err" id="auth-err"></div>
+  </div>
+</div>
 <div id="paywall-screen" style="display:flex;position:fixed;inset:0;background:#000;align-items:center;justify-content:center;z-index:9999;padding:24px">
   <div style="text-align:center;border:1px solid #242424;border-radius:14px;padding:56px 48px;background:#0c0c0c;max-width:440px;width:100%">
-    <button class="logout-btn" onclick="handleLogout()">Sign out</button>
+    <div style="font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:6px;text-transform:uppercase;color:#e11d48;margin-bottom:16px">Strategic Execution Engine</div>
+    <div style="font-size:3rem;font-weight:800;letter-spacing:-3px;margin-bottom:8px;color:#fff">VANTAGE</div>
+    <div style="font-family:'Space Mono',monospace;font-size:0.62rem;color:#888;letter-spacing:2px;text-transform:uppercase;margin-bottom:48px;padding:8px 16px;border:1px solid #242424;border-radius:6px;display:inline-block">Session Not Initialized</div><br>
+    <a href="https://buy.stripe.com/eVq6oI4PY5fC0ikfAH3sI00" style="display:block;width:100%;background:#e11d48;color:#fff;border:none;border-radius:10px;padding:16px 24px;font-family:'Space Mono',monospace;font-size:0.82rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;text-decoration:none;margin-bottom:32px">Purchase Lifetime License — $6.99</a>
+    <div onclick="operatorLogin()" style="font-family:'Space Mono',monospace;font-size:0.6rem;color:#333;cursor:pointer;letter-spacing:1px;text-transform:uppercase" onmouseover="this.style.color='#888'" onmouseout="this.style.color='#333'">Operator Login</div>
+  </div>
+</div>
+
+<div id="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">Personal OS</div>
+      <div class="logo-text">VANTAGE<span>.</span></div>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active" onclick="showPage('today')" id="nav-today"><span class="nav-icon">⚡</span> Today</div>
+      <div class="nav-item" onclick="showPage('month')" id="nav-month"><span class="nav-icon">📊</span> Month</div>
+      <div class="nav-item" onclick="showPage('calendar')" id="nav-calendar"><span class="nav-icon">📅</span> Calendar</div>
+      <div class="nav-item" onclick="showPage('wins')" id="nav-wins"><span class="nav-icon">🏆</span> Wins</div>
+      <div class="nav-item" onclick="showPage('settings')" id="nav-settings"><span class="nav-icon">⚙️</span> Settings</div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-badge"><div class="user-email" id="sidebar-email"></div></div>
+      <div class="month-badge"><strong id="sidebar-month"></strong><span id="sidebar-day"></span></div>
+      <button class="logout-btn" onclick="handleLogout()">Sign out</button>
+      <div id="admin-panel" style="display:none;margin-top:10px;border-top:1px solid #2a0000;padding-top:10px">
+        <div style="font-size:0.58rem;font-family:'Space Mono',monospace;color:var(--red);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Operator Controls</div>
+        <button onclick="adminTriggerWeekly()" style="width:100%;background:#0a0800;border:1px solid var(--yellow);color:var(--yellow);border-radius:6px;padding:7px;font-family:'Space Mono',monospace;font-size:0.65rem;cursor:pointer;margin-bottom:5px">Force Weekly Review</button>
+        <button onclick="adminTriggerMonthly()" style="width:100%;background:#0a0800;border:1px solid #f472b6;color:#f472b6;border-radius:6px;padding:7px;font-family:'Space Mono',monospace;font-size:0.65rem;cursor:pointer">Force Monthly Audit</button>
       </div>
+    </div>
   </aside>
 
   <main class="main">
