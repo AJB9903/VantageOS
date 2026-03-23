@@ -1218,14 +1218,20 @@ function opTriggerMonthly() { const now=new Date(); const mk=now.getFullYear()+'
 
 // ─── BOOT ─────────────────────────────────────────────────────────────────────
 (async () => {
-  if (!checkAccess()) { showPaywall(); return; }
-  const { data: { session } } = await sb.auth.getSession();
-  if (session?.user) {
-    currentUser = session.user;
-    await initApp();
-  } else {
-    document.getElementById('auth-screen').style.display = 'flex';
+  try {
+    if (!checkAccess()) { showPaywall(); return; }
+    document.getElementById('paywall-screen').style.display = 'none';
+    const { data: { session } } = await sb.auth.getSession();
+    if (session?.user) {
+      currentUser = session.user;
+      await initApp();
+    } else {
+      document.getElementById('auth-screen').style.display = 'flex';
+    }
+    document.getElementById('auth-password').addEventListener('keydown', e => { if(e.key==='Enter') handleAuth(); });
+    document.getElementById('auth-email').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('auth-password').focus(); });
+  } catch(e) {
+    console.error('Boot error:', e);
+    showPaywall();
   }
-  document.getElementById('auth-password').addEventListener('keydown', e => { if(e.key==='Enter') handleAuth(); });
-  document.getElementById('auth-email').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('auth-password').focus(); });
 })();
