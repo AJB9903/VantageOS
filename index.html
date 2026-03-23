@@ -17,49 +17,9 @@
 html,body{height:100%;background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden}
 body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.03'/%3E%3C/svg%3E");pointer-events:none;z-index:0;opacity:.4}
 
-/* ═══ BUFF ANIMATIONS — JS-driven, CSS only for unfiltered ══════════ */
-body.buff-unfiltered {
-  box-shadow: inset 0 0 50px #f472b6;
-  background-image:
-    linear-gradient(rgba(18,16,16,0) 50%, rgba(0,0,0,0.25) 50%),
-    linear-gradient(90deg, rgba(255,0,0,0.06), rgba(0,255,0,0.02), rgba(0,0,255,0.06));
-  background-size: 100% 4px, 3px 100%;
-  animation: unfiltered-pulse 4s ease-in-out infinite;
-}
-@keyframes unfiltered-pulse {
-  0%,100% { box-shadow: inset 0 0 40px #f472b6; }
-  50%      { box-shadow: inset 0 0 90px #f472b6, 0 0 30px #f472b655; }
-}
-/* Effect containers — all other buffs are injected DOM elements */
-.buff-effect-layer {
-  position: fixed; inset: 0;
-  pointer-events: none;
-  overflow: hidden;
-  z-index: 9998;
-}
-.buff-effect-layer.blend-screen { mix-blend-mode: screen; }
 
-/* ═══ PERMANENT THEMES ═══════════════════════════════════════════════ */
-body.theme-navy {
-  --accent:#60a5fa;--accent2:#38bdf8;--bg:#0b1221;--text:#f1f5f9;
-  --surface:#151d2e;--surface2:#1a2540;
-  --border:#1e293b;--muted:#94a3b8;--muted2:#1a2540;
-}
-body.theme-crimson {
-  --accent:#e11d48;--bg:#080810;--text:#ffffff;
-  --surface:#13111c;--surface2:#1e1b2e;
-  --border:#2d2b3d;--muted:#8b8a9b;--muted2:#1e1b2e;
-}
-body.theme-system {
-  --accent:#8faa80;--accent2:#d4c4b8;--bg:#1a1210;--text:#e8ddd6;
-  --surface:#231a17;--surface2:#2e221e;
-  --border:#3d2e28;--muted:#9a8880;--muted2:#2a1e1a;
-  --green:#8faa80;--red:#c0614a;--yellow:#c4956a;--pink:#c4856a;--blue:#8aaa98;
-}
-/* Buff glows still render on top of all themes */
-body.theme-navy.buff-fuel    { box-shadow: inset 0 0 30px #dfff00, inset 0 0 60px #60a5fa44; }
-body.theme-crimson.buff-fuel { box-shadow: inset 0 0 30px #dfff00, inset 0 0 60px #e11d4844; }
-body.theme-system.buff-fuel  { box-shadow: inset 0 0 30px #2d2d2d, inset 0 0 60px #c4a48444; }
+
+
 
 /* AUTH */
 #auth-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000;padding:24px}
@@ -122,24 +82,10 @@ body.theme-system.buff-fuel  { box-shadow: inset 0 0 30px #2d2d2d, inset 0 0 60p
 .tag-y{background:#2a1f00;color:var(--yellow)}
 .tag-r{background:#2a0d0d;color:var(--red)}
 .tag-a{background:rgba(223,255,0,0.1);color:var(--accent)}
-/* $V ECONOMY */
-.v-balance-display{font-family:'Space Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--accent);background:rgba(223,255,0,0.05);border:1px solid rgba(223,255,0,0.25);border-radius:8px;padding:8px 16px;white-space:nowrap;letter-spacing:1px}
-.v-balance-display.insolvent{color:var(--red);background:rgba(248,113,113,0.05);border-color:rgba(248,113,113,0.4);animation:critPulse 1s infinite}
-.status-tag{font-family:'Space Mono',monospace;font-size:0.58rem;padding:3px 10px;border-radius:4px;letter-spacing:2px;font-weight:700;display:inline-block;margin-top:6px}
-.status-pre{background:#1a1a00;color:var(--yellow);border:1px solid #3a3a00}
-.status-operational{background:#0d2a17;color:var(--green);border:1px solid #1a3a1a}
-.status-insolvent{background:#2a0000;color:var(--red);border:1px solid #5a0000;animation:critPulse 1s infinite}
-/* INSOLVENT WARNING */
-.insolvent-warning{background:#0d0000;border:2px solid var(--red);border-radius:12px;padding:18px;text-align:center;animation:insolventPulse 1.2s infinite;margin-bottom:20px;display:none}
-.insolvent-warning.visible{display:block}
-@keyframes insolventPulse{0%,100%{border-color:var(--red);box-shadow:0 0 0 0 rgba(248,113,113,0)}50%{border-color:#ff4444;box-shadow:0 0 20px 4px rgba(248,113,113,0.2)}}
-.insolvent-title{font-family:'Space Mono',monospace;font-size:0.85rem;color:var(--red);font-weight:700;letter-spacing:3px;margin-bottom:6px}
-.insolvent-sub{font-size:0.72rem;color:#f87171;font-family:'Space Mono',monospace;line-height:1.5}
-/* RECOVERY BOX */
-.recovery-box{background:#000d00;border:2px solid var(--green);border-radius:12px;padding:20px;margin-bottom:20px;display:none}
-.recovery-box.visible{display:block}
-.recovery-title{font-family:'Space Mono',monospace;font-size:0.82rem;color:var(--green);font-weight:700;letter-spacing:3px;margin-bottom:8px}
-.recovery-text{font-size:0.75rem;color:#90d0a0;font-family:'Space Mono',monospace;line-height:1.7}
+
+
+
+
 /* BRIEFING */
 .briefing-box{background:linear-gradient(135deg,#00080d,#000000);border:1px solid #1a2e3a;border-radius:12px;padding:18px;margin-bottom:20px}
 .briefing-title{font-size:0.62rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent2);font-family:'Space Mono',monospace;margin-bottom:10px;font-weight:700}
@@ -149,8 +95,8 @@ body.theme-system.buff-fuel  { box-shadow: inset 0 0 30px #2d2d2d, inset 0 0 60p
 .stake-low{background:#1a1a1a;color:#606060;border:1px solid #2a2a2a}
 .stake-med{background:#001a2e;color:var(--blue);border:1px solid #003060}
 .stake-high{background:#2a1200;color:#fb923c;border:1px solid #4a2a00}
-.stake-crit{background:#1a0000;color:var(--red);border:1px solid #4a0000;animation:critPulse 1.5s infinite}
-@keyframes critPulse{0%,100%{opacity:1;box-shadow:none}50%{opacity:0.75;box-shadow:0 0 8px rgba(248,113,113,0.3)}}
+.stake-crit{background:#1a0000;color:var(--red);border:1px solid #4a0000}
+50%{opacity:0.75;box-shadow:0 0 8px rgba(248,113,113,0.3)}}
 /* INPUTS */
 .inp-group{display:flex;flex-direction:column;gap:6px}
 .inp-label{font-size:0.62rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-family:'Space Mono',monospace;font-weight:700}
@@ -174,11 +120,11 @@ body.theme-system.buff-fuel  { box-shadow: inset 0 0 30px #2d2d2d, inset 0 0 60p
 .goals-title{font-size:0.62rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-family:'Space Mono',monospace;font-weight:700}
 .goal-item{background:var(--surface2);border:1px solid var(--border);border-radius:10px;padding:14px;margin-bottom:8px;transition:all .3s;position:relative;overflow:hidden}
 .goal-item.urgent-1{border-color:#3a3a00;background:#1a1a00}
-.goal-item.urgent-2{border-color:#5a3a00;background:#1a1000;animation:urgentPulse2 2s infinite}
-.goal-item.urgent-3{border-color:#8a1a00;background:#1a0500;animation:urgentPulse3 1s infinite}
+.goal-item.urgent-2{border-color:#5a3a00;background:#1a1000;}
+.goal-item.urgent-3{border-color:#8a1a00;background:#1a0500;}
 .goal-item.overdue{border-color:var(--red);background:#1a0505}
-@keyframes urgentPulse2{0%,100%{box-shadow:0 0 0 0 rgba(251,191,36,0)}50%{box-shadow:0 0 8px 2px rgba(251,191,36,0.15)}}
-@keyframes urgentPulse3{0%,100%{box-shadow:0 0 0 0 rgba(248,113,113,0)}50%{box-shadow:0 0 12px 3px rgba(248,113,113,0.25)}}
+50%{box-shadow:0 0 8px 2px rgba(251,191,36,0.15)}}
+50%{box-shadow:0 0 12px 3px rgba(248,113,113,0.25)}}
 .goal-top{display:flex;align-items:flex-start;justify-content:space-between;gap:10px;margin-bottom:10px}
 .goal-name{font-size:0.85rem;font-weight:700;line-height:1.3;flex:1}
 .goal-deadline{font-size:0.65rem;font-family:'Space Mono',monospace;padding:3px 8px;border-radius:4px;white-space:nowrap;flex-shrink:0}
@@ -263,30 +209,8 @@ body.theme-system.buff-fuel  { box-shadow: inset 0 0 30px #2d2d2d, inset 0 0 60p
 .add-btn:hover{border-color:var(--accent);color:var(--accent)}
 .save-btn{background:var(--accent);color:#000;border:none;border-radius:8px;padding:11px 20px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer;transition:all .15s}
 .save-btn:hover{background:#cce800}
-/* STORE */
-.store-tier-header{font-size:0.62rem;text-transform:uppercase;letter-spacing:3px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:12px;padding-bottom:8px;border-bottom:1px solid var(--border);font-weight:700;display:flex;align-items:center;justify-content:space-between}
-.inflation-badge{font-size:0.6rem;color:var(--yellow);padding:2px 8px;background:#1a1500;border:1px solid #3a3000;border-radius:4px}
-.store-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:12px;margin-bottom:24px}
-.store-item{background:var(--surface);border:1px solid var(--border);border-radius:12px;padding:18px;display:flex;flex-direction:column;gap:10px;transition:all .2s;position:relative;overflow:hidden}
-.store-item::before{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(255,255,255,0.02),transparent);pointer-events:none}
-.store-item:hover{border-color:#333;transform:translateY(-1px)}
-.store-item.disabled{opacity:.5}
-.store-item-name{font-size:0.88rem;font-weight:700;letter-spacing:-0.3px}
-.store-item-desc{font-size:0.72rem;color:var(--muted);line-height:1.5;flex:1}
-.store-item-price{font-family:'Space Mono',monospace;font-size:1.05rem;font-weight:700;color:var(--accent)}
-.store-item-price.inflated{color:var(--yellow)}
-.store-item-meta{font-size:0.62rem;font-family:'Space Mono',monospace;color:var(--muted)}
-.buy-btn{background:var(--accent);color:#000;border:none;border-radius:6px;padding:9px;font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:700;cursor:pointer;transition:all .15s;width:100%}
-.buy-btn:hover{background:#cce800}
-.buy-btn:disabled{opacity:.4;cursor:not-allowed;background:var(--muted2);color:var(--muted)}
-.buy-btn.recovery{background:transparent;border:1px solid var(--green);color:var(--green)}
-.buy-btn.recovery:hover{background:#0d2a17}
-/* TRANSACTION HISTORY */
-.tx-list{display:flex;flex-direction:column;gap:4px}
-.tx-item{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;font-size:0.72rem}
-.tx-name{color:var(--text);font-weight:600}
-.tx-cost{font-family:'Space Mono',monospace;color:var(--red);font-weight:700}
-.tx-date{color:var(--muted);font-family:'Space Mono',monospace;font-size:0.62rem}
+
+
 /* STAKES MATRIX TABLE */
 .stakes-matrix{width:100%;border-collapse:collapse;font-size:0.75rem;margin-bottom:16px}
 .stakes-matrix th{font-family:'Space Mono',monospace;font-size:0.6rem;text-transform:uppercase;letter-spacing:1px;color:var(--muted);padding:8px 12px;text-align:left;border-bottom:1px solid var(--border)}
@@ -299,19 +223,7 @@ body.theme-system.buff-fuel  { box-shadow: inset 0 0 30px #2d2d2d, inset 0 0 60p
 /* LOADING */
 .spinner{display:inline-block;width:16px;height:16px;border:2px solid var(--border);border-top-color:var(--accent);border-radius:50%;animation:spin .6s linear infinite;margin-right:8px}
 @keyframes spin{to{transform:rotate(360deg)}}
-/* INVENTORY MANIFEST */
-.inv-manifest{display:flex;flex-direction:column;gap:4px}
-.inv-row{display:grid;grid-template-columns:28px 1fr 90px 110px 70px;align-items:center;gap:10px;padding:10px 14px;background:var(--surface2);border:1px solid var(--border);border-radius:8px;font-family:'Space Mono',monospace;transition:all .15s}
-.inv-row:hover{border-color:#333}
-.inv-emoji{font-size:1.1rem;text-align:center}
-.inv-name{font-size:0.78rem;font-weight:700;color:var(--text);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.inv-qty{font-size:0.65rem;color:var(--accent);font-weight:700;letter-spacing:1px}
-.inv-status{font-size:0.62rem}
-.inv-use-btn{background:var(--accent2);color:#000;border:none;border-radius:5px;padding:6px 10px;font-family:'Space Mono',monospace;font-size:0.65rem;font-weight:700;cursor:pointer;letter-spacing:1px;transition:all .15s;white-space:nowrap}
-.inv-use-btn:hover{background:#30e0b8;transform:scale(1.04)}
-.inv-use-btn:disabled{background:var(--muted2);color:var(--muted);cursor:not-allowed;transform:none}
-.inv-empty{font-family:'Space Mono',monospace;font-size:0.72rem;color:var(--muted);padding:12px;border:1px dashed var(--border);border-radius:8px;margin-top:4px;letter-spacing:.5px}
-@media(max-width:768px){.inv-row{grid-template-columns:24px 1fr 70px;}.inv-qty{display:none}.inv-status{display:none}}
+
 ::-webkit-scrollbar{width:4px;height:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:4px}
@@ -348,75 +260,14 @@ body.theme-system.buff-fuel  { box-shadow: inset 0 0 30px #2d2d2d, inset 0 0 60p
 .review-ai-label{font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent);font-family:'Space Mono',monospace;margin-bottom:8px}
 .failure-banner{background:#1a0000;border:2px solid var(--red);border-radius:8px;padding:12px 16px;font-family:'Space Mono',monospace;font-size:0.78rem;color:var(--red);font-weight:700;letter-spacing:1px;text-align:center;margin-bottom:16px;animation:critPulse 1.5s infinite}
 /* Theme selector cards */
-.theme-card{background:var(--surface2);border:2px solid var(--border);border-radius:10px;padding:14px;transition:all .15s;cursor:pointer}
-.theme-card:hover{border-color:#444}
-.theme-card.active{border-color:var(--accent)}
-.theme-card.locked{opacity:0.4;cursor:not-allowed}
+
 </style>
 </head>
 <body>
 <div id="paywall-screen" style="display:flex;position:fixed;inset:0;background:#000;align-items:center;justify-content:center;z-index:9999;padding:24px">
   <div style="text-align:center;border:1px solid #242424;border-radius:14px;padding:56px 48px;background:#0c0c0c;max-width:440px;width:100%">
-    <div style="font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:6px;text-transform:uppercase;color:#e11d48;margin-bottom:16px">Strategic Execution Engine</div>
-    <div style="font-size:3rem;font-weight:800;letter-spacing:-3px;margin-bottom:8px;color:#fff">VANTAGE</div>
-    <div style="font-family:'Space Mono',monospace;font-size:0.62rem;color:#888;letter-spacing:2px;text-transform:uppercase;margin-bottom:48px;padding:8px 16px;border:1px solid #242424;border-radius:6px;display:inline-block">Session Not Initialized</div><br>
-    <a href="https://buy.stripe.com/eVq6oI4PY5fC0ikfAH3sI00" style="display:block;width:100%;background:#e11d48;color:#fff;border:none;border-radius:10px;padding:16px 24px;font-family:'Space Mono',monospace;font-size:0.82rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;text-decoration:none;margin-bottom:32px">Purchase Lifetime License — $6.99</a>
-    <div onclick="operatorLogin()" style="font-family:'Space Mono',monospace;font-size:0.6rem;color:#333;cursor:pointer;letter-spacing:1px;text-transform:uppercase" onmouseover="this.style.color='#888'" onmouseout="this.style.color='#333'">Operator Login</div>
-  </div>
-</div>
-<div id="auth-screen">
-  <div class="auth-box">
-    <div class="auth-logo">VANTAGE<span>.</span></div>
-    <div class="auth-sub">Strategic Objective Tracker</div>
-    <div class="auth-tabs">
-      <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
-      <button class="auth-tab" onclick="switchAuthTab('signup')">Create Account</button>
-    </div>
-    <div class="auth-field">
-      <label class="auth-label">Email</label>
-      <input type="email" class="inp" id="auth-email" placeholder="you@email.com"/>
-    </div>
-    <div class="auth-field">
-      <label class="auth-label">Password</label>
-      <input type="password" class="inp" id="auth-password" placeholder="••••••••"/>
-    </div>
-    <div class="auth-field" id="confirm-field" style="display:none">
-      <label class="auth-label">Confirm Password</label>
-      <input type="password" class="inp" id="auth-confirm" placeholder="••••••••"/>
-    </div>
-    <button class="auth-btn" id="auth-submit-btn" onclick="handleAuth()">Sign In</button>
-    <div class="auth-err" id="auth-err"></div>
-  </div>
-</div>
-
-<div id="app">
-  <aside class="sidebar">
-    <div class="logo">
-      <div class="logo-mark">Personal OS</div>
-      <div class="logo-text">VANTAGE<span>.</span></div>
-    </div>
-    <nav class="nav">
-      <div class="nav-item active" onclick="showPage('today')" id="nav-today"><span class="nav-icon">⚡</span> Today</div>
-      <div class="nav-item" onclick="showPage('month')" id="nav-month"><span class="nav-icon">📊</span> Month</div>
-      <div class="nav-item" onclick="showPage('calendar')" id="nav-calendar"><span class="nav-icon">📅</span> Calendar</div>
-      <div class="nav-item" onclick="showPage('wins')" id="nav-wins"><span class="nav-icon">🏆</span> Wins</div>
-      <div class="nav-item" onclick="showPage('store')" id="nav-store"><span class="nav-icon">🛒</span> Store</div>
-      <div class="nav-item" onclick="showPage('settings')" id="nav-settings"><span class="nav-icon">⚙️</span> Settings</div>
-    </nav>
-    <div class="sidebar-footer">
-      <div class="user-badge"><div class="user-email" id="sidebar-email"></div></div>
-      <div class="month-badge"><strong id="sidebar-month"></strong><span id="sidebar-day"></span></div>
-      <div style="font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--accent);text-align:center;margin-top:8px;padding:6px;background:rgba(223,255,0,0.04);border:1px solid rgba(223,255,0,0.15);border-radius:6px" id="sidebar-balance">$V 0</div>
-<button class="logout-btn" onclick="handleLogout()">Sign out</button>
-      <div id="admin-panel" style="display:none;margin-top:10px;border-top:1px solid #2a0000;padding-top:10px">
-        <div style="font-size:0.58rem;font-family:'Space Mono',monospace;color:var(--red);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">⚠ Admin Controls</div>
-        <div style="display:flex;gap:6px;margin-bottom:6px">
-          <input type="number" id="admin-v-amount" placeholder="$V amount" class="inp" style="font-size:0.75rem;padding:7px 10px"/>
-          <button onclick="adminAddV()" style="background:#1a0000;border:1px solid var(--red);color:var(--red);border-radius:6px;padding:7px 10px;font-family:'Space Mono',monospace;font-size:0.65rem;cursor:pointer;white-space:nowrap">+ ADD</button>
-        </div>
-        <button onclick="adminTriggerWeekly()" style="width:100%;background:#0a0800;border:1px solid var(--yellow);color:var(--yellow);border-radius:6px;padding:7px;font-family:'Space Mono',monospace;font-size:0.65rem;cursor:pointer;margin-bottom:5px">▶ Force Weekly Review</button>
-        <button onclick="adminTriggerMonthly()" style="width:100%;background:#0a0800;border:1px solid #f472b6;color:#f472b6;border-radius:6px;padding:7px;font-family:'Space Mono',monospace;font-size:0.65rem;cursor:pointer">▶ Force Monthly Recap</button>
-      </div>    </div>
+    <button class="logout-btn" onclick="handleLogout()">Sign out</button>
+      </div>
   </aside>
 
   <main class="main">
@@ -426,22 +277,16 @@ body.theme-system.buff-fuel  { box-shadow: inset 0 0 30px #2d2d2d, inset 0 0 60p
         <div>
           <div class="page-title">Today<span>.</span></div>
           <div class="page-sub" id="today-date-label"></div>
-          <div id="today-status-tag" style="margin-top:6px"></div>
+          
         </div>
         <div style="display:flex;flex-direction:column;align-items:flex-end;gap:6px">
-          <div class="v-balance-display" id="today-v-balance">$V 0</div>
+          <div class="save-status" id="score-display" style="font-family:'Space Mono',monospace;font-size:0.85rem;font-weight:700;color:var(--accent)"></div>
           <div class="save-status" id="auto-save-status"></div>
         </div>
       </div>
-      <div id="active-buffs-bar" style="display:none;align-items:center;gap:8px;flex-wrap:wrap;background:#0a0a0a;border:1px solid #1a1a1a;border-radius:8px;padding:8px 14px;margin-bottom:12px"></div>
-      <div class="insolvent-warning" id="insolvent-warning">
-        <div class="insolvent-title">⚠ SYSTEM INSOLVENT</div>
-        <div class="insolvent-sub">Asset Liquidation Imminent. Complete 1 Habit to Halt.<br>Sustained zero performance will remove your most recently added habit.</div>
-      </div>
-      <div class="recovery-box" id="recovery-box">
-        <div class="recovery-title">✓ RECOVERY COMPLETE</div>
-        <div class="recovery-text">Operational capital restored. Site is back on schedule.<br>Lost habits can be repurchased in the Store for $V 750 each.</div>
-      </div>
+      
+      
+      
       <div class="briefing-box section-gap" id="briefing-section">
         <div class="briefing-title">📋 Project Briefing — AI Daily Forecast</div>
         <div class="briefing-text" id="briefing-text">Initializing site report...</div>
@@ -463,7 +308,7 @@ body.theme-system.buff-fuel  { box-shadow: inset 0 0 30px #2d2d2d, inset 0 0 60p
         <div class="card"><div class="card-label">Daily Win</div><input type="text" class="inp" id="inp-win" placeholder="What was today's W?" oninput="triggerAutoSaveDay()"/></div>
       </div>
       <div class="card section-gap">
-        <div class="card-label" style="margin-bottom:14px">Habits — <span id="habit-count-label">0/0</span> <span style="font-size:0.6rem;color:var(--muted);font-family:'Space Mono',monospace;margin-left:8px" id="habit-today-vnet"></span></div>
+        <div class="card-label" style="margin-bottom:14px">Habits — <span id="habit-count-label">0/0</span> </div>
         <div class="habit-list" id="habit-list"></div>
       </div>
       <div class="card section-gap" id="weekly-goals-card">
@@ -483,7 +328,7 @@ body.theme-system.buff-fuel  { box-shadow: inset 0 0 30px #2d2d2d, inset 0 0 60p
           <span style="font-size:0.65rem;color:var(--muted);font-family:'Space Mono',monospace" id="wnn-week-label"></span>
         </div>
         <div style="font-size:0.65rem;font-family:'Space Mono',monospace;color:#f87171;margin-bottom:10px;padding:6px 10px;background:#1a0000;border-radius:6px;border:1px solid #3a0000">
-          Complete = +$V 500 each · Miss = -$V 1,500 each · Evaluated every Monday
+          Evaluated every Monday morning. Check off what you completed this week.
         </div>
         <div class="habit-list" id="wnn-list"></div>
       </div>
@@ -567,18 +412,6 @@ body.theme-system.buff-fuel  { box-shadow: inset 0 0 30px #2d2d2d, inset 0 0 60p
       <div id="wins-list"></div>
     </div>
 
-    <!-- STORE PAGE -->
-    <div class="page" id="page-store">
-      <div class="page-header">
-        <div><div class="page-title">Store<span>.</span></div><div class="page-sub">Vantage Project Procurements</div></div>
-        <div style="text-align:right">
-          <div class="v-balance-display" id="store-v-balance">$V 0</div>
-          <div style="font-size:0.62rem;color:var(--muted);font-family:'Space Mono',monospace;margin-top:4px" id="store-inflation-info"></div>
-        </div>
-      </div>
-      <div id="store-content"></div>
-    </div>
-
     <!-- SETTINGS PAGE -->
     <div class="page" id="page-settings">
       <div class="page-header">
@@ -599,21 +432,21 @@ body.theme-system.buff-fuel  { box-shadow: inset 0 0 30px #2d2d2d, inset 0 0 60p
       </div>
       <div class="settings-section">
         <div class="settings-title">Habits &amp; Stake Levels</div>
-        <p style="font-size:0.73rem;color:var(--muted);margin-bottom:12px;line-height:1.6">Set the stake level for each habit. Higher stakes = higher rewards AND harsher penalties.</p>
+        <p style="font-size:0.73rem;color:var(--muted);margin-bottom:12px;line-height:1.6">Set the weight level for each habit. Higher weight = more impact on your Weighted Execution Score.</p>
         <table class="stakes-matrix" style="margin-bottom:16px">
-          <tr><th>Level</th><th>Earn</th><th>Penalty</th><th>Ratio</th><th>Category</th></tr>
-          <tr><td><span class="stake-tag stake-low">LOW</span></td><td style="color:var(--green);font-family:'Space Mono',monospace">+10</td><td style="color:var(--red);font-family:'Space Mono',monospace">-20</td><td style="color:var(--muted)">2:1</td><td style="color:var(--muted);font-size:0.7rem">Maintenance</td></tr>
-          <tr><td><span class="stake-tag stake-med">MED</span></td><td style="color:var(--green);font-family:'Space Mono',monospace">+40</td><td style="color:var(--red);font-family:'Space Mono',monospace">-100</td><td style="color:var(--muted)">2.5:1</td><td style="color:var(--muted);font-size:0.7rem">Foundation</td></tr>
-          <tr><td><span class="stake-tag stake-high">HIGH</span></td><td style="color:var(--green);font-family:'Space Mono',monospace">+100</td><td style="color:var(--red);font-family:'Space Mono',monospace">-300</td><td style="color:var(--muted)">3:1</td><td style="color:var(--muted);font-size:0.7rem">Strategic</td></tr>
-          <tr><td><span class="stake-tag stake-crit">CRIT</span></td><td style="color:var(--green);font-family:'Space Mono',monospace">+250</td><td style="color:var(--red);font-family:'Space Mono',monospace">-1,000</td><td style="color:var(--muted)">4:1</td><td style="color:var(--muted);font-size:0.7rem">Non-Negotiable</td></tr>
+          <tr><th>Level</th><th>Weight</th><th>Impact on Score</th></tr>
+          <tr><td><span class="stake-tag stake-low">LOW</span></td><td style="color:var(--muted);font-family:'Space Mono',monospace">0.5×</td><td style="color:var(--muted);font-size:0.7rem">Maintenance habits</td></tr>
+          <tr><td><span class="stake-tag stake-med">MED</span></td><td style="color:var(--blue);font-family:'Space Mono',monospace">1×</td><td style="color:var(--muted);font-size:0.7rem">Foundation habits</td></tr>
+          <tr><td><span class="stake-tag stake-high">HIGH</span></td><td style="color:#fb923c;font-family:'Space Mono',monospace">3×</td><td style="color:var(--muted);font-size:0.7rem">Strategic — Breach if missed</td></tr>
+          <tr><td><span class="stake-tag stake-crit">CRIT</span></td><td style="color:var(--red);font-family:'Space Mono',monospace">3×</td><td style="color:var(--muted);font-size:0.7rem">Non-Negotiable — Breach if missed</td></tr>
         </table>
         <div id="habits-editor"></div>
-        <button class="add-btn" onclick="addHabitField()" style="opacity:0.5;cursor:not-allowed;border-color:var(--red);color:var(--red)" title="Habit slots must be purchased in the Store">⛔ Add Habit — Requires $V 2,500 (Store → Habit Slot)</button>
+        <button class="add-btn" onclick="addHabitField()">+ Add Habit</button>
         <div style="margin-top:12px"><button class="save-btn" onclick="saveHabits()">Save Habits &amp; Stakes</button></div>
       </div>
       <div class="settings-section">
         <div class="settings-title">Goals — Weekly &amp; Monthly</div>
-        <p style="font-size:0.75rem;color:var(--muted);margin-bottom:16px;line-height:1.6">Goals earn $V 500 one-time bonus when completed (10/10). Weekly goals show on Today, monthly on Month page.</p>
+        <p style="font-size:0.75rem;color:var(--muted);margin-bottom:16px;line-height:1.6">Weekly goals appear on Today. Monthly goals appear on the Month page. Deltas from recaps are pinned automatically.</p>
         <div id="goals-editor"></div>
         <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
           <button class="add-btn" style="flex:1" onclick="addGoalField('weekly')">+ Add weekly goal</button>
@@ -621,11 +454,9 @@ body.theme-system.buff-fuel  { box-shadow: inset 0 0 30px #2d2d2d, inset 0 0 60p
         </div>
         <div style="margin-top:12px"><button class="save-btn" onclick="saveGoals()">Save Goals</button></div>
       </div>
-      <!-- THEME SELECTOR injected by renderThemeSelector() -->
-      <div id="theme-settings-section"></div>
       <div class="settings-section">
         <div class="settings-title">Weekly Non-Negotiables</div>
-        <p style="font-size:0.73rem;color:var(--muted);margin-bottom:12px;line-height:1.6">These tasks repeat every week. Same tasks, same stakes. <strong style="color:var(--red)">+$V 500 complete · -$V 1,500 missed.</strong> Evaluated Monday morning for the previous week.</p>
+        <p style="font-size:0.73rem;color:var(--muted);margin-bottom:12px;line-height:1.6">These tasks repeat every week. Evaluated Monday morning for accountability.</p>
         <div id="wnn-editor"></div>
         <button class="add-btn" onclick="addWnnField()" style="margin-top:4px">+ Add non-negotiable</button>
         <div style="margin-top:12px"><button class="save-btn" onclick="saveWnn()">Save Non-Negotiables</button></div>
@@ -637,10 +468,7 @@ body.theme-system.buff-fuel  { box-shadow: inset 0 0 30px #2d2d2d, inset 0 0 60p
         <input type="password" class="inp" id="set-groq-key" placeholder="gsk_..."/>
         <div style="margin-top:10px"><button class="save-btn" onclick="saveGroqKey()">Save Key</button></div>
       </div>
-      <div class="settings-section">
-        <div class="settings-title">$V Economy Status</div>
-        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px;font-family:'Space Mono',monospace;font-size:0.75rem;line-height:1.8" id="economy-status-panel"></div>
-      </div>
+      
       <div class="settings-section">
         <div class="settings-title">Danger Zone</div>
         <button class="del-btn" style="padding:10px 16px;font-size:0.8rem" onclick="clearMonthData()">🗑 Clear all data for this month</button>
@@ -857,33 +685,11 @@ const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
 
 // ─── STAKES ───────────────────────────────────────────────────────────────────
 const STAKES = {
-  low:      { earn: 10,  penalty: 20,   label: 'LOW',  cls: 'stake-low'  },
-  medium:   { earn: 40,  penalty: 100,  label: 'MED',  cls: 'stake-med'  },
-  high:     { earn: 100, penalty: 300,  label: 'HIGH', cls: 'stake-high' },
-  critical: { earn: 250, penalty: 1000, label: 'CRIT', cls: 'stake-crit' }
+  low:      { label: 'LOW',  cls: 'stake-low'  },
+  medium:   { label: 'MED',  cls: 'stake-med'  },
+  high:     { label: 'HIGH', cls: 'stake-high' },
+  critical: { label: 'CRIT', cls: 'stake-crit' }
 };
-
-// ─── STORE ITEMS ──────────────────────────────────────────────────────────────
-const BASE_STORE_ITEMS = [
-  // ── CONSUMABLES ──
-  { id: 'unfiltered_hour',  name: 'Unfiltered Hour',   desc: '60 mins of guilt-free dopamine. No tracking, no accountability.',           basePrice: 500,  tier: 'consumable', emoji: '🎮', buffClass: 'buff-unfiltered', buffLabel: 'UNFILTERED HOUR ACTIVE',      buffColor: '#f472b6', duration: 60  },
-  { id: 'fuel_upgrade',     name: 'Fuel Upgrade',       desc: 'Unlocks a premium meal or high-performance caffeine protocol.',              basePrice: 750,  tier: 'consumable', emoji: '⚡', buffClass: 'buff-fuel',       buffLabel: 'FUEL PROTOCOL ACTIVE',        buffColor: '#dfff00', duration: 30  },
-  { id: 'digital_detox',   name: 'Digital Detox',      desc: 'Sanctioned screen-free block. Clears cognitive backlog.',                   basePrice: 500,  tier: 'consumable', emoji: '🌿', buffClass: 'buff-detox',      buffLabel: 'DETOX MODE ACTIVE',           buffColor: '#4ade80', duration: 90  },
-  { id: 'focus_stream',    name: 'Focus Stream',        desc: 'Deep work block with zero interruption tolerance. 90-min protocol.',        basePrice: 750,  tier: 'consumable', emoji: '🎯', buffClass: 'buff-focus',      buffLabel: 'FOCUS STREAM ACTIVE',         buffColor: '#38bdf8', duration: 90  },
-  { id: 'gratitude_audit', name: 'Gratitude Audit',    desc: 'Forced perspective reset. Operational clarity tool.',                       basePrice: 400,  tier: 'consumable', emoji: '🫁', buffClass: 'buff-gratitude',  buffLabel: 'GRATITUDE AUDIT ACTIVE',      buffColor: '#a78bfa', duration: 20  },
-  // ── MEDIUM ──
-  { id: 'stakeholder_bonus',  name: 'Stakeholder Dinner',   desc: 'Unlocks a date night. Capital well spent.',                                basePrice: 4000, tier: 'medium', emoji: '🥂', buffClass: 'buff-stakeholder', buffLabel: 'STAKEHOLDER EVENT ACTIVATED', buffColor: '#a78bfa', duration: 180 },
-  { id: 'performance_tech',   name: 'Performance Tech',      desc: 'New gear that optimizes site performance. Tools that pay for themselves.', basePrice: 5000, tier: 'medium', emoji: '🔧', buffClass: null, buffLabel: null, buffColor: null },
-  { id: 'consultant_review',  name: 'Consultant Review',     desc: 'External audit of operations. Blind spots identified, protocols updated.', basePrice: 4500, tier: 'medium', emoji: '📋', buffClass: null, buffLabel: null, buffColor: null },
-  { id: 'hardware_refresh',   name: 'Hardware Refresh',      desc: 'Peripheral or setup upgrade. Marginal gains compound.',                   basePrice: 5000, tier: 'medium', emoji: '💻', buffClass: null, buffLabel: null, buffColor: null },
-  { id: 'network_event',      name: 'Network Event',         desc: 'High-value social capital deployment. One connection changes everything.', basePrice: 4000, tier: 'medium', emoji: '🤝', buffClass: null, buffLabel: null, buffColor: null },
-  // ── LARGE ──
-  { id: 'solo_trip',           name: 'Personal Solo Trip',     desc: 'Site expansion reconnaissance. Earned isolation.',                   basePrice: 15000, tier: 'large', emoji: '✈️', buffClass: null, buffLabel: null, buffColor: null },
-  { id: 'deep_work_env',       name: 'Deep Work Environment',  desc: 'Full environment upgrade. The infrastructure investment.',           basePrice: 20000, tier: 'large', emoji: '🏗️', buffClass: null, buffLabel: null, buffColor: null },
-  { id: 'regional_expansion',  name: 'Regional Expansion',     desc: 'New territory. New systems. New standards.',                         basePrice: 18000, tier: 'large', emoji: '🗺️', buffClass: null, buffLabel: null, buffColor: null },
-  { id: 'strategic_offsite',   name: 'Strategic Offsite',      desc: 'Full planning retreat. Q-level strategy locked in.',                 basePrice: 22000, tier: 'large', emoji: '🏔️', buffClass: null, buffLabel: null, buffColor: null },
-  { id: 'legacy_asset',        name: 'Legacy Asset',           desc: 'The long-term acquisition. Compounds beyond the current cycle.',     basePrice: 30000, tier: 'large', emoji: '🏛️', buffClass: null, buffLabel: null, buffColor: null },
-];
 
 // ─── STATE ────────────────────────────────────────────────────────────────────
 const DEFAULT_HABITS = ['Set daily goals','Caffeine cut-off','Nutrient dense breakfast/lunch','Train / Recover','1 gallon of water'];
@@ -895,18 +701,12 @@ let S = {
   month: new Date().getMonth()+1, year: new Date().getFullYear(),
   habits: [...DEFAULT_HABITS], habitStakes: {...DEFAULT_HABIT_STAKES},
   goals: [], groqKey: '', days: {},
-  vBalance: 0, lifetimeEarned: 0, multiplierCount: 0,
-  contractSigned: false, hasBeenLiquidated: false,
-  recoveryNotified: false, liquidatedHabits: [],
-  purchases: [], goalBonusGiven: {},
   lastWeeklyReview: null, lastMonthlyRecap: null,
   lastWeekDelta: '', weeklyRecaps: {},
   monthlyAudits: {},
   pendingPruneHabit: null,
   dailyFrictionQuestion: '',
   monthDelta: '',
-  inventory: {}, activeBuffs: {},
-  unlockedThemes: [], activeTheme: 'default',
   weeklyNonNeg: [],
   weeklyNonNegStatus: {},
   weeklyNonNegBonusGiven: {},
@@ -956,173 +756,19 @@ function showToast(msg, dur=2200, negative=false) {
   toastTimer = setTimeout(() => t.classList.remove('show'), dur);
 }
 
-// ─── INFLATION & STAKES MATH ──────────────────────────────────────────────────
-function getInflationFactor() {
-  const raw = 1 + Math.floor((S.lifetimeEarned || 0) / 1000) * 0.05;
-  return Math.min(raw, 1.50); // hard cap at +50%
-}
-function getInflatedPrice(basePrice) {
-  return Math.round(basePrice * getInflationFactor());
-}
-function getThemeMultiplier() {
-  // Only active when that specific theme is the current active theme
-  const themeBonus = { navy: 1.2, crimson: 1.5, system: 2.0 };
-  return themeBonus[S.activeTheme] || 1.0;
-}
+// ─── HABIT WEIGHTS
+const HABIT_WEIGHTS = { critical: 3.0, high: 3.0, medium: 1.0, low: 0.5 };
+function getStakePenalty(stake) { return 1; } // stub for compatibility
 
-function getStakeEarn(stake) {
-  const base = STAKES[stake]?.earn || 40;
-  const themeMulti = getThemeMultiplier();
-  // Critical multiplier purchases (10% each) stack on top of critical habit base
-  const critBonus = (stake === 'critical') ? (1 + (S.multiplierCount || 0) * 0.10) : 1;
-  return Math.round(base * critBonus * themeMulti);
-}
-function getStakePenalty(stake) {
-  return Math.round((STAKES[stake]?.penalty || 100) * getInflationFactor());
-}
+ ───────────────────────────────────────────────────────────────
 
-// ─── THEME SYSTEM ─────────────────────────────────────────────────────────────
-function applyTheme(themeId) {
-  ['theme-navy','theme-crimson','theme-system'].forEach(t => document.body.classList.remove(t));
-  if (themeId && themeId !== 'default') document.body.classList.add('theme-' + themeId);
-  S.activeTheme = themeId || 'default';
-}
 
-function unlockThemesForMultiplierCount(count) {
-  if (!S.unlockedThemes) S.unlockedThemes = [];
-  if (count >= 1 && !S.unlockedThemes.includes('navy'))   S.unlockedThemes.push('navy');
-  if (count >= 2 && !S.unlockedThemes.includes('crimson')) S.unlockedThemes.push('crimson');
-  if (count >= 3 && !S.unlockedThemes.includes('system'))  S.unlockedThemes.push('system');
-}
 
-function renderThemeSelector() {
-  const section = document.getElementById('theme-settings-section');
-  if (!section) return;
-const themes = [
-    { id: 'default', name: 'Default',      desc: 'Acid yellow on black. The original.',                          locked: false },
-    { id: 'navy',    name: 'Deep Command', desc: 'Midnight navy + sky blue. +1.2× all income. Unlock: 1× Mult.',locked: !(S.unlockedThemes||[]).includes('navy') },
-    { id: 'crimson', name: 'Crimson',      desc: 'Rose-red on deep dark. +1.5× all income. Unlock: 2× Mult.',   locked: !(S.unlockedThemes||[]).includes('crimson') },
-    { id: 'system',  name: 'Warm Minimal', desc: 'Bone white + terracotta. +2× all income. Unlock: 3× Mult.',   locked: !(S.unlockedThemes||[]).includes('system') },
-  ];
-  const active = S.activeTheme || 'default';
-  let html = '<div class="settings-section"><div class="settings-title">UI Theme</div><div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:8px">';
-  themes.forEach(t => {
-    const isActive = active === t.id;
-    html += `<div
-      onclick="${t.locked ? '' : `selectTheme('${t.id}')`}"
-      class="theme-card${isActive?' active':''}${t.locked?' locked':''}"
-      title="${t.locked ? 'Locked — purchase Critical Multipliers to unlock' : ''}">
-      <div style="font-size:0.82rem;font-weight:700;margin-bottom:4px">${t.name} ${t.locked?'🔒':isActive?'✓':''}</div>
-      <div style="font-size:0.65rem;color:var(--muted);font-family:'Space Mono',monospace;line-height:1.4">${t.desc}</div>
-    </div>`;
-  });
-  html += '</div></div>';
-  section.innerHTML = html;
-}
-
-async function selectTheme(themeId) {
-  applyTheme(themeId);
-  await saveUserSettings();
-  showToast(`Theme: ${themeId === 'default' ? 'Default' : themeId.charAt(0).toUpperCase() + themeId.slice(1)} ✓`);
-  renderThemeSelector();
-}
-
-// ─── $V BALANCE ───────────────────────────────────────────────────────────────
-function addVBalance(amount) {
-  S.vBalance += amount;
-  S.lifetimeEarned = (S.lifetimeEarned || 0) + amount;
-  checkContractSigning();
-  checkRecovery();
-  updateVDisplay();
-}
-function deductVBalance(amount) {
-  S.vBalance = Math.max(0, S.vBalance - amount);
-  updateVDisplay();
-}
-function checkContractSigning() {
-  if (!S.contractSigned && S.lifetimeEarned >= 500) {
-    S.contractSigned = true;
-    showToast('⚡ CONTRACT SIGNED. $V 500 threshold crossed. Hard Mode active.', 4000);
-    updateVDisplay();
-  }
-}
-function checkRecovery() {
-  if (S.hasBeenLiquidated && S.contractSigned && S.vBalance >= 500 && !S.recoveryNotified) {
-    S.recoveryNotified = true;
-    const box = document.getElementById('recovery-box');
-    if (box) box.classList.add('visible');
-    showToast('✓ RECOVERY COMPLETE. Operational capital restored.', 4000);
-  }
-}
-function updateVDisplay() {
-  const bal = S.vBalance || 0;
-  const balStr = `$V ${bal.toLocaleString()}`;
-  const todayBal = document.getElementById('today-v-balance');
-  if (todayBal) { todayBal.textContent = balStr; todayBal.className = 'v-balance-display' + (S.contractSigned && bal === 0 ? ' insolvent' : ''); }
-  const storeBal = document.getElementById('store-v-balance');
-  if (storeBal) storeBal.textContent = balStr;
-  const sidebarBal = document.getElementById('sidebar-balance');
-  if (sidebarBal) sidebarBal.textContent = balStr;
-  renderStatusTag();
-  const warning = document.getElementById('insolvent-warning');
-  if (warning) warning.classList.toggle('visible', S.contractSigned && bal === 0);
-  const recBox = document.getElementById('recovery-box');
-  if (recBox && S.hasBeenLiquidated && S.recoveryNotified) recBox.classList.add('visible');
-}
-function renderStatusTag() {
-  const el = document.getElementById('today-status-tag');
-  if (!el) return;
-  if (!S.contractSigned) el.innerHTML = '<span class="status-tag status-pre">STATUS: PRE-CONSTRUCTION (PROBATIONARY)</span>';
-  else if (S.vBalance === 0) el.innerHTML = '<span class="status-tag status-insolvent">STATUS: INSOLVENT</span>';
-  else el.innerHTML = '<span class="status-tag status-operational">STATUS: OPERATIONAL</span>';
-}
 
 // ─── EOD PENALTIES & LIQUIDATION ─────────────────────────────────────────────
-async function applyEodPenalties(dk) {
-  const eodKey = `eod_applied_${dk}`;
-  if (localStorage.getItem(eodKey)) return;
-  const day = S.days[dk] || {};
-  const completedHabits = day.habits || {};
-  let totalPenalty = 0;
-  S.habits.forEach(h => {
-    if (!completedHabits[h]) {
-      totalPenalty += getStakePenalty(S.habitStakes[h] || 'medium');
-    }
-  });
-  if (totalPenalty > 0 && S.contractSigned) deductVBalance(totalPenalty);
-  localStorage.setItem(eodKey, 'true');
-}
-async function checkLiquidation() {
-  if (!S.contractSigned) return;
-  if (S.vBalance > 0) return;
-  const liqKey = `liquidation_checked_${todayStr()}`;
-  if (localStorage.getItem(liqKey)) return;
-  const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
-  const yk = yesterday.toISOString().split('T')[0];
-  const yday = S.days[yk];
-  const anyDone = yday && Object.values(yday.habits || {}).some(v => v === true);
-  if (!anyDone && S.habits.length > 1) {
-    const removed = S.habits.pop();
-    if (!S.liquidatedHabits) S.liquidatedHabits = [];
-    S.liquidatedHabits.push(removed);
-    S.hasBeenLiquidated = true; S.recoveryNotified = false;
-    await saveUserSettings();
-    showToast(`⚠ ASSET LIQUIDATED: "${removed}" removed from site.`, 5000, true);
-    renderHabitList(todayStr());
-  }
-  localStorage.setItem(liqKey, 'true');
-}
-async function checkNewDay() {
-  const lastDate = localStorage.getItem('vantage_lastActiveDate');
-  const today = todayStr();
-  if (lastDate && lastDate < today) {
-    await applyEodPenalties(lastDate);
-    await checkLiquidation();
-    await checkWeeklyNonNegPenalties();
-    await saveUserSettings();
-  }
-  localStorage.setItem('vantage_lastActiveDate', today);
-}
+
+
+
 function setupEodTimer() {
   const now = new Date();
   const tenPM = new Date(); tenPM.setHours(22,0,0,0);
@@ -1207,19 +853,21 @@ async function initApp() {
   document.getElementById('app').classList.add('visible');
   document.getElementById('sidebar-email').textContent=currentUser.email;
   S.groqKey = localStorage.getItem('groq_key')||'';
+  // Track account creation date for recap delay
+  if (!localStorage.getItem('vantage_account_created')) {
+    localStorage.setItem('vantage_account_created', todayStr());
+  }
   await loadUserSettings();
   await loadMonthLogs();
-  await checkNewDay();
   updateSidebar();
-  updateVDisplay();
   initToday(todayStr());
   calViewMonth=S.month; calViewYear=S.year;
   setupEodTimer();
   checkTemporalReviews();
-  applyTheme(S.activeTheme || 'default');
   initAdminPanel();
   checkPendingPrune();
   injectDeltaAnchor();
+  showGroqBanner();
 }
 
 // ─── SUPABASE DATA ────────────────────────────────────────────────────────────
@@ -1233,20 +881,8 @@ async function loadUserSettings() {
     } else { S.goals=[]; }
     if (data.meta) {
       const meta = typeof data.meta==='string' ? JSON.parse(data.meta) : data.meta;
-      S.vBalance          = meta.vBalance          || 0;
       S.lastWeeklyReview  = meta.lastWeeklyReview  || null;
       S.lastMonthlyRecap  = meta.lastMonthlyRecap  || null;
-      S.lifetimeEarned    = meta.lifetimeEarned    || 0;
-      S.multiplierCount   = meta.multiplierCount   || 0;
-      S.contractSigned    = meta.contractSigned    || false;
-      S.hasBeenLiquidated = meta.hasBeenLiquidated || false;
-      S.recoveryNotified  = meta.recoveryNotified  || false;
-      S.liquidatedHabits  = meta.liquidatedHabits  || [];
-      S.purchases         = meta.purchases         || [];
-      S.goalBonusGiven    = meta.goalBonusGiven    || {};
-      S.inventory         = meta.inventory         || {};
-      S.unlockedThemes         = meta.unlockedThemes         || [];
-      S.activeTheme            = meta.activeTheme            || 'default';
       S.weeklyNonNeg           = meta.weeklyNonNeg           || [];
       S.weeklyNonNegStatus     = meta.weeklyNonNegStatus     || {};
       S.weeklyNonNegBonusGiven = meta.weeklyNonNegBonusGiven || {};
@@ -1258,33 +894,16 @@ async function loadUserSettings() {
       S.monthDelta             = meta.monthDelta             || '';
       const savedStakes = meta.habitStakes || {};
       S.habitStakes = Object.keys(savedStakes).length > 0 ? savedStakes : {...DEFAULT_HABIT_STAKES};
-      // Purge expired buffs
-      const today = todayStr();
-      const rawBuffs = meta.activeBuffs || {};
-S.activeBuffs = {};
-const nowMs = Date.now();
-Object.entries(rawBuffs).forEach(([id, val]) => {
-  if (val && typeof val === 'object' && val.expires && val.expires > nowMs) {
-    S.activeBuffs[id] = val;
-  }
-});
-      // Bloat truncation
-      const hasSlotPurchase = (S.purchases||[]).some(p => p.item && p.item.includes('Habit Slot'));
-      if (S.habits.length > 5 && !hasSlotPurchase) { S.habits=[...DEFAULT_HABITS]; S.habitStakes={...DEFAULT_HABIT_STAKES}; }
+
     } else { S.habitStakes={...DEFAULT_HABIT_STAKES}; }
   }
 }
 
 async function saveUserSettings() {
   const meta = {
-    vBalance: S.vBalance||0, lastWeeklyReview: S.lastWeeklyReview||null,
-    lastMonthlyRecap: S.lastMonthlyRecap||null, lifetimeEarned: S.lifetimeEarned||0,
-    multiplierCount: S.multiplierCount||0, contractSigned: S.contractSigned||false,
-    hasBeenLiquidated: S.hasBeenLiquidated||false, recoveryNotified: S.recoveryNotified||false,
-    liquidatedHabits: S.liquidatedHabits||[], purchases: (S.purchases||[]).slice(0,20),
-    goalBonusGiven: S.goalBonusGiven||{}, habitStakes: S.habitStakes||{},
-    inventory: S.inventory||{}, activeBuffs: S.activeBuffs||{},
-    unlockedThemes: S.unlockedThemes||[], activeTheme: S.activeTheme||'default',
+    lastWeeklyReview: S.lastWeeklyReview||null,
+    lastMonthlyRecap: S.lastMonthlyRecap||null,
+    habitStakes: S.habitStakes||{},
     weeklyNonNeg: S.weeklyNonNeg||[],
     weeklyNonNegStatus: S.weeklyNonNegStatus||{},
     weeklyNonNegBonusGiven: S.weeklyNonNegBonusGiven||{},
@@ -1294,6 +913,7 @@ async function saveUserSettings() {
     pendingPruneHabit: S.pendingPruneHabit||null,
     dailyFrictionQuestion: S.dailyFrictionQuestion||'',
     monthDelta: S.monthDelta||'',
+    groqKey: S.groqKey||'',
   };
   await sb.from('user_settings').upsert({
     user_id: currentUser.id, habits: S.habits,
@@ -1327,11 +947,10 @@ function showPage(name) {
   document.querySelectorAll('.nav-item').forEach(n=>n.classList.remove('active'));
   document.getElementById('page-'+name).classList.add('active');
   document.getElementById('nav-'+name).classList.add('active');
-  if (name==='today')    { renderHabitList(todayStr()); renderWeeklyGoals(); updateVDisplay(); }
+  if (name==='today')    { renderHabitList(todayStr()); renderWeeklyGoals(); }
   if (name==='month')    { loadMonthLogs().then(renderMonthPage); }
   if (name==='calendar') { renderCalendar(); }
   if (name==='wins')     { loadMonthLogs().then(renderWinsPage); }
-  if (name==='store')    { renderStorePage(); }
   if (name==='settings') { renderSettings(); }
 }
 
@@ -1352,50 +971,71 @@ function initToday(dk) {
   renderWeeklyGoals();
   renderWeeklyNonNeg();
   injectDailyFrictionQuestion();
-  updateVDisplay();
-  renderBuffBar();
   generateBriefing();
+}
+
+function calcDailyScore(dk) {
+  const day = S.days[dk] || { habits: {} };
+  let totalW = 0, doneW = 0;
+  S.habits.forEach(h => {
+    const w = (HABIT_WEIGHTS||{})[S.habitStakes[h]||'medium'] || 1;
+    totalW += w;
+    if (day.habits[h]) doneW += w;
+  });
+  return totalW > 0 ? Math.round((doneW / totalW) * 100) : 0;
 }
 
 function renderHabitList(dk) {
   const d=getDay(dk);
   const list=document.getElementById('habit-list'); list.innerHTML='';
-  let done=0, potentialEarn=0, potentialLoss=0;
+  let done=0;
+  const score = calcDailyScore(dk);
+  const scoreEl = document.getElementById('score-display');
+  if (scoreEl) {
+    const c = score>=80?'var(--green)':score>=50?'var(--yellow)':'var(--red)';
+    scoreEl.style.color = c;
+    scoreEl.textContent = score + '% execution';
+  }
+  // Breach banner
+  const breached = S.habits.filter(h => {
+    const s = S.habitStakes[h]||'medium';
+    return (s==='critical'||s==='high') && !d.habits[h];
+  });
+  let breachBanner = document.getElementById('breach-banner');
+  if (!breachBanner) {
+    breachBanner = document.createElement('div');
+    breachBanner.id = 'breach-banner';
+    breachBanner.style.cssText = 'background:#0d0000;border:1.5px solid var(--red);border-radius:10px;padding:12px 16px;margin-bottom:14px;display:none';
+    const habitCard = document.querySelector('.habit-list')?.closest('.card');
+    if (habitCard) habitCard.insertAdjacentElement('beforebegin', breachBanner);
+  }
+  if (breached.length > 0) {
+    breachBanner.style.display = 'block';
+    breachBanner.innerHTML = `<div style="font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--red);font-weight:700;letter-spacing:2px;text-transform:uppercase;margin-bottom:4px">System Breach</div><div style="font-size:0.72rem;color:#fca5a5">${breached.join(' · ')}</div>`;
+  } else {
+    breachBanner.style.display = 'none';
+  }
   S.habits.forEach(h => {
     const checked=d.habits[h]||false;
     const stake=S.habitStakes[h]||'medium';
     const stakeInfo=STAKES[stake];
+    const w = (HABIT_WEIGHTS||{})[stake]||1;
     if (checked) done++;
-    const earn=getStakeEarn(stake);
-    const pen=getStakePenalty(stake);
-    if (!checked) potentialLoss+=pen; else potentialEarn+=earn;
     const el=document.createElement('div'); el.className='habit-item'+(checked?' done':'');
     el.onclick=()=>toggleHabit(dk,h,'habit-list',()=>initToday(dk));
     el.innerHTML=`<div class="habit-left"><div class="habit-cb">${checked?'✓':''}</div><div class="habit-name">${h}</div></div>
       <div class="habit-right">
         <span class="stake-tag ${stakeInfo.cls}">${stakeInfo.label}</span>
-        <span style="font-size:0.62rem;font-family:'Space Mono',monospace;color:${checked?'var(--green)':'var(--muted)'}">
-          ${checked?'+$V '+earn:'-$V '+pen}
-        </span>
+        <span style="font-size:0.58rem;font-family:'Space Mono',monospace;color:var(--muted)">${w}×</span>
       </div>`;
     list.appendChild(el);
   });
   document.getElementById('habit-count-label').textContent=`${done}/${S.habits.length}`;
-  const netEl=document.getElementById('habit-today-vnet');
-  if (netEl) { netEl.textContent=`+${potentialEarn} earned / -${potentialLoss} at risk`; netEl.style.color=potentialLoss>0?'var(--yellow)':'var(--green)'; }
 }
 
 async function toggleHabit(dk, h, listId, refresh) {
   if (!S.days[dk]) S.days[dk]=getDay(dk);
-  const wasDone=S.days[dk].habits[h]||false;
-  S.days[dk].habits[h]=!wasDone;
-  const nowDone=S.days[dk].habits[h];
-  if (dk===todayStr()) {
-    const stake=S.habitStakes[h]||'medium';
-    if (nowDone) { const earn=getStakeEarn(stake); addVBalance(earn); showToast(`+$V ${earn} — ${h}`); }
-    else { const pen=getStakePenalty(stake); deductVBalance(pen); showToast(`-$V ${pen} — ${h} unchecked`,2200,true); }
-    await saveUserSettings();
-  }
+  S.days[dk].habits[h]=!S.days[dk].habits[h];
   await saveDayToDB(dk,S.days[dk]);
   if (refresh) refresh(); else renderHabitList(dk);
 }
@@ -1430,13 +1070,11 @@ async function generateBriefing() {
   const missedStrategic=missedHabits.filter(h=>{const s=S.habitStakes[h]||'medium';return s==='high'||s==='critical';});
   const netLoss=missedStrategic.length>0;
   const weeklyGoals=S.goals.filter(g=>g.type==='weekly').map(g=>`${g.name} @ ${g.progress||0}/10`).join(', ')||'none set';
-  const potentialToday=S.habits.reduce((acc,h)=>acc+getStakeEarn(S.habitStakes[h]||'medium'),0);
   const prompt=`You are VANTAGE AI, a brutally honest performance advisor built for high-stakes execution.
 Generate a 2-3 sentence "Project Briefing" for the start of today.
 Yesterday: Habits done: ${doneHabits.length}/${S.habits.length} — ${doneHabits.join(', ')||'NONE'}
 Missed: ${missedHabits.join(', ')||'none'}. Strategic failures: ${missedStrategic.join(', ')||'none'}.
-Site status: ${netLoss?'NET LOSS':'NET POSITIVE'}.
-$V balance: ${S.vBalance}. Weekly goals: ${weeklyGoals}. Today potential: +$V ${potentialToday}.
+Site status: performance based.
 Write a direct site briefing. Max 55 words. No fluff.`;
   try {
     const text=await callGroq([{role:'user',content:prompt}],130,0.75);
@@ -1478,7 +1116,7 @@ function buildGoalItem(g, interactive) {
   if (g.deadline) deadlineBadge=`<span class="goal-deadline ${deadlineBadgeClass(urg.cls)}">${urg.label}</span>`;
   let countdown='';
   if (g.deadline&&urg.days!==null&&urg.days<=7) countdown=`<div class="goal-countdown ${countdownClass(urg.cls)}">${urg.level===4?'⚠ Overdue by '+Math.abs(urg.days)+' day(s)':urg.label+' — '+new Date(g.deadline+'T00:00:00').toLocaleDateString('en-US',{month:'short',day:'numeric'})}</div>`;
-  const bonusTag=S.goalBonusGiven[g.id]?'<span style="font-size:0.6rem;font-family:\'Space Mono\',monospace;color:var(--accent);margin-left:6px">+$V500 ✓</span>':'';
+  const bonusTag='';
   const deltaTag = g._weeklyDelta
     ? `<span style="font-size:0.55rem;font-family:'Space Mono',monospace;color:var(--yellow);letter-spacing:1.5px;text-transform:uppercase;margin-left:7px;border:1px solid var(--yellow);border-radius:3px;padding:1px 5px">⚡ WEEKLY DELTA</span>`
     : (g._monthDelta
@@ -1501,12 +1139,9 @@ async function persistGoalProgress(id,val) {
   const g=S.goals.find(x=>x.id===id);
   if (g) {
     const prev=g.progress||0; g.progress=parseInt(val);
-    if (parseInt(val)===10&&prev<10&&!S.goalBonusGiven[id]) {
-      S.goalBonusGiven[id]=true;
-      const goalBonus = Math.round(500 * getThemeMultiplier());
-      addVBalance(goalBonus);
+    if (parseInt(val)===10&&prev<10) {
       await saveUserSettings();
-      showToast(`🎯 GOAL COMPLETE: +$V ${goalBonus} — ${g.name}`,3500);
+      showToast(`Goal complete: ${g.name}`,3000);
       fireConfetti();
     } else { await saveUserSettings(); }
   }
@@ -1589,7 +1224,6 @@ Mood: ${mood}/10 | Sleep: ${sleep||'?'}h | Cals: ${cals||'?'} | Protein: ${prot|
 Habits done (${doneHabits.length}/${S.habits.length}): ${doneHabits.join(', ')||'none'}
 Missed: ${missedHabits.join(', ')||'none'}
 STRATEGIC FAILURES: ${missedStrategic.join(', ')||'none'} ${isNetLoss?'→ NET LOSS DAY':''}
-$V Balance: ${S.vBalance} | Earned so far: $V ${doneHabits.reduce((a,h)=>a+getStakeEarn(S.habitStakes[h]||'medium'),0)}
 Weekly: ${weeklyGoals} | Monthly: ${monthlyGoals} | Urgent: ${urgentGoals}
 Log: "${log||'nothing'}"
 1) Site status verdict 2) One execution fix 3) Call out urgent goals.`;
@@ -1601,74 +1235,8 @@ Log: "${log||'nothing'}"
   btn.disabled=false; btn.innerHTML='✦ Analyze My Day &amp; Get Feedback';
 }
 
-// ─── ACTIVE BUFF BAR ──────────────────────────────────────────────────────────
-let _buffTickInterval = null;
-
-function renderBuffBar() {
-  const bar = document.getElementById('active-buffs-bar');
-  if (!bar) return;
-  const now = Date.now();
-  const activeItems = BASE_STORE_ITEMS.filter(item =>
-    item.buffLabel && S.activeBuffs && S.activeBuffs[item.id] && S.activeBuffs[item.id].expires > now
-  );
-
-  // Re-apply CSS buff classes and JS effects on reload
-  BASE_STORE_ITEMS.filter(i => i.buffClass).forEach(i => document.body.classList.remove(i.buffClass));
-  activeItems.filter(i => i.buffClass).forEach(i => {
-    document.body.classList.add(i.buffClass);
-    if (!document.getElementById('effect-' + i.id)) startBuffEffect(i.id);
-  });
-  // Kill effects for expired buffs
-  BASE_STORE_ITEMS.filter(i => !activeItems.find(a => a.id === i.id)).forEach(i => stopBuffEffect(i.id));
-
-  if (_buffTickInterval) { clearInterval(_buffTickInterval); _buffTickInterval = null; }
-
-  if (!activeItems.length) { bar.style.display = 'none'; return; }
-
-  bar.style.display = 'flex';
-  bar.innerHTML = '<span style="font-size:0.6rem;color:var(--muted);font-family:\'Space Mono\',monospace;letter-spacing:2px;white-space:nowrap;margin-right:4px">ACTIVE BUFFS</span>';
-
-  activeItems.forEach(item => {
-    const chip = document.createElement('div');
-    chip.style.cssText = `display:flex;align-items:center;gap:8px;background:${item.buffColor}18;border:1px solid ${item.buffColor}55;border-radius:4px;padding:4px 10px;`;
-    chip.innerHTML = `
-      <span style="font-size:0.6rem;font-family:'Space Mono',monospace;font-weight:700;color:${item.buffColor};letter-spacing:1px;white-space:nowrap">▶ ${item.buffLabel}</span>
-      <span id="buff-timer-${item.id}" style="font-size:0.62rem;font-family:'Space Mono',monospace;color:${item.buffColor};opacity:0.75;white-space:nowrap;min-width:38px;text-align:right">--:--</span>
-    `;
-    bar.appendChild(chip);
-  });
-
-  function tick() {
-    const t = Date.now();
-    let anyActive = false;
-    activeItems.forEach(item => {
-      const timerEl = document.getElementById('buff-timer-' + item.id);
-      const buffData = S.activeBuffs[item.id];
-      if (!buffData || !timerEl) return;
-      const remaining = buffData.expires - t;
-      if (remaining <= 0) {
-        delete S.activeBuffs[item.id];
-        document.body.classList.remove(item.buffClass);
-        stopBuffEffect(item.id);
-        saveUserSettings();
-        renderBuffBar();
-        return;
-      }
-      anyActive = true;
-      const m = Math.floor(remaining / 60000);
-      const s = Math.floor((remaining % 60000) / 1000);
-      timerEl.textContent = `${m}:${String(s).padStart(2,'0')}`;
-      // Pulse red in last 5 minutes
-      timerEl.style.color = remaining < 300000 ? 'var(--red)' : item.buffColor;
-    });
-    if (!anyActive) { clearInterval(_buffTickInterval); _buffTickInterval = null; }
-  }
-
-  tick();
-  _buffTickInterval = setInterval(tick, 1000);
-}
-
-// ─── WEEKLY NON-NEGOTIABLES ───────────────────────────────────────────────────
+// ─── WEEKLY NON-NEGOTIABLES
+ ───────────────────────────────────────────────────
 function getWeekSunday(date = new Date()) {
   const d = new Date(date);
   d.setHours(0,0,0,0);
@@ -1715,7 +1283,7 @@ function renderWeeklyNonNeg() {
       <div class="habit-right">
         <span class="stake-tag stake-crit" style="letter-spacing:0.5px">N/N</span>
         <span style="font-size:0.62rem;font-family:'Space Mono',monospace;color:${checked ? 'var(--green)' : 'var(--muted)'}">
-          ${checked ? '+$V 500' : '-$V 1,500'}
+          ${checked ? '✓ Done' : 'Pending'}
         </span>
       </div>`;
     list.appendChild(el);
@@ -1726,11 +1294,7 @@ async function toggleWeeklyNonNeg(task) {
   const weekKey = getWeekSunday();
   if (!S.weeklyNonNegStatus) S.weeklyNonNegStatus = {};
   if (!S.weeklyNonNegStatus[weekKey]) S.weeklyNonNegStatus[weekKey] = {};
-  const prev = S.weeklyNonNegStatus[weekKey][task] || false;
-  S.weeklyNonNegStatus[weekKey][task] = !prev;
-  const nowDone = S.weeklyNonNegStatus[weekKey][task];
-  if (nowDone) { addVBalance(500); showToast(`+$V 500 — ${task} ✓`); }
-  else { deductVBalance(500); showToast(`-$V 500 — ${task} unchecked`, 2000, true); }
+  S.weeklyNonNegStatus[weekKey][task] = !S.weeklyNonNegStatus[weekKey][task];
   await saveUserSettings();
   renderWeeklyNonNeg();
 }
@@ -1752,22 +1316,19 @@ async function checkWeeklyNonNegPenalties() {
   const status = (S.weeklyNonNegStatus && S.weeklyNonNegStatus[weekKey]) || {};
   if (!S.weeklyNonNegBonusGiven) S.weeklyNonNegBonusGiven = {};
 
-  let totalBonus = 0, totalPenalty = 0, completed = [], missed = [];
+  let completed = [], missed = [];
 
   S.weeklyNonNeg.forEach(task => {
-    if (status[task]) { totalBonus += 500; completed.push(task); }
-    else { totalPenalty += 1500; missed.push(task); }
+    if (status[task]) { completed.push(task); }
+    else { missed.push(task); }
   });
 
-  if (totalBonus > 0 && !S.weeklyNonNegBonusGiven[weekKey]) {
-    addVBalance(totalBonus);
+  if (completed.length > 0 && !S.weeklyNonNegBonusGiven[weekKey]) {
     S.weeklyNonNegBonusGiven[weekKey] = true;
-    setTimeout(() => showToast(`✓ WEEKLY N/N COMPLETE: +$V ${totalBonus.toLocaleString()} (${completed.length} tasks)`, 5000), 1500);
+    setTimeout(() => showToast(`Non-negotiables complete: ${completed.join(', ')}`, 4000), 1500);
   }
-
-  if (totalPenalty > 0 && S.contractSigned) {
-    deductVBalance(totalPenalty);
-    setTimeout(() => showToast(`⚠ WEEKLY N/N BREACH: -$V ${totalPenalty.toLocaleString()} — ${missed.join(', ')}`, 6000, true), 2500);
+  if (missed.length > 0) {
+    setTimeout(() => showToast(`Missed non-negotiables: ${missed.join(', ')}`, 5000, true), 2500);
   }
 
   // Trim old weeks — keep last 8
@@ -1817,451 +1378,9 @@ function addWnnField() {
     if (inputs.length) inputs[inputs.length-1].focus();
   }, 50);
 }  
-// ─── BUFF VISUAL EFFECTS ──────────────────────────────────────────────────────
-function startBuffEffect(itemId) {
-  const fns = {
-    fuel_upgrade:     startLightningEffect,
-    digital_detox:    startFlowerEffect,
-    focus_stream:     startLaserEffect,
-    gratitude_audit:  startGratitudeEffect,
-    stakeholder_bonus:startStakeholderEffect,
-  };
-  if (fns[itemId]) fns[itemId]();
-}
+ ────────────────────────────────────────────────────────────────────
 
-function stopBuffEffect(itemId) {
-  const el = document.getElementById('effect-' + itemId);
-  if (!el) return;
-  if (el._interval) clearInterval(el._interval);
-  if (el._timeout) clearTimeout(el._timeout);
-  el.remove();
-}
 
-function startLightningEffect() {
-  stopBuffEffect('fuel_upgrade');
-  const container = document.createElement('div');
-  container.id = 'effect-fuel_upgrade';
-  container.className = 'buff-effect-layer blend-screen';
-  document.body.appendChild(container);
-
-  function makeBorderBolt() {
-    if (!document.getElementById('effect-fuel_upgrade')) return;
-    const W = window.innerWidth, H = window.innerHeight;
-    const svg = document.createElementNS('http://www.w3.org/2000/svg', 'svg');
-    svg.style.cssText = `position:absolute;inset:0;width:100%;height:100%;overflow:visible;opacity:0;`;
-    svg.setAttribute('viewBox', `0 0 ${W} ${H}`);
-
-    // Pick which edges fire this strike (1-3 edges)
-    const edges = ['top','bottom','left','right'];
-    const chosen = edges.filter(() => Math.random() > 0.45);
-    if (!chosen.length) chosen.push(edges[Math.floor(Math.random()*4)]);
-
-    const filterId = 'bf_' + Math.random().toString(36).slice(2);
-    let paths = `<defs>
-      <filter id="${filterId}" x="-20%" y="-20%" width="140%" height="140%">
-        <feGaussianBlur stdDeviation="3" result="blur"/>
-        <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
-      </filter>
-    </defs>`;
-
-    chosen.forEach(edge => {
-      const segs = 18;
-      const pts = [];
-      const jag = 16; // how far bolts deviate inward
-
-      if (edge === 'top') {
-        pts.push([0, 0]);
-        for (let i = 1; i < segs; i++) { pts.push([(i/segs)*W, (Math.random()-0.3)*jag]); }
-        pts.push([W, 0]);
-      } else if (edge === 'bottom') {
-        pts.push([0, H]);
-        for (let i = 1; i < segs; i++) { pts.push([(i/segs)*W, H - (Math.random()-0.3)*jag]); }
-        pts.push([W, H]);
-      } else if (edge === 'left') {
-        pts.push([0, 0]);
-        for (let i = 1; i < segs; i++) { pts.push([(Math.random()-0.3)*jag, (i/segs)*H]); }
-        pts.push([0, H]);
-      } else {
-        pts.push([W, 0]);
-        for (let i = 1; i < segs; i++) { pts.push([W - (Math.random()-0.3)*jag, (i/segs)*H]); }
-        pts.push([W, H]);
-      }
-
-      const d = pts.map((p,i) => (i===0?'M':'L') + p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
-      paths += `
-        <path d="${d}" fill="none" stroke="#dfff00" stroke-width="2.5" filter="url(#${filterId})"/>
-        <path d="${d}" fill="none" stroke="#ffffff" stroke-width="1"/>
-      `;
-    });
-
-    svg.innerHTML = paths;
-    container.appendChild(svg);
-
-    // Flash sequence
-    requestAnimationFrame(() => {
-      svg.style.opacity = '1';
-      setTimeout(() => { svg.style.opacity = '0.35'; }, 55);
-      setTimeout(() => { svg.style.opacity = '0.9'; }, 95);
-      setTimeout(() => { svg.style.transition = 'opacity 0.12s'; svg.style.opacity = '0'; }, 145);
-      setTimeout(() => svg.remove(), 300);
-    });
-  }
-
-  function scheduleBolt() {
-    if (!document.getElementById('effect-fuel_upgrade')) return;
-    makeBorderBolt();
-    if (Math.random() > 0.5) setTimeout(makeBorderBolt, 70 + Math.random() * 90);
-    container._timeout = setTimeout(scheduleBolt, 700 + Math.random() * 2000);
-  }
-  scheduleBolt();
-}
-
-function startFlowerEffect() {
-  stopBuffEffect('digital_detox');
-  const container = document.createElement('div');
-  container.id = 'effect-digital_detox';
-  container.className = 'buff-effect-layer';
-  document.body.appendChild(container);
-
-  const FLOWERS = ['🌸','🌺','🌻','🌼','🌷','💐','🍀','🌿'];
-
-  function spawnFlower() {
-    if (!document.getElementById('effect-digital_detox')) return;
-    const el = document.createElement('div');
-    const size = 1.2 + Math.random() * 1.8;
-    const startX = Math.random() * 100;
-    const drift  = (Math.random() - 0.5) * 120;
-    const dur    = 5000 + Math.random() * 4000;
-    el.style.cssText = `position:absolute;bottom:-3rem;left:${startX}vw;font-size:${size}rem;user-select:none;`;
-    el.textContent = FLOWERS[Math.floor(Math.random() * FLOWERS.length)];
-    container.appendChild(el);
-
-    el.animate([
-      { transform: `translate(0, 0) rotate(0deg) scale(0.3)`, opacity: 0 },
-      { transform: `translate(${drift/3}px, -25vh) rotate(${drift/2}deg) scale(1)`, opacity: 0.9, offset: 0.15 },
-      { transform: `translate(${drift}px, -80vh) rotate(${drift}deg) scale(0.8)`, opacity: 0.7, offset: 0.75 },
-      { transform: `translate(${drift*1.3}px, -115vh) rotate(${drift*1.5}deg) scale(0.4)`, opacity: 0 }
-    ], { duration: dur, easing: 'ease-out', fill: 'forwards' }).onfinish = () => el.remove();
-  }
-
-  spawnFlower(); spawnFlower(); // seed with 2 immediately
-  container._interval = setInterval(() => {
-    if (!document.getElementById('effect-digital_detox')) { clearInterval(container._interval); return; }
-    spawnFlower();
-    if (Math.random() > 0.4) setTimeout(spawnFlower, 400);
-  }, 900);
-}
-
-function startLaserEffect() {
-  stopBuffEffect('focus_stream');
-  const container = document.createElement('div');
-  container.id = 'effect-focus_stream';
-  container.className = 'buff-effect-layer blend-screen';
-  document.body.appendChild(container);
-
-  function spawnScan() {
-    if (!document.getElementById('effect-focus_stream')) return;
-
-    // Horizontal bar sweeping top → bottom
-    const beam = document.createElement('div');
-    const beamH = 2 + Math.random();
-    beam.style.cssText = `
-      position:absolute;
-      left:0; top:-60px;
-      width:100vw; height:${beamH}px;
-      background:linear-gradient(90deg,
-        transparent 0%,
-        #38bdf822 8%,
-        #38bdf8 35%,
-        #ffffff 50%,
-        #38bdf8 65%,
-        #38bdf822 92%,
-        transparent 100%);
-      box-shadow:0 0 10px 3px #38bdf8aa, 0 0 28px 6px #38bdf833;
-      border-radius:2px;
-    `;
-
-    // Trailing glow that follows below the beam
-    const trail = document.createElement('div');
-    trail.style.cssText = `
-      position:absolute;
-      left:0; top:-60px;
-      width:100vw; height:50px;
-      background:linear-gradient(180deg, #38bdf814 0%, transparent 100%);
-    `;
-
-    container.appendChild(trail);
-    container.appendChild(beam);
-
-    const dur = 3500 + Math.random() * 1500;
-    const dist = `calc(100vh + 80px)`;
-
-    beam.animate(
-      [{ transform:'translateY(0)' }, { transform:`translateY(${dist})` }],
-      { duration: dur, easing:'linear', fill:'forwards' }
-    );
-    trail.animate(
-      [{ transform:'translateY(0)' }, { transform:`translateY(${dist})` }],
-      { duration: dur, easing:'linear', fill:'forwards' }
-    ).onfinish = () => { beam.remove(); trail.remove(); };
-  }
-
-  spawnScan();
-  container._interval = setInterval(() => {
-    if (!document.getElementById('effect-focus_stream')) { clearInterval(container._interval); return; }
-    spawnScan();
-    if (Math.random() > 0.7) setTimeout(spawnScan, 180);
-  }, 4500 + Math.random() * 2000);
-}
-  
-function startGratitudeEffect() {
-  stopBuffEffect('gratitude_audit');
-  const container = document.createElement('div');
-  container.id = 'effect-gratitude_audit';
-  container.className = 'buff-effect-layer blend-screen';
-  document.body.appendChild(container);
-
-  function spawnOrb() {
-    if (!document.getElementById('effect-gratitude_audit')) return;
-    const orb = document.createElement('div');
-    const size = 40 + Math.random() * 80;
-    orb.style.cssText = `
-      position:absolute;
-      width:${size}px;height:${size}px;
-      border-radius:50%;
-      left:${Math.random()*100}vw;top:${Math.random()*100}vh;
-      background:radial-gradient(circle,#a78bfa88,transparent 70%);
-      filter:blur(8px);
-    `;
-    container.appendChild(orb);
-    orb.animate([
-      { opacity:0, transform:'scale(0.2)' },
-      { opacity:1, transform:'scale(1)', offset:0.3 },
-      { opacity:0, transform:'scale(1.8)' }
-    ], { duration: 3000 + Math.random()*2000, easing:'ease-out', fill:'forwards' }).onfinish = () => orb.remove();
-  }
-
-  container._interval = setInterval(() => {
-    if (!document.getElementById('effect-gratitude_audit')) { clearInterval(container._interval); return; }
-    spawnOrb();
-  }, 600);
-}
-function startStakeholderEffect() {
-  stopBuffEffect('stakeholder_bonus');
-  const container = document.createElement('div');
-  container.id = 'effect-stakeholder_bonus';
-  container.className = 'buff-effect-layer';
-  document.body.appendChild(container);
-
-  const PARTICLES = ['✨','⭐','🌟','💫','🥂'];
-
-  function spawnParticle() {
-    if (!document.getElementById('effect-stakeholder_bonus')) return;
-    const el = document.createElement('div');
-    const x = Math.random() * 100, y = Math.random() * 100;
-    el.style.cssText = `position:absolute;left:${x}vw;top:${y}vh;font-size:${0.8+Math.random()*1.2}rem;pointer-events:none;`;
-    el.textContent = PARTICLES[Math.floor(Math.random()*PARTICLES.length)];
-    container.appendChild(el);
-    el.animate([
-      { opacity:0, transform:'scale(0) rotate(0deg)' },
-      { opacity:1, transform:'scale(1.2) rotate(180deg)', offset:0.4 },
-      { opacity:0, transform:'scale(0.6) rotate(360deg)' }
-    ], { duration:2500+Math.random()*1500, easing:'ease-in-out', fill:'forwards' }).onfinish = () => el.remove();
-  }
-
-  container._interval = setInterval(() => {
-    if (!document.getElementById('effect-stakeholder_bonus')) { clearInterval(container._interval); return; }
-    spawnParticle();
-    if (Math.random()>0.5) setTimeout(spawnParticle, 200);
-  }, 700);
-}
-// ─── STORE ────────────────────────────────────────────────────────────────────
-function renderStorePage() {
-  updateVDisplay();
-  const infFactor=getInflationFactor();
-  const infPct=Math.round((infFactor-1)*100);
-  const infEl=document.getElementById('store-inflation-info');
-  if (infEl) {
-    infEl.textContent=infPct>0?`⚠ INFLATION ACTIVE: +${infPct}% (${Math.floor((S.lifetimeEarned||0)/1000)}k $V lifetime earned)`:'No inflation active. Economy scaling begins at $V 1,000 lifetime.';
-    infEl.style.color=infPct>0?'var(--yellow)':'var(--muted)';
-  }
-  const content=document.getElementById('store-content'); content.innerHTML='';
-
-  // ── INVENTORY MANIFEST ──
-  const invSection=document.createElement('div'); invSection.className='section-gap';
-  invSection.innerHTML=`<div class="store-tier-header" style="color:var(--accent2);border-color:#1a3a2a">Active Inventory — Procurement Manifest</div>`;
-  const inv=S.inventory||{};
-  const invKeys=Object.keys(inv).filter(k=>inv[k]>0);
-  if (!invKeys.length) {
-    invSection.innerHTML+=`<div class="inv-empty">No items in inventory. Procure consumables below and USE them when ready.</div>`;
-  } else {
-    const invGrid=document.createElement('div'); invGrid.className='inv-manifest';
-    invKeys.forEach(itemId=>{
-      const item=BASE_STORE_ITEMS.find(i=>i.id===itemId); if (!item) return;
-      const qty=inv[itemId];
-      const isBuffed = S.activeBuffs && S.activeBuffs[itemId] && S.activeBuffs[itemId].expires > Date.now();
-      const row=document.createElement('div'); row.className='inv-row';
-      row.innerHTML=`<span class="inv-emoji">${item.emoji}</span>
-        <span class="inv-name">${item.name}</span>
-        <span class="inv-qty">QTY: ${qty}</span>
-        <span class="inv-status">${isBuffed?'<span style="color:var(--green);font-size:0.62rem;letter-spacing:1px;font-family:\'Space Mono\',monospace">▶ ACTIVE</span>':''}</span>
-        <button class="inv-use-btn" onclick="useInventoryItem('${itemId}')" ${isBuffed?'disabled':''}>${isBuffed?'DEPLOYED':'USE'}</button>`;
-      invGrid.appendChild(row);
-    });
-    invSection.appendChild(invGrid);
-  }
-  content.appendChild(invSection);
-
-  content.appendChild(makeTierSection('Consumables — Short-Term Buffs (→ Inventory)',infFactor,BASE_STORE_ITEMS.filter(i=>i.tier==='consumable')));
-  content.appendChild(makeTierSection('Mid-Tier — Stakeholder Rewards',infFactor,BASE_STORE_ITEMS.filter(i=>i.tier==='medium')));
-  content.appendChild(makeTierSection('Large Contracts — Major Deployments',infFactor,BASE_STORE_ITEMS.filter(i=>i.tier==='large')));
-
-  // ── INFRASTRUCTURE ──
-  const infraSection=document.createElement('div'); infraSection.className='section-gap';
-  infraSection.innerHTML=`<div class="store-tier-header">Infrastructure — Permanent Upgrades ${infPct>0?`<span class="inflation-badge">+${infPct}% INFLATION</span>`:''}</div>`;
-  const infraGrid=document.createElement('div'); infraGrid.className='store-grid';
-  const habitSlotPrice=getInflatedPrice(2500);
-  const slotEl=makeStoreCard('🔩','New Habit Slot','Deploy a new custom habit. $V 2,500 base. Earn it first.',habitSlotPrice,infPct>0);
-  slotEl.querySelector('.buy-btn').onclick=()=>buyHabitSlot(habitSlotPrice);
-  infraGrid.appendChild(slotEl);
-  const multCount=S.multiplierCount||0;
-  const multPrice=getInflatedPrice(5000);
-  const multEl=makeStoreCard('⚡','Critical Multiplier',`Permanently +10% $V from CRITICAL habits. ${multCount}/3 stacked. Current: +${multCount*10}%. Also unlocks UI themes.`,multPrice,infPct>0,multCount>=3);
-  if (multCount<3) multEl.querySelector('.buy-btn').onclick=()=>buyMultiplier(multPrice);
-  infraGrid.appendChild(multEl);
-  infraSection.appendChild(infraGrid);
-  content.appendChild(infraSection);
-
-  // ── RECOVERY ──
-  const liqHabits=(S.liquidatedHabits||[]).filter(h=>!S.habits.includes(h));
-  if (liqHabits.length>0) {
-    const recSection=document.createElement('div'); recSection.className='section-gap';
-    recSection.innerHTML=`<div class="store-tier-header" style="border-color:#1a3a1a;color:var(--green)">Recovery — Repurchase Liquidated Habits ($V 750 each)</div>`;
-    const recGrid=document.createElement('div'); recGrid.className='store-grid';
-    liqHabits.forEach(h=>{
-      const el=makeStoreCard('🔄',h,'Re-mobilize this habit. Discounted recovery rate.',750,false,false,true);
-      el.querySelector('.buy-btn').onclick=()=>repurchaseHabit(h,750);
-      recGrid.appendChild(el);
-    });
-    recSection.appendChild(recGrid); content.appendChild(recSection);
-  }
-
-  // ── TRANSACTION LOG ──
-  const txSection=document.createElement('div'); txSection.className='section-gap';
-  txSection.innerHTML='<div class="store-tier-header">Transaction Log — Last 5 Procurements</div>';
-  const txList=document.createElement('div'); txList.className='tx-list';
-  const recent=(S.purchases||[]).slice(0,5);
-  if (!recent.length) { txList.innerHTML='<div style="font-size:0.72rem;color:var(--muted);padding:8px;font-family:\'Space Mono\',monospace">NO TRANSACTIONS ON RECORD.</div>'; }
-  else { recent.forEach(tx=>{ const txEl=document.createElement('div'); txEl.className='tx-item'; txEl.innerHTML=`<span class="tx-name">${tx.item}</span><span class="tx-cost">-$V ${tx.cost.toLocaleString()}</span><span class="tx-date">${tx.date}</span>`; txList.appendChild(txEl); }); }
-  txSection.appendChild(txList); content.appendChild(txSection);
-}
-
-function makeTierSection(title,infFactor,items) {
-  const infPct=Math.round((infFactor-1)*100);
-  const section=document.createElement('div'); section.className='section-gap';
-  section.innerHTML=`<div class="store-tier-header">${title} ${infPct>0?`<span class="inflation-badge">+${infPct}% INFLATION</span>`:''}</div>`;
-  const grid=document.createElement('div'); grid.className='store-grid';
-  items.forEach(item=>{
-    const price=getInflatedPrice(item.basePrice);
-    const el=makeStoreCard(item.emoji,item.name,item.desc,price,infPct>0);
-    el.querySelector('.buy-btn').onclick=()=>purchaseItem(item,price);
-    grid.appendChild(el);
-  });
-  section.appendChild(grid); return section;
-}
-
-function makeStoreCard(emoji,name,desc,price,inflated,disabled=false,recovery=false) {
-  const el=document.createElement('div'); el.className='store-item'+(disabled?' disabled':'');
-  el.innerHTML=`<div style="font-size:1.5rem">${emoji}</div>
-    <div class="store-item-name">${name}</div>
-    <div class="store-item-desc">${desc}</div>
-    <div class="store-item-price ${inflated?'inflated':''}">$V ${price.toLocaleString()}</div>
-    <button class="buy-btn ${recovery?'recovery':''}" ${disabled?'disabled':''}>${disabled?'MAX REACHED':recovery?'Re-mobilize':'Procure'}</button>`;
-  return el;
-}
-
-async function purchaseItem(item,price) {
-  if ((S.vBalance||0)<price) { showToast(`⚠ INSUFFICIENT CAPITAL. Need $V ${price.toLocaleString()}.`,2500,true); return; }
-  deductVBalance(price);
-  if (!S.purchases) S.purchases=[];
-  S.purchases.unshift({item:item.name,cost:price,date:todayStr()});
-  if (item.tier==='consumable') {
-    if (!S.inventory) S.inventory={};
-    S.inventory[item.id]=(S.inventory[item.id]||0)+1;
-    await saveUserSettings();
-    showToast(`✓ PROCURED: ${item.name} added to inventory. USE it when ready.`);
-  } else {
-    await saveUserSettings();
-    showToast(`✓ PROCURED: ${item.name} — -$V ${price.toLocaleString()}`);
-  }
-  renderStorePage();
-}
-
-async function useInventoryItem(itemId) {
-  const item=BASE_STORE_ITEMS.find(i=>i.id===itemId); if (!item) return;
-  if (!S.inventory||!S.inventory[itemId]||S.inventory[itemId]<1) { showToast('⚠ Item not in inventory.',2000,true); return; }
-  S.inventory[itemId]--;
-  if (S.inventory[itemId]<=0) delete S.inventory[itemId];
-// Activate buff with real timestamp
-  if (!S.activeBuffs) S.activeBuffs = {};
-  const durationMs = (item.duration || 60) * 60000;
-  if (item.buffLabel) S.activeBuffs[itemId] = { expires: Date.now() + durationMs };
-  // CSS buff class — strip others, apply this one
-  if (item.buffClass) {
-    BASE_STORE_ITEMS.filter(i => i.buffClass).forEach(i => document.body.classList.remove(i.buffClass));
-    document.body.classList.add(item.buffClass);
-    setTimeout(() => document.body.classList.remove(item.buffClass), durationMs);
-  }
-  // Start the JS visual effect
-  startBuffEffect(itemId);
-  await saveUserSettings();
-  showToast(`⚡ ${item.buffLabel||item.name.toUpperCase()+' DEPLOYED'}`,3500);
-  renderBuffBar();
-  renderStorePage();
-}
-
-async function buyHabitSlot(price) {
-  if ((S.vBalance||0)<price) { showToast(`⚠ INSUFFICIENT CAPITAL. Habit Slot costs $V ${price.toLocaleString()}.`,3000,true); return; }
-  const name=prompt(`NEW HABIT SLOT — $V ${price.toLocaleString()}\n\nEnter the name for your new habit:`);
-  if (!name||!name.trim()) return;
-  const stakeLevels=['low','medium','high','critical'];
-  const stakeChoice=prompt(`Set Stake Level for "${name.trim()}":\n\n0 = LOW (+10/-20)\n1 = MEDIUM (+40/-100)\n2 = HIGH (+100/-300)\n3 = CRITICAL (+250/-1000)\n\nEnter 0-3:`);
-  const stakeIdx=parseInt(stakeChoice);
-  const stake=(stakeIdx>=0&&stakeIdx<=3)?stakeLevels[stakeIdx]:'medium';
-  deductVBalance(price);
-  S.habits.push(name.trim());
-  if (!S.habitStakes) S.habitStakes={};
-  S.habitStakes[name.trim()]=stake;
-  if (!S.purchases) S.purchases=[];
-  S.purchases.unshift({item:`New Habit Slot: ${name.trim()} [${stake.toUpperCase()}]`,cost:price,date:todayStr()});
-  await saveUserSettings();
-  showToast(`✓ HABIT DEPLOYED: "${name.trim()}" [${stake.toUpperCase()}] — -$V ${price.toLocaleString()}`);
-  renderStorePage(); renderHabitList(todayStr());
-}
-
-async function buyMultiplier(price) {
-  if ((S.vBalance||0)<price) { showToast(`⚠ Insufficient $V. Need $V ${price.toLocaleString()}.`,2500,true); return; }
-  if ((S.multiplierCount||0)>=3) { showToast('Maximum multiplier reached (3x).',2000,true); return; }
-  deductVBalance(price);
-  S.multiplierCount=(S.multiplierCount||0)+1;
-  unlockThemesForMultiplierCount(S.multiplierCount);
-  if (!S.purchases) S.purchases=[];
-  S.purchases.unshift({item:`Critical Multiplier x${S.multiplierCount}`,cost:price,date:todayStr()});
-  await saveUserSettings();
-  showToast(`⚡ MULTIPLIER ACTIVE: Critical earn now +${S.multiplierCount*10}%. Theme unlocked.`);
-  renderStorePage();
-}
-
-async function repurchaseHabit(habitName,price) {
-  if ((S.vBalance||0)<price) { showToast(`⚠ Insufficient $V. Need $V ${price.toLocaleString()}.`,2500,true); return; }
-  deductVBalance(price);
-  S.habits.push(habitName);
-  if (!S.purchases) S.purchases=[];
-  S.purchases.unshift({item:`Recovery: ${habitName}`,cost:price,date:todayStr()});
-  await saveUserSettings();
-  showToast(`✓ RECOVERED: "${habitName}" back on site.`);
-  renderStorePage(); renderHabitList(todayStr());
-}
 
 // ─── MONTH PAGE ───────────────────────────────────────────────────────────────
 function renderMonthPage() {
@@ -2286,8 +1405,7 @@ function renderMonthPage() {
     <div class="card"><div class="card-label">Avg Mood</div><div class="stat-big" style="color:var(--pink)">${avgMood}<span style="font-size:1rem;color:var(--muted)">/10</span></div><span class="tag tag-a">${MONTHS[S.month]}</span></div>
     <div class="card"><div class="card-label">Avg Completion</div><div class="stat-big" style="color:var(--accent)">${avgComp}%</div><span class="tag ${avgComp>=60?'tag-g':avgComp>=40?'tag-y':'tag-r'}">${avgComp>=60?'On track':avgComp>=40?'Getting there':'Needs focus'}</span></div>
     <div class="card"><div class="card-label">Weight Change</div><div class="stat-big" style="color:${wChange&&wChange<0?'var(--green)':'var(--yellow)'}">${wChange!==null?(wChange>0?'+':'')+wChange+' lbs':'-'}</div><span class="tag tag-a">${firstW||'?'} → ${lastW||'?'}</span></div>
-    <div class="card"><div class="card-label">Days Logged</div><div class="stat-big" style="color:var(--accent2)">${logged}</div><div class="stat-sub">of ${dim} days</div></div>
-    <div class="card"><div class="card-label">$V Balance</div><div class="stat-big" style="font-family:'Space Mono',monospace;color:var(--accent)">${(S.vBalance||0).toLocaleString()}</div><div class="stat-sub" style="font-family:'Space Mono',monospace">Lifetime: ${(S.lifetimeEarned||0).toLocaleString()}</div></div>`;
+    <div class="card"><div class="card-label">Days Logged</div><div class="stat-big" style="color:var(--accent2)">${logged}</div><div class="stat-sub">of ${dim} days</div></div><div class="stat-sub" style="font-family:'Space Mono',monospace">Lifetime: ${(S.lifetimeEarned||0).toLocaleString()}</div></div>`;
   const mc=document.getElementById('month-mood-chart'); mc.innerHTML='';
   const moodColors=['#ef4444','#ef4444','#f59e0b','#f59e0b','#f59e0b','#22c55e','#22c55e','#22c55e','#22c55e','#6c63ff'];
   for (let d=1;d<=dim;d++) {
@@ -2439,23 +1557,6 @@ function renderSettings() {
   renderHabitsEditor();
   renderGoalsEditor();
   renderWnnSettings();
-  renderThemeSelector();
-  renderEconomyStatus();
-}
-function renderEconomyStatus() {
-  const el=document.getElementById('economy-status-panel'); if (!el) return;
-  const infPct=Math.round((getInflationFactor()-1)*100);
-  el.innerHTML=`
-    <div style="color:var(--muted);margin-bottom:4px">Balance</div>
-    <div style="color:var(--accent);font-size:1.1rem;margin-bottom:12px">$V ${(S.vBalance||0).toLocaleString()}</div>
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;font-size:0.7rem">
-      <div><span style="color:var(--muted)">Lifetime earned:</span><br><span style="color:var(--text)">$V ${(S.lifetimeEarned||0).toLocaleString()}</span></div>
-      <div><span style="color:var(--muted)">Contract signed:</span><br><span style="color:${S.contractSigned?'var(--green)':'var(--yellow)'}">${S.contractSigned?'YES — Hard Mode Active':'NO — Probationary'}</span></div>
-      <div><span style="color:var(--muted)">Inflation factor:</span><br><span style="color:${infPct>0?'var(--yellow)':'var(--muted)'}">+${infPct}% on prices/penalties</span></div>
-      <div><span style="color:var(--muted)">Multiplier stack:</span><br><span style="color:var(--accent)">${S.multiplierCount||0}/3 (+${(S.multiplierCount||0)*10}% Critical)</span></div>
-      <div><span style="color:var(--muted)">Liquidated habits:</span><br><span style="color:${(S.liquidatedHabits||[]).length>0?'var(--red)':'var(--muted)'}">${(S.liquidatedHabits||[]).length} removed</span></div>
-      <div><span style="color:var(--muted)">Active theme:</span><br><span style="color:var(--accent2)">${S.activeTheme||'default'}</span></div>
-    </div>`;
 }
 function renderHabitsEditor() {
   const ed=document.getElementById('habits-editor'); ed.innerHTML='';
@@ -2479,7 +1580,7 @@ function auditStakeChange(el,habitName) {
     if (!confirm(`⚠ SCOPE REDUCTION DETECTED\n\n"${habitName}" is classified CRITICAL.\n\nDowngrading reduces accountability standards.\n\nAre you avoiding the work, or is the requirement actually changing?`)) el.value='critical';
   }
 }
-function addHabitField() { const cost=getInflatedPrice(2500); showToast(`⚠ Adding habits costs $V ${cost.toLocaleString()}. Use the Store → Habit Slot.`,3500,true); }
+function addHabitField() { S.habits.push('New Habit'); S.habitStakes['New Habit']='medium'; renderHabitsEditor(); setTimeout(()=>{const inputs=document.querySelectorAll('[id^="hf-"]');if(inputs.length)inputs[inputs.length-1].focus();},50); }
 function removeHabit(i) { S.habits.splice(i,1); renderHabitsEditor(); }
 async function saveHabits() {
   const nameInputs=document.querySelectorAll('[id^="hf-"]');
@@ -2553,7 +1654,7 @@ function showGoalsSavedPopup() {
     setTimeout(() => popup.remove(), 250);
   }, 1800);
 }
-async function saveGroqKey() { S.groqKey=document.getElementById('set-groq-key').value.trim(); localStorage.setItem('groq_key',S.groqKey); showToast('API key saved ✓'); }
+async function saveGroqKey() { S.groqKey=document.getElementById('set-groq-key').value.trim(); localStorage.setItem('groq_key',S.groqKey); await saveUserSettings(); showToast('API key saved ✓'); const banner=document.getElementById('groq-banner'); if(banner)banner.remove(); }
 async function saveMonthSettings() {
   S.month=parseInt(document.getElementById('set-month').value);
   S.year=parseInt(document.getElementById('set-year').value);
@@ -2595,12 +1696,60 @@ function getTerm() {
   return { name:'VANTAGE', briefingTone:'brutally honest operations director', advisor:'site advisor' };
 }
 
+
+// ─── GROQ BANNER ──────────────────────────────────────────────────────────────
+function showGroqBanner() {
+  if (S.groqKey || localStorage.getItem('groq_banner_dismissed')) return;
+  const existing = document.getElementById('groq-banner');
+  if (existing) return;
+  const banner = document.createElement('div');
+  banner.id = 'groq-banner';
+  banner.style.cssText = `
+    background: linear-gradient(135deg, #0d1a00, #001a0d);
+    border: 2px solid var(--accent);
+    border-radius: 12px;
+    padding: 20px 24px;
+    margin-bottom: 20px;
+    position: relative;
+  `;
+  banner.innerHTML = `
+    <button onclick="document.getElementById('groq-banner').remove();localStorage.setItem('groq_banner_dismissed','1')"
+      style="position:absolute;top:12px;right:14px;background:transparent;border:none;color:var(--muted);font-size:1rem;cursor:pointer;line-height:1">✕</button>
+    <div style="font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--accent);letter-spacing:3px;text-transform:uppercase;margin-bottom:10px">Unlock AI Features</div>
+    <div style="font-size:0.92rem;font-weight:700;color:var(--text);margin-bottom:8px">Add your free Groq API key to activate AI briefings and feedback</div>
+    <div style="font-size:0.75rem;color:var(--muted);line-height:1.7;margin-bottom:16px">
+      Groq is free. Get your key at <strong style="color:var(--accent)">console.groq.com</strong> → API Keys → Create key.<br>
+      Enables: Daily AI briefing · Habit feedback · Weekly diagnostic AI · Monthly audit critique.
+    </div>
+    <div style="display:flex;gap:10px;flex-wrap:wrap;align-items:center">
+      <a href="https://console.groq.com/keys" target="_blank"
+        style="background:var(--accent);color:#000;border:none;border-radius:8px;padding:10px 20px;font-family:'Space Mono',monospace;font-size:0.72rem;font-weight:700;cursor:pointer;text-decoration:none;letter-spacing:1px;text-transform:uppercase">
+        Get Free Key →
+      </a>
+      <span style="font-size:0.68rem;color:var(--muted);font-family:'Space Mono',monospace">Then paste it in Settings → Groq API Key</span>
+    </div>
+  `;
+  const main = document.querySelector('.main');
+  const todayPage = document.getElementById('page-today');
+  if (todayPage && main) todayPage.insertBefore(banner, todayPage.firstChild);
+}
+
+function accountAgeInDays() {
+  const created = localStorage.getItem('vantage_account_created');
+  if (!created) return 999; // assume old account
+  const diff = Date.now() - new Date(created).getTime();
+  return Math.floor(diff / (1000 * 60 * 60 * 24));
+}
+
 function checkTemporalReviews() {
   const now=new Date(); const today=todayStr();
-  if (now.getDay()===1) { if (S.lastWeeklyReview!==today) setTimeout(()=>showWeeklyReview(),800); }
-  if (now.getDate()===1) {
+  // Only show weekly recap after 7 days of account age
+  if (now.getDay()===1 && accountAgeInDays() >= 7) {
+    if (S.lastWeeklyReview!==today) setTimeout(()=>showWeeklyReview(),800);
+  }
+  if (now.getDate()===1 && accountAgeInDays() >= 28) {
     const lastMonth=now.getMonth()===0?(now.getFullYear()-1)+'-12':now.getFullYear()+'-'+String(now.getMonth()).padStart(2,'0');
-    if (S.lastMonthlyRecap!==lastMonth) setTimeout(()=>showMonthlyRecap(lastMonth),1200);
+    if (S.lastMonthlyRecap!==lastMonth) setTimeout(()=>showMonthlyAudit(lastMonth),1200);
   }
 }
 
@@ -2641,11 +1790,10 @@ function calcWeightedScore(days) {
     .filter(ph => ph.cat.label === 'HIGH IMPACT' && ph.doneCount < 5)
     .map(ph => {
       const missedDays = 7 - ph.doneCount;
-      const vLost      = missedDays * getStakePenalty(ph.stake);
       const delayDays  = Math.ceil(missedDays * 0.75);
       return {
         name: ph.name, missedDays, vLost,
-        statement: `Missed ${missedDays}/7 days — $V ${vLost.toLocaleString()} forfeited. Estimated trajectory delay: ${delayDays} day${delayDays !== 1 ? 's' : ''}.`
+        statement: `Missed ${missedDays}/7 days. Estimated trajectory delay: ${delayDays} day${delayDays !== 1 ? 's' : ''}.`
       };
     });
 
@@ -2962,36 +2110,14 @@ function operatorLogin() {
   }
 }
 
-// ─── DEBUG BACKDOOR ───────────────────────────────────────────────────────────
-function debugAddV(amount) {
-  if (!currentUser) { console.warn('Not authenticated.'); return; }
-  if (currentUser.email === 'aidanb9903@gmail.com') {
-    console.log('%c Developer mode active. ', 'background:#dfff00;color:#000;font-weight:bold;padding:2px 8px');
-    S.vBalance = (S.vBalance || 0) + amount;
-    S.lifetimeEarned = (S.lifetimeEarned || 0) + amount;
-    updateVDisplay();
-    saveUserSettings();
-    showToast(`[DEV] +$V ${amount.toLocaleString()} injected`);
-    console.log(`$V balance: ${S.vBalance} | Lifetime: ${S.lifetimeEarned}`);
-  } else {
-    console.warn('Unauthorized.');
-  }
-}
-// ─── ADMIN PANEL ──────────────────────────────────────────────────────────────
+// ─── ADMIN PANEL
+ ──────────────────────────────────────────────────────────────
 function initAdminPanel() {
   if (currentUser?.email === 'aidanb9903@gmail.com') {
     document.getElementById('admin-panel').style.display = 'block';
   }
 }
-function adminAddV() {
-  const amt = parseInt(document.getElementById('admin-v-amount').value);
-  if (!amt || isNaN(amt)) return showToast('Enter a valid $V amount', 2000, true);
-  S.vBalance += amt;
-  S.lifetimeEarned += amt > 0 ? amt : 0;
-  updateVDisplay();
-  saveUserSettings();
-  showToast(`⚡ Admin: ${amt > 0 ? '+' : ''}$V ${amt.toLocaleString()} injected`);
-}
+
 function adminTriggerWeekly() {
   // Temporarily clear lastWeeklyReview so it fires
   S.lastWeeklyReview = null;
