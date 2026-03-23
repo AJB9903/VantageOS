@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>VANTAGE — Strategic Execution Engine</title>
+<meta name="description" content="Personal execution tracking system. Habits, goals, weekly diagnostics, monthly audits."/>
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<link rel="stylesheet" href="styles.css"/>
+</head>
+<body>
+
+<!-- ─── PAYWALL ──────────────────────────────────────────────────────────────── -->
+<div id="paywall-screen" style="display:none">
+  <div class="paywall-box">
+    <div class="paywall-wordmark">Strategic Execution Engine</div>
+    <div class="paywall-logo">VANTAGE</div>
+    <div class="paywall-status">Session Not Initialized</div>
+    <a href="https://buy.stripe.com/YOUR_STRIPE_LINK_HERE" class="paywall-purchase-btn">
+      Purchase Lifetime License — $6.99
+    </a>
+    <div class="paywall-operator" onclick="operatorLogin()">Operator Login</div>
+  </div>
+</div>
+
+<!-- ─── AUTH ──────────────────────────────────────────────────────────────────── -->
+<div id="auth-screen" style="display:none">
+  <div class="auth-box">
+    <div class="auth-logo">VANTAGE<span>.</span></div>
+    <div class="auth-sub">Strategic Execution Engine</div>
+    <div class="auth-tabs">
+      <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
+      <button class="auth-tab" onclick="switchAuthTab('signup')">Create Account</button>
+    </div>
+    <div class="auth-field">
+      <label class="auth-label">Email</label>
+      <input type="email" class="inp" id="auth-email" placeholder="you@email.com" autocomplete="email"/>
+    </div>
+    <div class="auth-field">
+      <label class="auth-label">Password</label>
+      <input type="password" class="inp" id="auth-password" placeholder="••••••••" autocomplete="current-password"/>
+    </div>
+    <div class="auth-field" id="confirm-field" style="display:none">
+      <label class="auth-label">Confirm Password</label>
+      <input type="password" class="inp" id="auth-confirm" placeholder="••••••••"/>
+    </div>
+    <button class="auth-btn" id="auth-submit-btn" onclick="handleAuth()">Sign In</button>
+    <div class="auth-err" id="auth-err"></div>
+  </div>
+</div>
+
+<!-- ─── APP ───────────────────────────────────────────────────────────────────── -->
+<div id="app">
+  <aside class="sidebar">
+    <div class="logo">
+      <div class="logo-mark">Personal OS</div>
+      <div class="logo-text">VANTAGE<span>.</span></div>
+    </div>
+    <nav class="nav">
+      <div class="nav-item active" onclick="showPage('today')" id="nav-today">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+        Today
+      </div>
+      <div class="nav-item" onclick="showPage('month')" id="nav-month">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/></svg>
+        Month
+      </div>
+      <div class="nav-item" onclick="showPage('calendar')" id="nav-calendar">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><path d="M16 2v4M8 2v4M3 10h18"/></svg>
+        Calendar
+      </div>
+      <div class="nav-item" onclick="showPage('wins')" id="nav-wins">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 9H4.5a2.5 2.5 0 0 1 0-5H6"/><path d="M18 9h1.5a2.5 2.5 0 0 0 0-5H18"/><path d="M4 22h16"/><path d="M10 14.66V17c0 .55-.47.98-.97 1.21C7.85 18.75 7 20.24 7 22"/><path d="M14 14.66V17c0 .55.47.98.97 1.21C16.15 18.75 17 20.24 17 22"/><path d="M18 2H6v7a6 6 0 0 0 12 0V2z"/></svg>
+        Wins
+      </div>
+      <div class="nav-item" onclick="showPage('settings')" id="nav-settings">
+        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/></svg>
+        Settings
+      </div>
+    </nav>
+    <div class="sidebar-footer">
+      <div class="user-badge"><div class="user-email" id="sidebar-email"></div></div>
+      <div class="month-badge"><strong id="sidebar-month"></strong><span id="sidebar-day"></span></div>
+      <button class="logout-btn" onclick="handleLogout()">Sign out</button>
+      <div class="operator-panel" id="operator-panel">
+        <div class="op-label">Operator Controls</div>
+        <button class="op-btn" onclick="opTriggerWeekly()">Force Weekly Review</button>
+        <button class="op-btn" onclick="opTriggerMonthly()">Force Monthly Audit</button>
+      </div>
+    </div>
+  </aside>
+
+  <main class="main">
+
+    <!-- TODAY PAGE -->
+    <div class="page active" id="page-today">
+      <div class="page-header">
+        <div>
+          <div class="page-title">Today<span>.</span></div>
+          <div class="page-sub" id="today-date-label"></div>
+        </div>
+        <div class="score-display">
+          <div class="score-pct" id="today-score">—</div>
+          <div class="score-label">Execution Score</div>
+          <div class="save-status" id="auto-save-status"></div>
+        </div>
+      </div>
+
+      <div class="breach-banner" id="breach-banner">
+        <div>
+          <div class="breach-banner-title">System Breach</div>
+          <div class="breach-banner-sub" id="breach-list"></div>
+        </div>
+      </div>
+
+      <div class="briefing-box section-gap">
+        <div class="briefing-title">AI Daily Briefing</div>
+        <div class="briefing-text" id="briefing-text">Initializing...</div>
+      </div>
+
+      <div class="grid g4 section-gap">
+        <div class="card">
+          <div class="card-label">Mood</div>
+          <div class="flex-row">
+            <input type="range" min="1" max="10" value="7" class="inp" id="inp-mood" oninput="document.getElementById('mood-val').textContent=this.value;triggerAutoSaveDay();" style="flex:1"/>
+            <div class="mood-display" id="mood-val">7</div>
+          </div>
+        </div>
+        <div class="card"><div class="card-label">Weight (lbs)</div><input type="number" class="inp" id="inp-weight" placeholder="169.0" step="0.1" oninput="triggerAutoSaveDay()"/></div>
+        <div class="card"><div class="card-label">Calories</div><input type="number" class="inp" id="inp-cals" placeholder="2200" oninput="triggerAutoSaveDay()"/></div>
+        <div class="card"><div class="card-label">Protein (g)</div><input type="number" class="inp" id="inp-protein" placeholder="175" oninput="triggerAutoSaveDay()"/></div>
+      </div>
+
+      <div class="today-grid section-gap">
+        <div class="card"><div class="card-label">Sleep (hrs)</div><input type="number" class="inp" id="inp-sleep" placeholder="7.5" step="0.5" oninput="triggerAutoSaveDay()"/></div>
+        <div class="card"><div class="card-label">Daily Win</div><input type="text" class="inp" id="inp-win" placeholder="What was today's W?" oninput="triggerAutoSaveDay()"/></div>
+      </div>
+
+      <div class="card section-gap">
+        <div class="card-label" style="margin-bottom:14px">
+          Habits — <span id="habit-count-label">0/0</span>
+          <span style="font-size:0.6rem;color:var(--muted);font-family:'Space Mono',monospace;margin-left:8px">Weight × applies to execution score</span>
+        </div>
+        <div class="habit-list" id="habit-list"></div>
+      </div>
+
+      <div class="card section-gap" id="weekly-goals-card">
+        <div class="goals-header">
+          <div class="card-label">Weekly Goals</div>
+          <span style="font-size:0.62rem;color:var(--muted);font-family:'Space Mono',monospace" id="weekly-goals-week"></span>
+        </div>
+        <div id="weekly-goals-list"></div>
+        <div style="font-size:0.72rem;color:var(--muted);padding:8px 0;display:none" id="no-weekly-goals">No weekly goals. Add in Settings.</div>
+      </div>
+
+      <div class="card section-gap" id="wnn-card" style="display:none">
+        <div class="goals-header">
+          <div class="card-label" style="color:var(--accent)">Non-Negotiables — <span id="wnn-count">0/0</span></div>
+          <span style="font-size:0.62rem;color:var(--muted);font-family:'Space Mono',monospace" id="wnn-week-label"></span>
+        </div>
+        <div class="wnn-stakes-info">Evaluated every Monday. Evaluated against the full week.</div>
+        <div class="habit-list" id="wnn-list"></div>
+      </div>
+
+      <div class="card section-gap">
+        <div class="card-label" style="margin-bottom:12px">Voice / Text Log</div>
+        <button class="voice-btn" id="voice-btn" onclick="toggleVoice()">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2"/><line x1="12" y1="19" x2="12" y2="23"/><line x1="8" y1="23" x2="16" y2="23"/></svg>
+          <span id="voice-label">Tap to record — or type below</span>
+        </button>
+        <div class="transcript-box" id="transcript">Voice log will appear here...</div>
+        <textarea class="inp" id="text-log" placeholder="Type your daily log here..." style="margin-top:8px;min-height:80px;resize:vertical;line-height:1.6" oninput="triggerAutoSaveDay()"></textarea>
+        <button class="analyze-btn" id="analyze-btn" onclick="getAIFeedback()">Analyze My Day</button>
+      </div>
+
+      <div class="feedback-box section-gap">
+        <div class="fb-title">AI Feedback</div>
+        <div class="fb-text" id="feedback-text">Log your day and hit Analyze. You will get direct feedback on your execution gap.</div>
+      </div>
+    </div>
+
+    <!-- MONTH PAGE -->
+    <div class="page" id="page-month">
+      <div class="page-header">
+        <div><div class="page-title">Month<span>.</span></div><div class="page-sub" id="month-label-header"></div></div>
+      </div>
+      <div class="grid g4 section-gap" id="month-stats"></div>
+      <div class="grid g2 section-gap">
+        <div class="card"><div class="card-label" style="margin-bottom:12px">Mood Trend</div><div class="mood-chart" id="month-mood-chart"></div></div>
+        <div class="card"><div class="card-label" style="margin-bottom:12px">Weight Trend</div><svg style="width:100%;overflow:visible" viewBox="0 0 300 70" id="weight-svg"></svg></div>
+      </div>
+      <div class="card section-gap"><div class="card-label" style="margin-bottom:14px">Habit Heatmap</div><div class="heatmap-wrap" id="month-heatmap"></div></div>
+      <div class="grid g2 section-gap">
+        <div class="card"><div class="card-label" style="margin-bottom:12px">Calories</div><div id="cal-bars"></div></div>
+        <div class="card"><div class="card-label" style="margin-bottom:12px">Protein</div><div id="prot-bars"></div></div>
+      </div>
+      <div class="card section-gap">
+        <div class="goals-header"><div class="card-label">Monthly Goals</div></div>
+        <div id="monthly-goals-list"></div>
+        <div style="font-size:0.72rem;color:var(--muted);padding:8px 0;display:none" id="no-monthly-goals">No monthly goals set.</div>
+      </div>
+    </div>
+
+    <!-- CALENDAR PAGE -->
+    <div class="page" id="page-calendar">
+      <div class="page-header">
+        <div><div class="page-title">Calendar<span>.</span></div><div class="page-sub">Tap any day to edit</div></div>
+      </div>
+      <div class="card section-gap">
+        <div class="cal-nav">
+          <button class="cal-nav-btn" onclick="calPrev()">&#8592; Prev</button>
+          <div class="cal-month-label" id="cal-month-label"></div>
+          <button class="cal-nav-btn" onclick="calNext()">Next &#8594;</button>
+        </div>
+        <div class="cal-grid" id="cal-grid"></div>
+      </div>
+      <div id="cal-day-editor" style="display:none">
+        <div class="page-header" style="margin-bottom:16px">
+          <div><div class="page-title" style="font-size:1.2rem" id="cal-editing-label">Editing</div></div>
+          <div class="save-status" id="cal-auto-save-status"></div>
+        </div>
+        <div class="grid g4 section-gap">
+          <div class="card"><div class="card-label">Mood</div><div class="flex-row"><input type="range" min="1" max="10" value="7" class="inp" id="cal-mood" oninput="document.getElementById('cal-mood-val').textContent=this.value;triggerAutoSaveCalDay();" style="flex:1"/><div class="mood-display" id="cal-mood-val">7</div></div></div>
+          <div class="card"><div class="card-label">Weight</div><input type="number" class="inp" id="cal-weight" step="0.1" oninput="triggerAutoSaveCalDay()"/></div>
+          <div class="card"><div class="card-label">Calories</div><input type="number" class="inp" id="cal-cals" oninput="triggerAutoSaveCalDay()"/></div>
+          <div class="card"><div class="card-label">Protein (g)</div><input type="number" class="inp" id="cal-protein" oninput="triggerAutoSaveCalDay()"/></div>
+        </div>
+        <div class="today-grid section-gap">
+          <div class="card"><div class="card-label">Sleep</div><input type="number" class="inp" id="cal-sleep" step="0.5" oninput="triggerAutoSaveCalDay()"/></div>
+          <div class="card"><div class="card-label">Daily Win</div><input type="text" class="inp" id="cal-win" oninput="triggerAutoSaveCalDay()"/></div>
+        </div>
+        <div class="card section-gap"><div class="card-label" style="margin-bottom:14px">Habits</div><div class="habit-list" id="cal-habit-list"></div></div>
+        <div class="card section-gap"><div class="card-label" style="margin-bottom:8px">Notes</div><textarea class="inp" id="cal-log" style="min-height:80px;resize:vertical;line-height:1.6" oninput="triggerAutoSaveCalDay()"></textarea></div>
+      </div>
+    </div>
+
+    <!-- WINS PAGE -->
+    <div class="page" id="page-wins">
+      <div class="page-header">
+        <div><div class="page-title">Wins<span>.</span></div><div class="page-sub">Every W this month</div></div>
+      </div>
+      <div id="wins-list"></div>
+    </div>
+
+    <!-- SETTINGS PAGE -->
+    <div class="page" id="page-settings">
+      <div class="page-header">
+        <div><div class="page-title">Settings<span>.</span></div></div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-title">Current Month</div>
+        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center">
+          <select class="inp" id="set-month" style="width:auto">
+            <option value="1">January</option><option value="2">February</option><option value="3">March</option>
+            <option value="4">April</option><option value="5">May</option><option value="6">June</option>
+            <option value="7">July</option><option value="8">August</option><option value="9">September</option>
+            <option value="10">October</option><option value="11">November</option><option value="12">December</option>
+          </select>
+          <input type="number" class="inp" id="set-year" value="2026" style="width:96px"/>
+          <button class="save-btn" onclick="saveMonthSettings()">Update</button>
+        </div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-title">Habits and Weights</div>
+        <p style="font-size:0.72rem;color:var(--muted);margin-bottom:12px;line-height:1.6">Weight determines your execution score. CRIT/HIGH = 3.0x. MED = 1.0x. LOW = 0.5x. Missing CRIT/HIGH habits triggers a System Breach.</p>
+        <table class="stakes-matrix">
+          <tr><th>Level</th><th>Weight</th><th>Impact</th></tr>
+          <tr><td><span class="stake-tag stake-low">LOW</span></td><td style="color:var(--muted);font-family:'Space Mono',monospace">0.5x</td><td style="color:var(--muted);font-size:0.7rem">Maintenance</td></tr>
+          <tr><td><span class="stake-tag stake-med">MED</span></td><td style="color:var(--blue);font-family:'Space Mono',monospace">1.0x</td><td style="color:var(--muted);font-size:0.7rem">Foundation</td></tr>
+          <tr><td><span class="stake-tag stake-high">HIGH</span></td><td style="color:#fb923c;font-family:'Space Mono',monospace">3.0x</td><td style="color:var(--muted);font-size:0.7rem">Strategic — Breach if missed</td></tr>
+          <tr><td><span class="stake-tag stake-crit">CRIT</span></td><td style="color:var(--accent);font-family:'Space Mono',monospace">3.0x</td><td style="color:var(--muted);font-size:0.7rem">Non-Negotiable — Breach if missed</td></tr>
+        </table>
+        <div id="habits-editor"></div>
+        <button class="add-btn" onclick="addHabitField()">+ Add Habit</button>
+        <div style="margin-top:12px"><button class="save-btn" onclick="saveHabits()">Save Habits</button></div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-title">Goals — Weekly and Monthly</div>
+        <p style="font-size:0.72rem;color:var(--muted);margin-bottom:16px;line-height:1.6">Weekly goals appear on Today. Monthly goals appear on Month page. Deltas from audits are automatically pinned here.</p>
+        <div id="goals-editor"></div>
+        <div style="display:flex;gap:8px;margin-top:8px;flex-wrap:wrap">
+          <button class="add-btn" style="flex:1" onclick="addGoalField('weekly')">+ Weekly goal</button>
+          <button class="add-btn" style="flex:1" onclick="addGoalField('monthly')">+ Monthly goal</button>
+        </div>
+        <div style="margin-top:12px"><button class="save-btn" onclick="saveGoals()">Save Goals</button></div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-title">Weekly Non-Negotiables</div>
+        <p style="font-size:0.72rem;color:var(--muted);margin-bottom:12px;line-height:1.6">Tasks that must be completed every week. Evaluated Monday morning.</p>
+        <div id="wnn-editor"></div>
+        <button class="add-btn" onclick="addWnnField()" style="margin-top:4px">+ Add non-negotiable</button>
+        <div style="margin-top:12px"><button class="save-btn" onclick="saveWnn()">Save</button></div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-title">Execution Status</div>
+        <div style="background:var(--surface2);border:1px solid var(--border);border-radius:var(--radius);padding:14px;font-family:'Space Mono',monospace;font-size:0.72rem;line-height:1.8" id="execution-status-panel"></div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-title">Groq API Key</div>
+        <p style="font-size:0.72rem;color:var(--muted);margin-bottom:10px;line-height:1.6">Free at <strong style="color:var(--text)">console.groq.com</strong> — enables AI briefings and diagnostics.</p>
+        <input type="password" class="inp" id="set-groq-key" placeholder="gsk_..."/>
+        <div style="margin-top:10px"><button class="save-btn" onclick="saveGroqKey()">Save Key</button></div>
+      </div>
+
+      <div class="settings-section">
+        <div class="settings-title">Danger Zone</div>
+        <button class="del-btn" style="padding:10px 16px;font-size:0.78rem" onclick="clearMonthData()">Clear all data for this month</button>
+      </div>
+    </div>
+
+  </main>
+</div>
+
+<!-- ─── WEEKLY DIAGNOSTIC MODAL ────────────────────────────────────────────── -->
+<div class="modal-overlay hidden" id="weekly-review-modal">
+  <div class="modal-box wide">
+    <button class="modal-close" id="recap-close-btn" onclick="closeReviewModal('weekly-review-modal')" style="display:none">Recap Locked — Close</button>
+    <div class="modal-header">
+      <div class="modal-title">Weekly<span> Diagnostic.</span></div>
+      <div class="modal-sub" id="recap-week-label">Loading...</div>
+      <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
+        <div id="recap-pip-1" style="width:8px;height:8px;border-radius:50%;background:var(--accent);transition:all .2s;transform:scale(1.3)"></div>
+        <div id="recap-pip-2" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .2s"></div>
+        <div id="recap-pip-3" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .2s"></div>
+      </div>
+    </div>
+    <div class="modal-body">
+
+      <div id="recap-card-1" style="display:block">
+        <div id="recap-prev-delta"></div>
+        <div id="recap-score-section"></div>
+        <div id="recap-danger-zones"></div>
+        <div id="recap-opp-costs"></div>
+        <div id="recap-drift-chart"></div>
+        <div style="font-size:0.56rem;font-family:'Space Mono',monospace;color:var(--muted);text-transform:uppercase;letter-spacing:2px;margin:16px 0 8px">Habit Breakdown</div>
+        <div id="recap-habit-rows"></div>
+        <div class="review-ai-box" id="weekly-ai-text" style="margin-top:16px">
+          <div class="review-ai-label">AI Diagnostic</div>
+          <span style="color:var(--muted);font-size:0.78rem">Generating...</span>
+        </div>
+        <div style="display:flex;justify-content:flex-end;margin-top:20px">
+          <button onclick="recapGoTo(2)" style="background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:12px 28px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer">Friction and Flow ›</button>
+        </div>
+      </div>
+
+      <div id="recap-card-2" style="display:none">
+        <div style="margin-bottom:20px">
+          <div style="font-size:0.6rem;font-family:'Space Mono',monospace;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Friction Point</div>
+          <p style="font-size:0.7rem;color:var(--muted);line-height:1.6;margin-bottom:10px">Identify the single recurring obstacle that stopped you this week. Be specific.</p>
+          <textarea class="inp" id="recap-friction" rows="4" placeholder="e.g. Skipping training because I scheduled it at 6pm when energy is gone..." style="resize:vertical;line-height:1.6"></textarea>
+        </div>
+        <div style="margin-bottom:20px">
+          <div style="font-size:0.6rem;font-family:'Space Mono',monospace;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">Flow State Diagnostic</div>
+          <p style="font-size:0.7rem;color:var(--muted);line-height:1.6;margin-bottom:10px">Describe your peak productivity window this week — time, caffeine, sleep, environment.</p>
+          <textarea class="inp" id="recap-flow" rows="4" placeholder="e.g. Best output Tue/Wed 7am after 7.5h sleep, black coffee, no phone until 10am..." style="resize:vertical;line-height:1.6"></textarea>
+        </div>
+        <div style="display:flex;justify-content:space-between;margin-top:4px">
+          <button onclick="recapGoTo(1)" style="background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:var(--radius-sm);padding:11px 20px;font-family:'Syne',sans-serif;font-size:0.8rem;cursor:pointer">&#8592; Back</button>
+          <button onclick="recapValidateCard2()" style="background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:11px 28px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer">Set Delta ›</button>
+        </div>
+      </div>
+
+      <div id="recap-card-3" style="display:none">
+        <div style="font-size:0.6rem;font-family:'Space Mono',monospace;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Non-Negotiable Weekly Delta</div>
+        <p style="font-size:0.72rem;color:var(--muted);line-height:1.7;margin-bottom:16px">One clear, measurable commitment for next week. No vague statements. This will appear at the top of your next recap.</p>
+        <textarea class="inp" id="recap-delta" rows="5" placeholder="e.g. Train Mon/Wed/Fri at 6am before work. Morning is always the fallback if evening fails." style="resize:vertical;line-height:1.6;font-size:0.88rem;border-color:rgba(225,29,72,0.3)"></textarea>
+        <div id="recap-card3-err" style="color:var(--red);font-family:'Space Mono',monospace;font-size:0.65rem;min-height:18px;margin-top:6px"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:16px">
+          <button onclick="recapGoTo(2)" style="background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:var(--radius-sm);padding:11px 20px;font-family:'Syne',sans-serif;font-size:0.8rem;cursor:pointer">&#8592; Back</button>
+          <button onclick="submitWeeklyRecap()" style="background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:11px 28px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer">Lock In ›</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ─── MONTHLY AUDIT MODAL ────────────────────────────────────────────────── -->
+<div class="modal-overlay hidden" id="monthly-audit-modal">
+  <div class="modal-box wide">
+    <button class="modal-close" id="audit-close-btn" onclick="closeReviewModal('monthly-audit-modal')" style="display:none">Audit Locked — Close</button>
+    <div class="modal-header">
+      <div class="modal-title">Monthly<span> Audit.</span></div>
+      <div class="modal-sub" id="audit-month-label">Loading...</div>
+      <div style="display:flex;gap:8px;margin-top:12px;align-items:center">
+        <div id="audit-pip-1" style="width:8px;height:8px;border-radius:50%;background:var(--accent);transition:all .2s;transform:scale(1.3)"></div>
+        <div id="audit-pip-2" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .2s"></div>
+        <div id="audit-pip-3" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .2s"></div>
+        <div id="audit-pip-4" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .2s"></div>
+        <div id="audit-pip-5" style="width:8px;height:8px;border-radius:50%;background:var(--border);transition:all .2s"></div>
+      </div>
+    </div>
+    <div class="modal-body">
+
+      <div id="audit-card-1" style="display:block">
+        <div id="audit-ghost-chart"></div>
+        <div id="audit-prev-month-delta"></div>
+        <div style="margin-bottom:20px">
+          <div style="font-size:0.6rem;font-family:'Space Mono',monospace;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">The Delusion Gap</div>
+          <p style="font-size:0.7rem;color:var(--muted);line-height:1.6;margin-bottom:10px">List the single most tangible, verifiable result you produced this month. Not effort. Output only.</p>
+          <textarea class="inp" id="audit-delusion" rows="3" placeholder="e.g. Completed 3 client quotes for GC firm, grossed $840 from Maize Collective..." style="resize:vertical;line-height:1.6"></textarea>
+        </div>
+        <div style="display:flex;justify-content:flex-end">
+          <button onclick="auditGoTo(2)" style="background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:11px 28px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer">Friction Audit ›</button>
+        </div>
+      </div>
+
+      <div id="audit-card-2" style="display:none">
+        <div style="font-size:0.6rem;font-family:'Space Mono',monospace;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Friction Audit</div>
+        <div id="audit-friction-history" style="margin-bottom:14px"></div>
+        <div id="audit-excuse-alert" style="margin-bottom:10px"></div>
+        <div style="margin-bottom:20px">
+          <p style="font-size:0.7rem;color:var(--muted);line-height:1.6;margin-bottom:8px">What is the root structural failure you are refusing to fix?</p>
+          <textarea class="inp" id="audit-root-failure" rows="4" placeholder="Not a symptom. The actual root cause." style="resize:vertical;line-height:1.6" oninput="checkExcuseRepetition(this.value)"></textarea>
+        </div>
+        <div style="margin-bottom:20px">
+          <div style="font-size:0.6rem;font-family:'Space Mono',monospace;color:var(--muted);letter-spacing:2px;text-transform:uppercase;margin-bottom:6px">ROI Evaluation</div>
+          <p style="font-size:0.7rem;color:var(--muted);line-height:1.6;margin-bottom:8px">Which habit yielded the lowest return on investment this month?</p>
+          <select class="inp" id="audit-low-roi" style="font-size:0.82rem;cursor:pointer">
+            <option value="">— Select habit —</option>
+          </select>
+        </div>
+        <div style="display:flex;justify-content:space-between">
+          <button onclick="auditGoTo(1)" style="background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:var(--radius-sm);padding:11px 20px;font-family:'Syne',sans-serif;font-size:0.8rem;cursor:pointer">&#8592; Back</button>
+          <button onclick="auditValidateCard2()" style="background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:11px 28px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer">Reality Check ›</button>
+        </div>
+      </div>
+
+      <div id="audit-card-3" style="display:none">
+        <div style="font-size:0.6rem;font-family:'Space Mono',monospace;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Trajectory Reality Check</div>
+        <div style="background:#0d0000;border:1px solid rgba(225,29,72,0.3);border-radius:8px;padding:12px 14px;margin-bottom:16px">
+          <div style="font-size:0.68rem;color:#fca5a5;font-family:'Space Mono',monospace;line-height:1.6">If you repeat this exact month 12 times, where will you be in one year? Be specific. No hedging.</div>
+        </div>
+        <textarea class="inp" id="audit-trajectory" rows="5" placeholder="e.g. GC license still not filed. Maize Collective unchanged. 8lbs heavier..." style="resize:vertical;line-height:1.6;border-color:rgba(225,29,72,0.3)"></textarea>
+        <div style="display:flex;justify-content:space-between;margin-top:16px">
+          <button onclick="auditGoTo(2)" style="background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:var(--radius-sm);padding:11px 20px;font-family:'Syne',sans-serif;font-size:0.8rem;cursor:pointer">&#8592; Back</button>
+          <button onclick="auditValidateCard3()" style="background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:11px 28px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer">Hard Truth ›</button>
+        </div>
+      </div>
+
+      <div id="audit-card-4" style="display:none">
+        <div style="font-size:0.6rem;font-family:'Space Mono',monospace;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">The Hard Truth</div>
+        <p style="font-size:0.7rem;color:var(--muted);line-height:1.6;margin-bottom:14px">What is the one hard truth about your performance this month you are actively trying to ignore?</p>
+        <textarea class="inp" id="audit-hard-truth" rows="5" placeholder="Be honest." style="resize:vertical;line-height:1.6;border-color:rgba(225,29,72,0.3)"></textarea>
+        <div style="display:flex;justify-content:space-between;margin-top:16px">
+          <button onclick="auditGoTo(3)" style="background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:var(--radius-sm);padding:11px 20px;font-family:'Syne',sans-serif;font-size:0.8rem;cursor:pointer">&#8592; Back</button>
+          <button onclick="auditValidateCard4()" style="background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:11px 28px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer">Next-Month Delta ›</button>
+        </div>
+      </div>
+
+      <div id="audit-card-5" style="display:none">
+        <div style="font-size:0.6rem;font-family:'Space Mono',monospace;color:var(--accent);letter-spacing:2px;text-transform:uppercase;margin-bottom:8px">Next-Month Non-Negotiable</div>
+        <p style="font-size:0.72rem;color:var(--muted);line-height:1.7;margin-bottom:14px">One measurable commitment for next month. Injected as a permanent anchor into your daily view. Surfaced at the top of next month's audit. No vague statements.</p>
+        <textarea class="inp" id="audit-month-delta" rows="5" placeholder="e.g. File GC contractor license by the 15th. List 10 new items on Maize. Run 3x/week minimum." style="resize:vertical;line-height:1.6;font-size:0.88rem;border-color:rgba(225,29,72,0.3)"></textarea>
+        <div id="audit-card5-err" style="color:var(--red);font-family:'Space Mono',monospace;font-size:0.65rem;min-height:18px;margin-top:6px"></div>
+        <div style="display:flex;justify-content:space-between;margin-top:16px">
+          <button onclick="auditGoTo(4)" style="background:transparent;border:1px solid var(--border);color:var(--muted);border-radius:var(--radius-sm);padding:11px 20px;font-family:'Syne',sans-serif;font-size:0.8rem;cursor:pointer">&#8592; Back</button>
+          <button onclick="submitMonthlyAudit()" style="background:var(--accent);color:#fff;border:none;border-radius:var(--radius-sm);padding:11px 28px;font-family:'Syne',sans-serif;font-size:0.85rem;font-weight:700;cursor:pointer">Lock Audit ›</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<script src="supabase-service.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
