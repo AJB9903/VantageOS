@@ -760,7 +760,6 @@ function showToast(msg, dur=2200, negative=false) {
 const HABIT_WEIGHTS = { critical: 3.0, high: 3.0, medium: 1.0, low: 0.5 };
 function getStakePenalty(stake) { return 1; } // stub for compatibility
 
- ───────────────────────────────────────────────────────────────
 
 
 
@@ -1236,7 +1235,6 @@ Log: "${log||'nothing'}"
 }
 
 // ─── WEEKLY NON-NEGOTIABLES
- ───────────────────────────────────────────────────
 function getWeekSunday(date = new Date()) {
   const d = new Date(date);
   d.setHours(0,0,0,0);
@@ -1378,7 +1376,6 @@ function addWnnField() {
     if (inputs.length) inputs[inputs.length-1].focus();
   }, 50);
 }  
- ────────────────────────────────────────────────────────────────────
 
 
 
@@ -2111,7 +2108,6 @@ function operatorLogin() {
 }
 
 // ─── ADMIN PANEL
- ──────────────────────────────────────────────────────────────
 function initAdminPanel() {
   if (currentUser?.email === 'aidanb9903@gmail.com') {
     document.getElementById('admin-panel').style.display = 'block';
