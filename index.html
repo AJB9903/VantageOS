@@ -21,23 +21,36 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 
 
 
-/* AUTH */
+/* ── AUTH ──────────────────────────────────────────────────────────── */
 #auth-screen{position:fixed;inset:0;background:var(--bg);display:flex;align-items:center;justify-content:center;z-index:1000;padding:24px}
-.auth-box{background:var(--surface);border:2px solid var(--border);border-radius:12px;padding:40px;width:100%;max-width:400px;box-shadow:0 0 40px rgba(223,255,0,0.05)}
-.auth-logo{font-size:2.5rem;font-weight:800;letter-spacing:-2px;margin-bottom:6px;text-align:center}
+.auth-box{background:var(--surface);border:1px solid var(--border);border-radius:16px;width:100%;max-width:420px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.03),0 24px 64px rgba(0,0,0,.6)}
+.auth-header{padding:32px 36px 24px;border-bottom:1px solid var(--border)}
+.auth-wordmark{font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:10px}
+.auth-logo{font-family:'Syne',sans-serif;font-size:1.8rem;font-weight:800;letter-spacing:-1.5px;color:var(--text);line-height:1;margin-bottom:4px}
 .auth-logo span{color:var(--accent)}
-.auth-sub{font-size:0.7rem;color:var(--accent);font-family:'Space Mono',monospace;margin-bottom:32px;text-align:center;text-transform:uppercase;letter-spacing:2px}
-.auth-tabs{display:flex;gap:6px;margin-bottom:24px}
-.auth-tab{flex:1;padding:9px;border-radius:8px;border:1px solid var(--border);background:transparent;color:var(--muted);font-family:'Syne',sans-serif;font-size:0.82rem;font-weight:600;cursor:pointer;transition:all .15s}
-.auth-tab.active{background:var(--accent);border-color:var(--accent);color:#000}
-.auth-field{margin-bottom:14px}
-.auth-label{font-size:0.65rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:6px;display:block;font-weight:700}
-.inp{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:11px 14px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.9rem;width:100%;outline:none;transition:border-color .15s}
-.inp:focus{border-color:var(--accent)}
-.auth-btn{width:100%;background:var(--accent);color:#000;border:none;border-radius:8px;padding:13px;font-family:'Syne',sans-serif;font-size:0.9rem;font-weight:700;cursor:pointer;margin-top:8px;transition:all .15s}
-.auth-btn:hover{background:#cce800;transform:translateY(-1px)}
-.auth-btn:disabled{opacity:.5;cursor:not-allowed;transform:none}
-.auth-err{color:var(--red);font-size:0.75rem;margin-top:10px;font-family:'Space Mono',monospace;min-height:18px}
+.auth-tagline{font-family:'Space Mono',monospace;font-size:0.55rem;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+.auth-tabs{display:flex;border-bottom:1px solid var(--border)}
+.auth-tab{flex:1;padding:14px;border:none;border-bottom:2px solid transparent;background:transparent;color:var(--muted);font-family:'Space Mono',monospace;font-size:0.58rem;font-weight:700;letter-spacing:2px;text-transform:uppercase;cursor:pointer;transition:all .15s;margin-bottom:-1px}
+.auth-tab:hover{color:var(--text)}
+.auth-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.auth-body{padding:28px 36px 32px}
+.auth-forgot-info{background:rgba(223,255,0,.04);border:1px solid rgba(223,255,0,.15);border-radius:8px;padding:12px 14px;margin-bottom:20px;display:none}
+.auth-forgot-info-text{font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);letter-spacing:.5px;line-height:1.7}
+.auth-field{margin-bottom:16px}
+.auth-label{font-size:0.55rem;text-transform:uppercase;letter-spacing:2px;color:var(--muted);font-family:'Space Mono',monospace;margin-bottom:8px;display:block;font-weight:700}
+.inp{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.9rem;width:100%;outline:none;transition:border-color .15s,box-shadow .15s}
+.inp:focus{border-color:rgba(223,255,0,.5);box-shadow:0 0 0 3px rgba(223,255,0,.06)}
+.auth-forgot{display:block;text-align:right;font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);cursor:pointer;margin-top:8px;transition:color .15s;user-select:none}
+.auth-forgot:hover{color:var(--accent)}
+.auth-btn{width:100%;background:var(--accent);color:#000;border:none;border-radius:10px;padding:15px;font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:800;cursor:pointer;margin-top:20px;transition:background .15s,transform .15s,box-shadow .15s;letter-spacing:-.3px;box-shadow:0 4px 20px rgba(223,255,0,.15)}
+.auth-btn:hover{background:#e8ff2a;transform:translateY(-1px);box-shadow:0 6px 28px rgba(223,255,0,.25)}
+.auth-btn:disabled{opacity:.5;cursor:not-allowed;transform:none;box-shadow:none}
+.auth-back{display:none;text-align:center;font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);cursor:pointer;margin-top:14px;transition:color .15s;user-select:none}
+.auth-back:hover{color:var(--text)}
+.auth-err{color:var(--red);font-size:0.7rem;margin-top:12px;font-family:'Space Mono',monospace;min-height:18px;letter-spacing:.5px}
+
+</div>
+</div>
 /* APP LAYOUT */
 #app{display:none;grid-template-columns:240px 1fr;min-height:100vh;position:relative;z-index:1}
 #app.visible{display:grid}
@@ -178,7 +191,7 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 /* AUTO SAVE INDICATOR */
 .save-status{font-family:'Space Mono',monospace;font-size:0.7rem;color:var(--muted);opacity:0;transition:opacity 0.3s}
 .save-status.visible{opacity:1}
-.save-status.success{color:var(--green)}
+.save-status.success{color:var(--accent)}
 /* HEATMAP & CHARTS */
 .heatmap-wrap{overflow-x:auto}
 .heatmap-row{display:flex;align-items:center;gap:6px;margin-bottom:4px}
@@ -260,42 +273,596 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 .review-ai-label{font-size:0.6rem;text-transform:uppercase;letter-spacing:2px;color:var(--accent);font-family:'Space Mono',monospace;margin-bottom:8px}
 .failure-banner{background:#1a0000;border:2px solid var(--red);border-radius:8px;padding:12px 16px;font-family:'Space Mono',monospace;font-size:0.78rem;color:var(--red);font-weight:700;letter-spacing:1px;text-align:center;margin-bottom:16px;animation:critPulse 1.5s infinite}
 /* Theme selector cards */
+/* ─── VANTAGE GREEN HERO VARS ─────────────────────────────────────── */
+:root {
+  --vg:          #5B9A78;
+  --vg-light:    #7EC49E;
+  --vg-glow:     rgba(91,154,120,0.14);
+  --hero-bg:     #060a08;
+  --hero-surf:   #0d1511;
+  --hero-border: rgba(91,154,120,0.18);
+  --hero-text:   #EDF2EF;
+  --hero-muted:  #7A9A89;
+}
 
+/* ─── PAYWALL / HERO SCREEN ───────────────────────────────────────── */
+#paywall-screen {
+  position:fixed;inset:0;background:var(--hero-bg);
+  z-index:9999;overflow-y:auto;overflow-x:hidden;
+  display:flex;flex-direction:column;
+}
+#paywall-screen::before {
+  content:'';position:fixed;top:-20%;right:-10%;
+  width:60vw;height:70vh;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse,rgba(91,154,120,0.08) 0%,transparent 70%);
+}
+#paywall-screen::after {
+  content:'';position:fixed;bottom:-20%;left:-10%;
+  width:50vw;height:60vh;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse,rgba(91,154,120,0.05) 0%,transparent 70%);
+}
+.hero-nav {
+  position:relative;z-index:10;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:24px 40px;border-bottom:1px solid var(--hero-border);
+}
+.hero-logo{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-1px;color:var(--hero-text)}
+.hero-logo span{color:var(--vg)}
+.hero-nav-tag{font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:3px;text-transform:uppercase;color:var(--hero-muted);background:rgba(255,255,255,0.04);border:1px solid var(--hero-border);border-radius:4px;padding:5px 12px}
+.hero-nav-op{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:1px;text-transform:uppercase;color:rgba(255,255,255,0.1);cursor:pointer;transition:color .2s;user-select:none}
+.hero-nav-op:hover{color:var(--hero-muted)}
+.hero-body {
+  position:relative;z-index:2;flex:1;
+  display:grid;grid-template-columns:1fr 1fr;gap:40px;align-items:center;
+  padding:64px 40px 80px;max-width:1200px;margin:0 auto;width:100%;
+}
+.hero-left{display:flex;flex-direction:column;gap:0;animation:heroFadeUp .7s cubic-bezier(.22,1,.36,1) both}
+@keyframes heroFadeUp{from{opacity:0;transform:translateY(24px)}to{opacity:1;transform:translateY(0)}}
+.hero-badge{display:inline-flex;align-items:center;gap:8px;font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:3px;text-transform:uppercase;color:var(--vg-light);border:1px solid rgba(91,154,120,0.35);background:rgba(91,154,120,0.07);border-radius:100px;padding:6px 14px 6px 10px;width:fit-content;margin-bottom:28px}
+.hero-badge-dot{width:6px;height:6px;border-radius:50%;background:var(--vg);box-shadow:0 0 6px var(--vg);animation:hbPulse 2s ease-in-out infinite;flex-shrink:0}
+@keyframes hbPulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.6;transform:scale(.85)}}
+.hero-headline{font-family:'Syne',sans-serif;font-size:clamp(2.4rem,5vw,4rem);font-weight:800;letter-spacing:-2.5px;line-height:1.0;color:var(--hero-text);margin-bottom:24px}
+.hero-headline span{color:var(--vg)}
+.hero-sub{font-size:clamp(.9rem,1.5vw,1.05rem);line-height:1.7;color:var(--hero-muted);max-width:440px;margin-bottom:40px}
+.hero-cta{display:inline-flex;align-items:center;gap:10px;background:var(--vg);color:#040a07;font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:700;padding:15px 28px;border-radius:10px;text-decoration:none;cursor:pointer;transition:background .18s,transform .18s,box-shadow .18s;box-shadow:0 4px 24px rgba(91,154,120,.3);width:fit-content;margin-bottom:36px}
+.hero-cta:hover{background:var(--vg-light);transform:translateY(-2px);box-shadow:0 8px 32px rgba(91,154,120,.4)}
+.hero-cta svg{flex-shrink:0;transition:transform .2s}
+.hero-cta:hover svg{transform:translateX(3px)}
+.hero-proof{display:flex;align-items:center;gap:20px;flex-wrap:wrap}
+.hero-proof-item{display:flex;flex-direction:column;gap:2px}
+.hero-proof-num{font-family:'Syne',sans-serif;font-size:.9rem;font-weight:700;color:var(--hero-text);letter-spacing:-.5px}
+.hero-proof-label{font-family:'Space Mono',monospace;font-size:.55rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--hero-muted)}
+.hero-proof-divider{width:1px;height:28px;background:var(--hero-border);flex-shrink:0}
+.hero-right{display:flex;justify-content:center;align-items:center;animation:heroFadeUp .7s .15s cubic-bezier(.22,1,.36,1) both}
+.hero-phone-wrap{position:relative;width:280px;height:540px;flex-shrink:0}
+.hero-phone{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:240px;height:480px;background:var(--hero-surf);border:1.5px solid rgba(91,154,120,.25);border-radius:36px;overflow:hidden;box-shadow:0 0 0 8px #0a1210,0 0 0 9px rgba(91,154,120,.12),0 40px 80px rgba(0,0,0,.6),inset 0 1px 0 rgba(255,255,255,.05);animation:floatPhone 5s ease-in-out infinite}
+@keyframes floatPhone{0%,100%{transform:translate(-50%,-50%) translateY(0)}50%{transform:translate(-50%,-50%) translateY(-10px)}}
+.hero-phone-notch{width:80px;height:24px;background:#060a08;border-radius:0 0 14px 14px;margin:0 auto;position:relative;z-index:5}
+.hero-phone-screen{padding:10px 14px 20px;height:calc(100% - 24px);overflow:hidden;display:flex;flex-direction:column;gap:10px}
+.mp-header{display:flex;align-items:center;justify-content:space-between;padding-bottom:8px;border-bottom:1px solid rgba(91,154,120,.12)}
+.mp-title{font-family:'Syne',sans-serif;font-size:1.1rem;font-weight:800;color:var(--hero-text);letter-spacing:-.5px}
+.mp-title span{color:var(--vg)}
+.mp-date{font-family:'Space Mono',monospace;font-size:.55rem;color:var(--hero-muted);letter-spacing:1px}
+.mp-score-bar{background:rgba(91,154,120,.08);border:1px solid rgba(91,154,120,.15);border-radius:8px;padding:8px 10px;display:flex;align-items:center;justify-content:space-between}
+.mp-score-label{font-family:'Space Mono',monospace;font-size:.5rem;text-transform:uppercase;letter-spacing:1px;color:var(--hero-muted)}
+.mp-score-val{font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;color:var(--vg);letter-spacing:-.5px}
+.mp-habits{display:flex;flex-direction:column;gap:5px}
+.mp-habit{display:flex;align-items:center;gap:7px;padding:7px 8px;border-radius:6px;background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.05)}
+.mp-habit.done{background:rgba(91,154,120,.08);border-color:rgba(91,154,120,.18)}
+.mp-cb{width:14px;height:14px;border-radius:3px;border:1.5px solid rgba(255,255,255,.2);flex-shrink:0;font-size:.5rem;display:flex;align-items:center;justify-content:center;color:#040a07}
+.mp-habit.done .mp-cb{background:var(--vg);border-color:var(--vg);font-weight:700}
+.mp-hname{font-family:'Syne',sans-serif;font-size:.65rem;font-weight:600;color:var(--hero-text);flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.mp-stake{font-family:'Space Mono',monospace;font-size:.42rem;font-weight:700;letter-spacing:.5px;padding:2px 5px;border-radius:3px;flex-shrink:0}
+.mp-stake.high{background:rgba(251,191,36,.1);color:#fbbf24;border:1px solid rgba(251,191,36,.2)}
+.mp-stake.crit{background:rgba(248,113,113,.1);color:#f87171;border:1px solid rgba(248,113,113,.2)}
+.mp-stake.med{background:rgba(56,189,248,.08);color:#38bdf8;border:1px solid rgba(56,189,248,.18)}
+.mp-briefing{margin-top:2px;background:rgba(91,154,120,.06);border:1px solid rgba(91,154,120,.15);border-radius:8px;padding:8px 10px;flex:1}
+.mp-brief-label{font-family:'Space Mono',monospace;font-size:.48rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--vg);margin-bottom:5px;font-weight:700}
+.mp-brief-text{font-size:.62rem;line-height:1.55;color:rgba(237,242,239,.65);font-family:'Syne',sans-serif}
+.hero-float-card{position:absolute;background:var(--hero-surf);border:1px solid rgba(91,154,120,.25);border-radius:12px;padding:12px 16px;box-shadow:0 12px 40px rgba(0,0,0,.5),0 0 0 1px rgba(255,255,255,.03);z-index:10}
+.hero-float-score{top:30px;right:-28px;min-width:120px;animation:floatCard1 5.5s ease-in-out infinite}
+@keyframes floatCard1{0%,100%{transform:translateY(0) rotate(2deg)}50%{transform:translateY(-8px) rotate(2deg)}}
+.hero-float-streak{bottom:40px;left:-36px;animation:floatCard2 5s .8s ease-in-out infinite;display:flex;align-items:center;gap:10px}
+@keyframes floatCard2{0%,100%{transform:translateY(0) rotate(-1.5deg)}50%{transform:translateY(-6px) rotate(-1.5deg)}}
+.hfc-label{font-family:'Space Mono',monospace;font-size:.5rem;text-transform:uppercase;letter-spacing:1.5px;color:var(--hero-muted);margin-bottom:3px}
+.hfc-val{font-family:'Syne',sans-serif;font-size:1.5rem;font-weight:800;color:var(--vg);letter-spacing:-1px;line-height:1}
+.hfc-val span{font-size:.9rem;opacity:.7}
+.hfc-icon{font-size:1.4rem;line-height:1}
+.hfc-streak-text .hfc-val{font-size:1rem;color:var(--hero-text)}
+.hfc-streak-text .hfc-label{margin-bottom:0;margin-top:3px}
+@media(max-width:768px){
+  .hero-nav{padding:16px 20px}
+  .hero-nav-tag{display:none}
+  .hero-body{grid-template-columns:1fr;padding:32px 20px 60px;gap:56px;text-align:center}
+  .hero-badge,.hero-cta{margin-left:auto;margin-right:auto}
+  .hero-sub{margin-left:auto;margin-right:auto}
+  .hero-proof{justify-content:center}
+  .hero-headline{letter-spacing:-1.5px}
+  .hero-phone-wrap{width:240px;height:460px}
+  .hero-phone{width:200px;height:400px}
+  .hero-float-score{right:-10px;top:20px}
+  .hero-float-streak{left:-10px;bottom:30px}
+}
+@media(max-width:400px){
+  .hero-float-score,.hero-float-streak{display:none}
+}
+  /* ── P2 DIVIDER ──────────────────────────────────────────────────── */
+.p2-divider{width:100%;height:1px;background:linear-gradient(90deg,transparent,var(--border) 20%,var(--border) 80%,transparent);position:relative}
+.p2-divider::after{content:'↓ scroll to explore';position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);font-family:'Space Mono',monospace;font-size:0.52rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);background:var(--surface);padding:0 16px;white-space:nowrap}
+/* ── P2 FEATURE SECTION ──────────────────────────────────────────── */
+.p2-features{background:var(--surface);padding:0 0 80px;position:relative;z-index:2}
+.p2-section-label{text-align:center;padding:72px 20px 56px}
+.p2-eyebrow{display:inline-flex;align-items:center;gap:10px;font-family:'Space Mono',monospace;font-size:0.6rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:16px}
+.p2-eyebrow::before,.p2-eyebrow::after{content:'';width:32px;height:1px;background:var(--accent);opacity:.4}
+.p2-section-title{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,3.5vw,2.4rem);font-weight:800;letter-spacing:-1.5px;color:var(--text);line-height:1.1;margin-bottom:14px}
+.p2-section-title span{color:var(--accent)}
+.p2-section-sub{font-size:.9rem;color:var(--muted);max-width:480px;margin:0 auto;line-height:1.7}
+.p2-block{display:grid;grid-template-columns:1fr 1fr;align-items:center;gap:0;max-width:1100px;margin:0 auto;border-top:1px solid var(--border);padding:72px 40px}
+.p2-block:last-of-type{border-bottom:1px solid var(--border)}
+.p2-block.flip{direction:rtl}
+.p2-block.flip>*{direction:ltr}
+.p2-img-col{display:flex;justify-content:center;align-items:center;padding:0 32px}
+.p2-screen-placeholder{width:100%;max-width:440px;aspect-ratio:16/10;background:var(--surface2);border:1px solid var(--border);border-radius:14px;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:10px;position:relative;overflow:hidden;box-shadow:0 24px 64px rgba(0,0,0,.5);transition:transform .3s,box-shadow .3s}
+.p2-screen-placeholder:hover{transform:translateY(-4px);box-shadow:0 32px 80px rgba(0,0,0,.6)}
+.p2-screen-placeholder::before{content:'';position:absolute;inset:0;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:32px 32px}
+.p2-screen-placeholder::after{content:'';position:absolute;inset:0;border-radius:14px;border:1px solid rgba(255,255,255,.05);pointer-events:none}
+.p2-placeholder-icon{font-size:2rem;position:relative;z-index:2}
+.p2-placeholder-label{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);opacity:.5;position:relative;z-index:2}
+.p2-screen-bar{position:absolute;top:0;left:0;right:0;height:3px;border-radius:14px 14px 0 0;z-index:3}
+.p2-text-col{padding:0 32px;display:flex;flex-direction:column;gap:0}
+.p2-block-num{font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.p2-block-num::after{content:'';flex:1;height:1px;background:var(--border);max-width:40px}
+.p2-block-tag{display:inline-flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:2px;text-transform:uppercase;padding:5px 12px;border-radius:4px;margin-bottom:20px;width:fit-content;font-weight:700}
+.p2-block-tag.yellow{background:rgba(223,255,0,.08);color:var(--accent);border:1px solid rgba(223,255,0,.2)}
+.p2-block-tag.green{background:rgba(91,154,120,.08);color:#7EC49E;border:1px solid rgba(91,154,120,.2)}
+.p2-block-tag.blue{background:rgba(56,189,248,.08);color:#38bdf8;border:1px solid rgba(56,189,248,.2)}
+.p2-block-title{font-family:'Syne',sans-serif;font-size:clamp(1.5rem,2.8vw,2.1rem);font-weight:800;letter-spacing:-1.5px;line-height:1.05;color:var(--text);margin-bottom:16px}
+.p2-block-body{font-size:0.93rem;line-height:1.75;color:var(--muted);margin-bottom:28px;max-width:400px}
+.p2-feature-pills{display:flex;flex-wrap:wrap;gap:8px}
+.p2-pill{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:1px;text-transform:uppercase;color:var(--text);background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px 12px}
+.p2-pill-dot{width:5px;height:5px;border-radius:50%;flex-shrink:0}
+/* ── P2 CHECKOUT ─────────────────────────────────────────────────── */
+.p2-checkout{background:var(--surface);padding:80px 24px 100px;position:relative;overflow:hidden}
+.p2-checkout::before{content:'';position:absolute;bottom:-30%;left:50%;transform:translateX(-50%);width:600px;height:400px;background:radial-gradient(ellipse,rgba(223,255,0,.05) 0%,transparent 70%);pointer-events:none}
+.p2-checkout-inner{max-width:520px;margin:0 auto;position:relative;z-index:2}
+.p2-checkout-header{text-align:center;margin-bottom:40px}
+.p2-checkout-eyebrow{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.p2-checkout-title{font-family:'Syne',sans-serif;font-size:clamp(1.8rem,3.5vw,2.4rem);font-weight:800;letter-spacing:-1.5px;color:var(--text);line-height:1.1}
+.p2-card{background:#0d0d0d;border:1px solid var(--border);border-radius:20px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.03),0 40px 80px rgba(0,0,0,.6)}
+.p2-card-accent-bar{height:3px;background:linear-gradient(90deg,var(--accent),rgba(223,255,0,.3))}
+.p2-card-body{padding:36px 36px 28px}
+.p2-trust-row{display:flex;align-items:center;gap:10px;margin-bottom:28px;flex-wrap:wrap}
+.p2-trust-badge{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:0.52rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);background:var(--surface2);border:1px solid var(--border);border-radius:4px;padding:5px 10px}
+.p2-trust-badge svg{opacity:.6;flex-shrink:0}
+.p2-price-row{display:flex;align-items:flex-end;gap:12px;margin-bottom:8px}
+.p2-price{font-family:'Syne',sans-serif;font-size:4rem;font-weight:800;letter-spacing:-3px;color:var(--text);line-height:1}
+.p2-price-meta{display:flex;flex-direction:column;gap:3px;padding-bottom:8px}
+.p2-price-cross{font-family:'Space Mono',monospace;font-size:0.65rem;color:var(--muted);text-decoration:line-through;letter-spacing:1px}
+.p2-price-label{font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--accent);font-weight:700}
+.p2-price-sub{font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);margin-bottom:28px}
+.p2-card-hr{height:1px;background:var(--border);margin-bottom:24px}
+.p2-includes-label{font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:16px}
+.p2-include-list{display:flex;flex-direction:column;gap:10px;margin-bottom:28px}
+.p2-include-item{display:flex;align-items:flex-start;gap:12px}
+.p2-include-check{width:18px;height:18px;border-radius:5px;background:rgba(223,255,0,.1);border:1px solid rgba(223,255,0,.25);display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:1px}
+.p2-include-check svg{color:var(--accent)}
+.p2-include-name{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;color:var(--text);line-height:1.3}
+.p2-include-desc{font-family:'Space Mono',monospace;font-size:.58rem;color:var(--muted);letter-spacing:.5px;margin-top:2px}
+.p2-buy-btn{display:flex;align-items:center;justify-content:center;gap:10px;width:100%;background:var(--accent);color:#000;font-family:'Syne',sans-serif;font-size:1rem;font-weight:800;letter-spacing:-.3px;padding:17px 24px;border-radius:12px;text-decoration:none;border:none;cursor:pointer;transition:background .18s,transform .18s,box-shadow .18s;box-shadow:0 4px 24px rgba(223,255,0,.2),inset 0 1px 0 rgba(255,255,255,.15);margin-bottom:16px}
+.p2-buy-btn:hover{background:#e8ff2a;transform:translateY(-2px);box-shadow:0 8px 36px rgba(223,255,0,.3),inset 0 1px 0 rgba(255,255,255,.2)}
+.p2-buy-btn svg{flex-shrink:0;transition:transform .2s}
+.p2-buy-btn:hover svg{transform:translateX(3px)}
+.p2-secure-row{display:flex;align-items:center;justify-content:center;gap:6px;font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);opacity:.7}
+.p2-card-footer{padding:16px 36px 24px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px}
+.p2-footer-item{display:flex;align-items:center;gap:6px;font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);opacity:.6}
+.p2-operator-link{text-align:center;margin-top:28px;font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--border);cursor:pointer;transition:color .2s;user-select:none}
+.p2-operator-link:hover{color:var(--muted)}
+@media(max-width:768px){
+  .p2-block{grid-template-columns:1fr;padding:56px 20px;gap:36px}
+  .p2-block.flip{direction:ltr}
+  .p2-img-col,.p2-text-col{padding:0}
+  .p2-section-label{padding:56px 20px 40px}
+  .p2-card-body{padding:28px 24px 20px}
+  .p2-card-footer{padding:16px 24px;flex-direction:column;align-items:flex-start;gap:10px}
+  .p2-price{font-size:3rem}
+  .p2-checkout{padding:56px 16px 80px}
+  .p2-trust-row{gap:6px}
+}
+/* ── P3 BETA BANNER ──────────────────────────────────────────────── */
+.p3-beta-banner{background:var(--surface);border-top:1px solid var(--border);border-bottom:1px solid var(--border);position:relative;overflow:hidden}
+.p3-ticker-wrap{background:var(--accent);padding:7px 0;overflow:hidden;white-space:nowrap}
+.p3-ticker{display:inline-block;animation:p3Ticker 22s linear infinite;font-family:'Space Mono',monospace;font-size:0.55rem;font-weight:700;letter-spacing:3px;text-transform:uppercase;color:#000}
+@keyframes p3Ticker{from{transform:translateX(0)}to{transform:translateX(-50%)}}
+.p3-beta-inner{max-width:1100px;margin:0 auto;padding:56px 40px;display:grid;grid-template-columns:1fr 1fr;gap:64px;align-items:center}
+.p3-beta-eyebrow{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.p3-beta-dot{width:7px;height:7px;border-radius:50%;background:var(--accent);box-shadow:0 0 8px var(--accent);animation:p3pulse 2s ease-in-out infinite;flex-shrink:0}
+@keyframes p3pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.8)}}
+.p3-beta-title{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,2.8vw,2.2rem);font-weight:800;letter-spacing:-1.5px;color:var(--text);line-height:1.1;margin-bottom:16px}
+.p3-beta-title span{color:var(--accent)}
+.p3-beta-body{font-size:.9rem;line-height:1.75;color:var(--muted);max-width:420px;margin-bottom:28px}
+.p3-beta-perks{display:flex;flex-direction:column;gap:10px}
+.p3-beta-perk{display:flex;align-items:flex-start;gap:10px;font-size:.85rem;color:var(--text)}
+.p3-perk-icon{width:20px;height:20px;border-radius:5px;background:rgba(223,255,0,.08);border:1px solid rgba(223,255,0,.2);display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:.65rem;margin-top:1px}
+.p3-roadmap{display:flex;flex-direction:column;gap:0}
+.p3-roadmap-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:3px;text-transform:uppercase;color:#666;margin-bottom:20px}
+.p3-timeline-item{display:flex;gap:16px;position:relative;padding-bottom:24px}
+.p3-timeline-item:last-child{padding-bottom:0}
+.p3-tl-left{display:flex;flex-direction:column;align-items:center;flex-shrink:0;width:20px}
+.p3-tl-node{width:18px;height:18px;border-radius:50%;border:2px solid #303030;background:var(--surface);display:flex;align-items:center;justify-content:center;flex-shrink:0;position:relative;z-index:2}
+.p3-tl-node.done{border-color:var(--accent);background:rgba(223,255,0,.1)}
+.p3-tl-node.active{border-color:var(--accent);background:rgba(223,255,0,.12);box-shadow:0 0 10px rgba(223,255,0,.2)}
+.p3-tl-dot-inner{width:6px;height:6px;border-radius:50%;background:#666}
+.p3-tl-node.done .p3-tl-dot-inner{background:var(--accent)}
+.p3-tl-node.active .p3-tl-dot-inner{background:var(--accent);animation:p3pulse 1.6s ease-in-out infinite}
+.p3-tl-line{width:1px;flex:1;background:var(--border);margin:2px 0}
+.p3-timeline-item:last-child .p3-tl-line{display:none}
+.p3-tl-right{flex:1}
+.p3-tl-status{font-family:'Space Mono',monospace;font-size:.48rem;letter-spacing:2px;text-transform:uppercase;font-weight:700;margin-bottom:3px}
+.p3-tl-status.done,.p3-tl-status.active{color:var(--accent)}
+.p3-tl-status.soon{color:#666}
+.p3-tl-name{font-family:'Syne',sans-serif;font-size:.88rem;font-weight:700;color:var(--text);margin-bottom:2px;line-height:1.3}
+.p3-tl-name.muted{color:var(--muted)}
+.p3-tl-desc{font-family:'Space Mono',monospace;font-size:.56rem;color:#666;letter-spacing:.5px;line-height:1.6}
+.p3-feedback{background:var(--surface);border-top:1px solid var(--border);padding:80px 24px}
+.p3-feedback-inner{max-width:640px;margin:0 auto}
+.p3-feedback-header{margin-bottom:40px}
+.p3-feedback-eyebrow{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:4px;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.p3-feedback-title{font-family:'Syne',sans-serif;font-size:clamp(1.6rem,3vw,2.2rem);font-weight:800;letter-spacing:-1.5px;color:var(--text);line-height:1.1;margin-bottom:12px}
+.p3-feedback-sub{font-size:.88rem;color:var(--muted);line-height:1.65}
+.p3-type-row{display:flex;gap:8px;margin-bottom:24px;flex-wrap:wrap}
+.p3-type-btn{display:flex;align-items:center;gap:7px;font-family:'Space Mono',monospace;font-size:.6rem;letter-spacing:1.5px;text-transform:uppercase;font-weight:700;padding:9px 16px;border-radius:8px;border:1px solid #303030;background:var(--surface2);color:var(--muted);cursor:pointer;transition:all .15s;user-select:none}
+.p3-type-btn:hover{color:var(--text);background:#1c1c1c}
+.p3-type-btn.active{border-color:rgba(223,255,0,.35);background:rgba(223,255,0,.06);color:var(--accent)}
+.p3-form{display:flex;flex-direction:column;gap:16px}
+.p3-field-group{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.p3-field{display:flex;flex-direction:column;gap:7px}
+.p3-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);font-weight:700}
+.p3-inp{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:12px 14px;color:var(--text);font-family:'Syne',sans-serif;font-size:.88rem;outline:none;transition:border-color .15s;width:100%}
+.p3-inp:focus{border-color:rgba(223,255,0,.4)}
+.p3-inp::placeholder{color:#666}
+textarea.p3-inp{min-height:110px;resize:vertical;line-height:1.6}
+.p3-submit-row{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.p3-submit-note{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:1px;text-transform:uppercase;color:#666;line-height:1.6}
+.p3-submit-btn{display:flex;align-items:center;gap:8px;background:var(--accent);color:#000;font-family:'Syne',sans-serif;font-size:.88rem;font-weight:800;padding:13px 24px;border-radius:8px;border:none;cursor:pointer;transition:background .15s,transform .15s,box-shadow .15s;box-shadow:0 4px 20px rgba(223,255,0,.15);letter-spacing:-.3px;white-space:nowrap}
+.p3-submit-btn:hover{background:#e8ff2a;transform:translateY(-1px);box-shadow:0 6px 28px rgba(223,255,0,.25)}
+.p3-about{background:var(--surface);border-top:1px solid var(--border);padding:80px 24px 100px;position:relative;overflow:hidden}
+.p3-about::before{content:'';position:absolute;top:-40%;left:50%;transform:translateX(-50%);width:500px;height:400px;background:radial-gradient(ellipse,rgba(223,255,0,.03) 0%,transparent 70%);pointer-events:none}
+.p3-about-inner{max-width:760px;margin:0 auto;position:relative;z-index:2}
+.p3-about-eyebrow{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:4px;text-transform:uppercase;color:#666;margin-bottom:40px;display:flex;align-items:center;gap:12px}
+.p3-about-eyebrow::before,.p3-about-eyebrow::after{content:'';flex:1;height:1px;background:var(--border)}
+.p3-builder-card{background:var(--surface2);border:1px solid var(--border);border-radius:16px;overflow:hidden}
+.p3-builder-top{padding:36px 36px 28px;display:flex;gap:24px;align-items:flex-start;border-bottom:1px solid var(--border)}
+.p3-avatar{width:64px;height:64px;border-radius:14px;background:#1c1c1c;border:1px solid #303030;display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:1.6rem;position:relative;overflow:hidden}
+.p3-avatar::after{content:'';position:absolute;inset:0;background:linear-gradient(135deg,rgba(223,255,0,.06),transparent)}
+.p3-builder-meta{flex:1}
+.p3-builder-name{font-family:'Syne',sans-serif;font-size:1.3rem;font-weight:800;letter-spacing:-.8px;color:var(--text);margin-bottom:4px;line-height:1.2}
+.p3-builder-role{font-family:'Space Mono',monospace;font-size:.58rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:12px}
+.p3-builder-tags{display:flex;flex-wrap:wrap;gap:6px}
+.p3-builder-tag{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:1px;text-transform:uppercase;color:var(--muted);background:var(--surface);border:1px solid var(--border);border-radius:4px;padding:3px 9px}
+.p3-builder-body{padding:28px 36px 32px;display:grid;grid-template-columns:1fr 1fr;gap:32px;align-items:start}
+.p3-builder-quote{font-size:.95rem;line-height:1.8;color:var(--muted);border-left:2px solid rgba(223,255,0,.3);padding-left:20px}
+.p3-builder-quote strong{color:var(--text)}
+.p3-builder-stats{display:flex;flex-direction:column;gap:16px}
+.p3-builder-stat{display:flex;flex-direction:column;gap:3px;padding-bottom:16px;border-bottom:1px solid var(--border)}
+.p3-builder-stat:last-child{border-bottom:none;padding-bottom:0}
+.p3-stat-num{font-family:'Syne',sans-serif;font-size:1.4rem;font-weight:800;letter-spacing:-1px;color:var(--accent);line-height:1}
+.p3-stat-label{font-family:'Space Mono',monospace;font-size:.55rem;letter-spacing:1.5px;text-transform:uppercase;color:#666}
+.p3-footer{border-top:1px solid var(--border);padding:24px 40px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:16px}
+.p3-footer-logo{font-family:'Syne',sans-serif;font-size:.95rem;font-weight:800;letter-spacing:-.5px;color:var(--text)}
+.p3-footer-logo span{color:var(--accent)}
+.p3-footer-copy{font-family:'Space Mono',monospace;font-size:.52rem;letter-spacing:1px;text-transform:uppercase;color:#666}
+@media(max-width:768px){
+  .p3-beta-inner{grid-template-columns:1fr;padding:48px 20px;gap:40px}
+  .p3-field-group{grid-template-columns:1fr}
+  .p3-builder-top{flex-direction:column;padding:28px 20px 24px}
+  .p3-builder-body{grid-template-columns:1fr;gap:24px;padding:24px 20px 28px}
+  .p3-submit-row{flex-direction:column;align-items:flex-start}
+  .p3-submit-btn{width:100%;justify-content:center}
+  .p3-footer{padding:20px;flex-direction:column;align-items:flex-start;gap:10px}
+  .p3-feedback{padding:56px 20px}
+ .p3-about{padding:56px 20px 80px}
+}
+/* ── BUG FIXES ───────────────────────────────────────── */
+.hero-proof{display:flex;align-items:center;gap:16px;flex-wrap:wrap;justify-content:flex-start}
+.p2-divider,.p2-features,.p2-checkout,.p3-beta-banner,.p3-feedback,.p3-about,.p3-footer{flex-shrink:0;width:100%;position:relative;z-index:2}
+#paywall-screen>*{min-height:unset;height:auto}
+.p2-checkout{padding-bottom:100px}
+.p3-feedback{padding-top:80px;padding-bottom:80px}
+.p3-about{padding-top:80px;padding-bottom:100px}
+@media(max-width:768px){
+  .hero-proof{justify-content:center}
+  .hero-body{overflow:visible;min-height:unset}
+  .p2-block,.p2-checkout,.p3-beta-inner,.p3-feedback-inner,.p3-about-inner{width:100%;max-width:100%;padding-left:20px;padding-right:20px}
+}
 </style>
 </head>
 <body>
 <div id="auth-screen">
   <div class="auth-box">
-    <div class="auth-logo">VANTAGE<span>.</span></div>
-    <div class="auth-sub">Strategic Objective Tracker</div>
+    <div class="auth-header">
+      <div class="auth-wordmark">Personal Execution OS</div>
+      <div class="auth-logo">VANTAGE<span>.</span></div>
+      <div class="auth-tagline">Strategic Command Interface</div>
+    </div>
     <div class="auth-tabs">
       <button class="auth-tab active" onclick="switchAuthTab('login')">Sign In</button>
       <button class="auth-tab" onclick="switchAuthTab('signup')">Create Account</button>
     </div>
-    <div class="auth-field">
-      <label class="auth-label">Email</label>
-      <input type="email" class="inp" id="auth-email" placeholder="you@email.com"/>
+    <div class="auth-body">
+      <div class="auth-forgot-info" id="auth-forgot-info">
+        <div class="auth-forgot-info-text">Enter your email and we'll send you a link to reset your password.</div>
+      </div>
+      <div class="auth-field">
+        <label class="auth-label">Email</label>
+        <input type="email" class="inp" id="auth-email" placeholder="you@email.com"/>
+      </div>
+      <div class="auth-field" id="auth-password-field">
+        <label class="auth-label">Password</label>
+        <input type="password" class="inp" id="auth-password" placeholder="••••••••"/>
+        <span class="auth-forgot" onclick="switchAuthTab('forgot')">Forgot password?</span>
+      </div>
+      <div class="auth-field" id="confirm-field" style="display:none">
+        <label class="auth-label">Confirm Password</label>
+        <input type="password" class="inp" id="auth-confirm" placeholder="••••••••"/>
+      </div>
+      <button class="auth-btn" id="auth-submit-btn" onclick="handleAuth()">Sign In</button>
+      <span class="auth-back" id="auth-back-link" onclick="switchAuthTab('login')">← Back to Sign In</span>
+      <div class="auth-err" id="auth-err"></div>
     </div>
-    <div class="auth-field">
-      <label class="auth-label">Password</label>
-      <input type="password" class="inp" id="auth-password" placeholder="••••••••"/>
-    </div>
-    <div class="auth-field" id="confirm-field" style="display:none">
-      <label class="auth-label">Confirm Password</label>
-      <input type="password" class="inp" id="auth-confirm" placeholder="••••••••"/>
-    </div>
-    <button class="auth-btn" id="auth-submit-btn" onclick="handleAuth()">Sign In</button>
-    <div class="auth-err" id="auth-err"></div>
   </div>
 </div>
-<div id="paywall-screen" style="display:flex;position:fixed;inset:0;background:#000;align-items:center;justify-content:center;z-index:9999;padding:24px">
-  <div style="text-align:center;border:1px solid #242424;border-radius:14px;padding:56px 48px;background:#0c0c0c;max-width:440px;width:100%">
-    <div style="font-family:'Space Mono',monospace;font-size:0.62rem;letter-spacing:6px;text-transform:uppercase;color:#e11d48;margin-bottom:16px">Strategic Execution Engine</div>
-    <div style="font-size:3rem;font-weight:800;letter-spacing:-3px;margin-bottom:8px;color:#fff">VANTAGE</div>
-    <div style="font-family:'Space Mono',monospace;font-size:0.62rem;color:#888;letter-spacing:2px;text-transform:uppercase;margin-bottom:48px;padding:8px 16px;border:1px solid #242424;border-radius:6px;display:inline-block">Session Not Initialized</div><br>
-    <a href="https://buy.stripe.com/eVq6oI4PY5fC0ikfAH3sI00" style="display:block;width:100%;background:#e11d48;color:#fff;border:none;border-radius:10px;padding:16px 24px;font-family:'Space Mono',monospace;font-size:0.82rem;font-weight:700;letter-spacing:1px;text-transform:uppercase;cursor:pointer;text-decoration:none;margin-bottom:32px">Purchase Lifetime License   $6.99</a>
-    <div onclick="operatorLogin()" style="font-family:'Space Mono',monospace;font-size:0.6rem;color:#333;cursor:pointer;letter-spacing:1px;text-transform:uppercase" onmouseover="this.style.color='#888'" onmouseout="this.style.color='#333'">Operator Login</div>
+
+<div id="paywall-screen" style="display:flex">
+  <nav class="hero-nav">
+    <div class="hero-logo">VANTAGE<span>.</span></div>
+    <div class="hero-nav-tag">Personal Execution OS</div>
+    <div class="hero-nav-op" onclick="operatorLogin()">Operator</div>
+  </nav>
+  <div class="hero-body">
+    <div class="hero-left">
+      <div class="hero-badge"><span class="hero-badge-dot"></span>Now Available — v2.0</div>
+      <h1 class="hero-headline">Your goals deserve<br>a real <span>system.</span></h1>
+      <p class="hero-sub">Vantage is your personal command center — track habits, hit goals, monitor your body, and get AI-powered daily briefings. One focused dashboard. No subscriptions.</p>
+      <a href="#" class="hero-cta" onclick="handlePurchase();return false;">
+        Get Access — $6.99 Lifetime
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+      </a>
+      <div class="hero-proof">
+        <div class="hero-proof-item"><span class="hero-proof-num">Lifetime</span><span class="hero-proof-label">One-time payment</span></div>
+        <div class="hero-proof-divider"></div>
+        <div class="hero-proof-item"><span class="hero-proof-num">AI-Powered</span><span class="hero-proof-label">Daily briefings</span></div>
+        <div class="hero-proof-divider"></div>
+        <div class="hero-proof-item"><span class="hero-proof-num">5 Modules</span><span class="hero-proof-label">Habits · Goals · Body · Calendar · Wins</span></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="hero-phone-wrap">
+        <div class="hero-float-card hero-float-score">
+          <div class="hfc-label">Execution Score</div>
+          <div class="hfc-val">94<span>%</span></div>
+        </div>
+        <div class="hero-phone">
+          <div class="hero-phone-notch"></div>
+          <div class="hero-phone-screen">
+            <div class="mp-header"><div class="mp-title">Today<span>.</span></div><div class="mp-date">MAR 24</div></div>
+            <div class="mp-score-bar"><div class="mp-score-label">Daily Score</div><div class="mp-score-val">94%</div></div>
+            <div class="mp-habits">
+              <div class="mp-habit done"><div class="mp-cb">✓</div><div class="mp-hname">Morning workout</div><div class="mp-stake high">HIGH</div></div>
+              <div class="mp-habit done"><div class="mp-cb">✓</div><div class="mp-hname">Deep work block</div><div class="mp-stake crit">CRIT</div></div>
+              <div class="mp-habit"><div class="mp-cb"></div><div class="mp-hname">Evening review</div><div class="mp-stake med">MED</div></div>
+            </div>
+            <div class="mp-briefing"><div class="mp-brief-label">📋 AI Briefing</div><div class="mp-brief-text">Strong momentum. 2 critical habits cleared. Protect your evening block.</div></div>
+          </div>
+        </div>
+        <div class="hero-float-card hero-float-streak">
+          <div class="hfc-icon">🔥</div>
+          <div class="hfc-streak-text"><div class="hfc-val">14 days</div><div class="hfc-label">Current streak</div></div>
+        </div>
+      </div>
+    </div>
   </div>
+  <!-- PHASE 2: DIVIDER + FEATURES + CHECKOUT -->
+<div class="p2-divider"></div>
+
+<section class="p2-features">
+  <div class="p2-section-label">
+    <div class="p2-eyebrow">Everything you need</div>
+    <h2 class="p2-section-title">Built for people who<br>take their goals <span>seriously.</span></h2>
+    <p class="p2-section-sub">Three core systems. One dashboard. Total clarity on where you stand, every single day.</p>
+  </div>
+
+  <div class="p2-block">
+    <div class="p2-img-col">
+      <div class="p2-screen-placeholder">
+        <div class="p2-screen-bar" style="background:linear-gradient(90deg,var(--accent),rgba(223,255,0,0.3))"></div>
+        <div class="p2-placeholder-icon">⚡</div>
+        <div class="p2-placeholder-label">Your UI screenshot here</div>
+      </div>
+    </div>
+    <div class="p2-text-col">
+      <div class="p2-block-num">01 / 03</div>
+      <div class="p2-block-tag yellow">The Foundation</div>
+      <h3 class="p2-block-title">Your daily habits,<br>finally under control.</h3>
+      <p class="p2-block-body">Log your habits in seconds. Assign stake levels — low, medium, high, or critical — so the system knows what actually matters. Your execution score updates in real time.</p>
+      <div class="p2-feature-pills">
+        <div class="p2-pill"><span class="p2-pill-dot" style="background:var(--accent)"></span>Stake-weighted scoring</div>
+        <div class="p2-pill"><span class="p2-pill-dot" style="background:var(--accent)"></span>1-tap check-in</div>
+        <div class="p2-pill"><span class="p2-pill-dot" style="background:var(--accent)"></span>Zero friction logging</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p2-block flip">
+    <div class="p2-img-col">
+      <div class="p2-screen-placeholder">
+        <div class="p2-screen-bar" style="background:linear-gradient(90deg,#5B9A78,rgba(91,154,120,0.3))"></div>
+        <div class="p2-placeholder-icon">🧠</div>
+        <div class="p2-placeholder-label">Your UI screenshot here</div>
+      </div>
+    </div>
+    <div class="p2-text-col">
+      <div class="p2-block-num">02 / 03</div>
+      <div class="p2-block-tag green">The Differentiator</div>
+      <h3 class="p2-block-title">An AI coach that<br>tells you the truth.</h3>
+      <p class="p2-block-body">Every morning, Vantage generates a personalized briefing based on your data — your mood, your habits, your friction points. It spots patterns you miss and calls out the gaps before they become excuses.</p>
+      <div class="p2-feature-pills">
+        <div class="p2-pill"><span class="p2-pill-dot" style="background:#5B9A78"></span>Daily AI briefing</div>
+        <div class="p2-pill"><span class="p2-pill-dot" style="background:#5B9A78"></span>Root friction analysis</div>
+        <div class="p2-pill"><span class="p2-pill-dot" style="background:#5B9A78"></span>Accountability prompts</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="p2-block">
+    <div class="p2-img-col">
+      <div class="p2-screen-placeholder">
+        <div class="p2-screen-bar" style="background:linear-gradient(90deg,#38bdf8,rgba(56,189,248,0.3))"></div>
+        <div class="p2-placeholder-icon">📊</div>
+        <div class="p2-placeholder-label">Your UI screenshot here</div>
+      </div>
+    </div>
+    <div class="p2-text-col">
+      <div class="p2-block-num">03 / 03</div>
+      <div class="p2-block-tag blue">The Result</div>
+      <h3 class="p2-block-title">See your trajectory,<br>not just today.</h3>
+      <p class="p2-block-body">Weekly and monthly recaps surface your real performance data — habit heatmaps, mood trends, body metrics, and goal completion rates. Know exactly if you're compounding or slipping.</p>
+      <div class="p2-feature-pills">
+        <div class="p2-pill"><span class="p2-pill-dot" style="background:#38bdf8"></span>Habit heatmaps</div>
+        <div class="p2-pill"><span class="p2-pill-dot" style="background:#38bdf8"></span>Mood & body trends</div>
+        <div class="p2-pill"><span class="p2-pill-dot" style="background:#38bdf8"></span>Monthly audit</div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="p2-checkout">
+  <div class="p2-checkout-inner">
+    <div class="p2-checkout-header">
+      <div class="p2-checkout-eyebrow">Ready to start</div>
+      <h2 class="p2-checkout-title">One payment.<br>Lifetime access.</h2>
+    </div>
+    <div class="p2-card">
+      <div class="p2-card-accent-bar"></div>
+      <div class="p2-card-body">
+        <div class="p2-trust-row">
+          <div class="p2-trust-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Secured by Stripe</div>
+          <div class="p2-trust-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 2L2 7l10 5 10-5-10-5zM2 17l10 5 10-5M2 12l10 5 10-5"/></svg>No subscription</div>
+          <div class="p2-trust-badge"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>Instant access</div>
+        </div>
+        <div class="p2-price-row">
+          <div class="p2-price">$6.99</div>
+          <div class="p2-price-meta"><span class="p2-price-cross">$29.99</span><span class="p2-price-label">Founder price</span></div>
+        </div>
+        <div class="p2-price-sub">One-time · No recurring charges · Yours forever</div>
+        <div class="p2-card-hr"></div>
+        <div class="p2-includes-label">What's included</div>
+        <div class="p2-include-list">
+          <div class="p2-include-item"><div class="p2-include-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="p2-include-text"><div class="p2-include-name">Full App Access</div><div class="p2-include-desc">All 5 modules — Today, Month, Calendar, Wins, Settings</div></div></div>
+          <div class="p2-include-item"><div class="p2-include-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="p2-include-text"><div class="p2-include-name">Daily Logs</div><div class="p2-include-desc">Habit tracking, mood, weight, calories, protein, sleep</div></div></div>
+          <div class="p2-include-item"><div class="p2-include-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="p2-include-text"><div class="p2-include-name">AI Coach</div><div class="p2-include-desc">Personalized daily briefings, friction analysis, accountability prompts</div></div></div>
+          <div class="p2-include-item"><div class="p2-include-check"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg></div><div class="p2-include-text"><div class="p2-include-name">Monthly Reviews</div><div class="p2-include-desc">Heatmaps, trend charts, goal audits, and performance scoring</div></div></div>
+        </div>
+        <a href="#" class="p2-buy-btn" onclick="handlePurchase();return false;">
+          Get Lifetime Access — $6.99
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+        </a>
+        <div class="p2-secure-row"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>256-bit SSL · Stripe-secured · No card stored</div>
+      </div>
+      <div class="p2-card-footer">
+        <div class="p2-footer-item"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>Secure checkout</div>
+        <div class="p2-footer-item"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/></svg>Powered by Stripe</div>
+        <div class="p2-footer-item"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>No subscription ever</div>
+      </div>
+    </div>
+    <div class="p2-operator-link" onclick="operatorLogin()">Operator access</div>
+  </div>
+</section>
+<!-- END PHASE 2 -->
+
+<!-- PHASE 3: TRUST + ROADMAP -->
+<div class="p3-beta-banner">
+  <div class="p3-ticker-wrap"><span class="p3-ticker">ACTIVE DEVELOPMENT &nbsp;·&nbsp; EARLY ACCESS &nbsp;·&nbsp; LIFETIME PRICING LOCKED IN &nbsp;·&nbsp; YOU SHAPE WHAT GETS BUILT NEXT &nbsp;·&nbsp; ACTIVE DEVELOPMENT &nbsp;·&nbsp; EARLY ACCESS &nbsp;·&nbsp; LIFETIME PRICING LOCKED IN &nbsp;·&nbsp; YOU SHAPE WHAT GETS BUILT NEXT &nbsp;·&nbsp; ACTIVE DEVELOPMENT &nbsp;·&nbsp; EARLY ACCESS &nbsp;·&nbsp; LIFETIME PRICING LOCKED IN &nbsp;·&nbsp; YOU SHAPE WHAT GETS BUILT NEXT &nbsp;·&nbsp;</span></div>
+  <div class="p3-beta-inner">
+    <div class="p3-beta-left">
+      <div class="p3-beta-eyebrow"><span class="p3-beta-dot"></span>Beta Transparency</div>
+      <h2 class="p3-beta-title">Built in public.<br>Priced for <span>early believers.</span></h2>
+      <p class="p3-beta-body">Vantage is in active development. That means you'll occasionally see rough edges — and you'll also be first in line when new features drop. Everyone who gets in now locks in lifetime access at the founding price, forever.</p>
+      <div class="p3-beta-perks">
+        <div class="p3-beta-perk"><div class="p3-perk-icon">🔒</div><span>Your $6.99 price is locked permanently — no price increases, ever</span></div>
+        <div class="p3-beta-perk"><div class="p3-perk-icon">🗳️</div><span>Feature requests go directly to the builder — your vote counts</span></div>
+        <div class="p3-beta-perk"><div class="p3-perk-icon">⚡</div><span>Updates ship continuously — you get every improvement automatically</span></div>
+      </div>
+    </div>
+    <div class="p3-roadmap">
+      <div class="p3-roadmap-label">What's shipped · What's next</div>
+      <div class="p3-timeline-item"><div class="p3-tl-left"><div class="p3-tl-node done"><div class="p3-tl-dot-inner"></div></div><div class="p3-tl-line"></div></div><div class="p3-tl-right"><div class="p3-tl-status done">Shipped</div><div class="p3-tl-name">Daily Habit Tracker</div><div class="p3-tl-desc">Stake-weighted scoring, 1-tap check-in, execution score</div></div></div>
+      <div class="p3-timeline-item"><div class="p3-tl-left"><div class="p3-tl-node done"><div class="p3-tl-dot-inner"></div></div><div class="p3-tl-line"></div></div><div class="p3-tl-right"><div class="p3-tl-status done">Shipped</div><div class="p3-tl-name">AI Daily Briefing</div><div class="p3-tl-desc">Personalized morning reports via Groq API</div></div></div>
+      <div class="p3-timeline-item"><div class="p3-tl-left"><div class="p3-tl-node done"><div class="p3-tl-dot-inner"></div></div><div class="p3-tl-line"></div></div><div class="p3-tl-right"><div class="p3-tl-status done">Shipped</div><div class="p3-tl-name">Monthly Reviews & Heatmaps</div><div class="p3-tl-desc">Mood, body, habit data — full calendar history</div></div></div>
+      <div class="p3-timeline-item"><div class="p3-tl-left"><div class="p3-tl-node active"><div class="p3-tl-dot-inner"></div></div><div class="p3-tl-line"></div></div><div class="p3-tl-right"><div class="p3-tl-status active">In Progress</div><div class="p3-tl-name">Mobile UI Polish</div><div class="p3-tl-desc">Full responsive redesign across all pages</div></div></div>
+      <div class="p3-timeline-item"><div class="p3-tl-left"><div class="p3-tl-node"><div class="p3-tl-dot-inner"></div></div><div class="p3-tl-line"></div></div><div class="p3-tl-right"><div class="p3-tl-status soon">Coming Soon</div><div class="p3-tl-name muted">Weekly Non-Negotiables 2.0</div><div class="p3-tl-desc">Smarter accountability loops and streak recovery</div></div></div>
+      <div class="p3-timeline-item"><div class="p3-tl-left"><div class="p3-tl-node"><div class="p3-tl-dot-inner"></div></div><div class="p3-tl-line"></div></div><div class="p3-tl-right"><div class="p3-tl-status soon">Planned</div><div class="p3-tl-name muted">Native iOS App</div><div class="p3-tl-desc">Push notifications, widgets, offline support</div></div></div>
+    </div>
+  </div>
+</div>
+
+<div class="p3-feedback">
+  <div class="p3-feedback-inner">
+    <div class="p3-feedback-header">
+      <div class="p3-feedback-eyebrow">Direct line to the builder</div>
+      <h2 class="p3-feedback-title">Found a bug? Have an idea?</h2>
+      <p class="p3-feedback-sub">Every submission is read personally. If you spot something broken or want to see a feature, say so — this is how Vantage gets better.</p>
+    </div>
+    <div class="p3-type-row" id="p3-type-row">
+      <div class="p3-type-btn active" onclick="p3SelectType(this)">🐛 &nbsp;Bug Report</div>
+      <div class="p3-type-btn" onclick="p3SelectType(this)">💡 &nbsp;Feature Request</div>
+      <div class="p3-type-btn" onclick="p3SelectType(this)">💬 &nbsp;General Feedback</div>
+    </div>
+    <div class="p3-form">
+      <div class="p3-field-group">
+        <div class="p3-field"><label class="p3-label">Your name</label><input type="text" class="p3-inp" placeholder="First name is fine"/></div>
+        <div class="p3-field"><label class="p3-label">Email (optional)</label><input type="email" class="p3-inp" placeholder="For a reply"/></div>
+      </div>
+      <div class="p3-field"><label class="p3-label">Subject</label><input type="text" class="p3-inp" placeholder="One line summary"/></div>
+      <div class="p3-field"><label class="p3-label">Details</label><textarea class="p3-inp" placeholder="Describe what happened, what you expected, or what you'd love to see built…"></textarea></div>
+      <div class="p3-submit-row">
+        <div class="p3-submit-note">Responses within 48 hrs<br>for anything urgent</div>
+        <button class="p3-submit-btn" onclick="p3HandleSubmit(this)">Send Feedback <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg></button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="p3-about">
+  <div class="p3-about-inner">
+    <div class="p3-about-eyebrow">About the Builder</div>
+    <div class="p3-builder-card">
+      <div class="p3-builder-top">
+        <div class="p3-avatar">👤</div>
+        <div class="p3-builder-meta">
+          <div class="p3-builder-name">Built by a practitioner,<br>not a product team.</div>
+          <div class="p3-builder-role">Founder · Developer · Daily User</div>
+          <div class="p3-builder-tags"><span class="p3-builder-tag">Self-improvement</span><span class="p3-builder-tag">Performance systems</span><span class="p3-builder-tag">Solo builder</span><span class="p3-builder-tag">Ships fast</span></div>
+        </div>
+      </div>
+      <div class="p3-builder-body">
+        <blockquote class="p3-builder-quote">"I built Vantage because <strong>every other tracker was either too bloated or too shallow.</strong> I needed one place to log my habits, track my body, review my goals, and get a real read on my momentum — without paying $20/month for a SaaS app that barely works.<br><br>This is the tool I use every single day. If it's useful to you too, that's the whole point."</blockquote>
+        <div class="p3-builder-stats">
+          <div class="p3-builder-stat"><span class="p3-stat-num">365+</span><span class="p3-stat-label">Days using Vantage daily</span></div>
+          <div class="p3-builder-stat"><span class="p3-stat-num">Solo</span><span class="p3-stat-label">One builder, no VC, no team</span></div>
+          <div class="p3-builder-stat"><span class="p3-stat-num">$6.99</span><span class="p3-stat-label">Fair price, not a growth hack</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="p3-footer">
+  <div class="p3-footer-logo">VANTAGE<span>.</span></div>
+  <div class="p3-footer-copy">© 2026 · Personal OS · All rights reserved</div>
+</div>
+<!-- END PHASE 3 -->
+
+</div>  
 </div>
 
 <div id="app">
@@ -731,6 +1298,19 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 <div class="toast" id="toast"></div>
 
 <script>
+  // ── PHASE 3: Feedback form ────────────────────────────────────────────────
+function p3SelectType(el) {
+  document.querySelectorAll('.p3-type-btn').forEach(b => b.classList.remove('active'));
+  el.classList.add('active');
+}
+function p3HandleSubmit(btn) {
+  btn.textContent = '✓  Sent — thank you';
+  btn.style.background = '#161616';
+  btn.style.color = '#dfff00';
+  btn.style.border = '1px solid rgba(223,255,0,0.3)';
+  btn.style.boxShadow = 'none';
+  btn.disabled = true;
+}
 // ─── SUPABASE ─────────────────────────────────────────────────────────────────
 const SUPA_URL = 'https://eqzcdcdnddjufuwmwbml.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxemNkY2RuZGRqdWZ1d213Ym1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyOTM1NzEsImV4cCI6MjA4OTg2OTU3MX0.cGBJxtuReOrU7_jz6Na-zhgR92nGIYJVgno22vqjqDA';
@@ -860,9 +1440,13 @@ function switchAuthTab(mode) {
   authMode = mode;
   document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active',(i===0&&mode==='login')||(i===1&&mode==='signup')));
   document.getElementById('confirm-field').style.display = mode==='signup'?'block':'none';
-  document.getElementById('auth-submit-btn').textContent = mode==='login'?'Sign In':'Create Account';
+  document.getElementById('auth-password-field').style.display = mode==='forgot'?'none':'block';
+  document.getElementById('auth-forgot-info').style.display = mode==='forgot'?'block':'none';
+  document.getElementById('auth-back-link').style.display = mode==='forgot'?'block':'none';
+  document.getElementById('auth-submit-btn').textContent = mode==='login'?'Sign In':mode==='signup'?'Create Account':'Send Recovery Link';
   document.getElementById('auth-err').textContent = '';
 }
+
 async function handleAuth() {
   const email = document.getElementById('auth-email').value.trim();
   const pw = document.getElementById('auth-password').value;
@@ -870,6 +1454,18 @@ async function handleAuth() {
   const btn = document.getElementById('auth-submit-btn');
   const err = document.getElementById('auth-err');
   err.textContent = '';
+  if (authMode==='forgot') {
+    if (!email) { err.textContent='Email required.'; return; }
+    btn.disabled=true; btn.innerHTML='<span class="spinner"></span>Sending...';
+    try {
+      const { error } = await sb.auth.resetPasswordForEmail(email, { redirectTo: window.location.href });
+      if (error) throw error;
+      err.style.color='var(--green)'; err.textContent='Recovery link sent — check your email.';
+    } catch(e) { err.style.color='var(--red)'; err.textContent=e.message||'Something went wrong.'; }
+    btn.disabled=false; btn.textContent='Send Recovery Link';
+    return;
+  }
+
   if (!email||!pw) { err.textContent='Email and password required.'; return; }
   if (authMode==='signup'&&pw!==confirm) { err.textContent='Passwords do not match.'; return; }
   if (authMode==='signup'&&pw.length<6) { err.textContent='Password must be at least 6 characters.'; return; }
@@ -1044,7 +1640,7 @@ function renderHabitList(dk) {
   const score = calcDailyScore(dk);
   const scoreEl = document.getElementById('score-display');
   if (scoreEl) {
-    const c = score>=80?'var(--green)':score>=50?'var(--yellow)':'var(--red)';
+    const c = score>=80?'var(--accent)':score>=50?'var(--yellow)':'var(--red)';
     scoreEl.style.color = c;
     scoreEl.textContent = score + '% execution';
   }
@@ -2148,7 +2744,27 @@ function showPaywall() {
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app').classList.remove('visible');
 }
+// ─── STRIPE CHECKOUT ──────────────────────────────────────────────────────────
+async function handlePurchase() {
+  // If user is already logged in, attach their ID so webhook knows who paid
+  const { data: { session } } = await sb.auth.getSession();
+  const baseUrl = 'https://buy.stripe.com/eVq6oI4PY5fC0ikfAH3sI00';
+  if (session?.user?.id) {
+    window.location.href = baseUrl + '?client_reference_id=' + session.user.id;
+  } else {
+    window.location.href = baseUrl;
+  }
+}
+```
 
+Then **find every place in your HTML** that has this `href` on the buy buttons:
+```
+href="https://buy.stripe.com/eVq6oI4PY5fC0ikfAH3sI00"
+```
+
+**Change each one** from an `<a>` tag to a `<button>` calling that function. Specifically, find this line in your paywall HTML:
+```
+<a href="https://buy.stripe.com/eVq6oI4PY5fC0ikfAH3sI00" class="hero-cta">
 function operatorLogin() {
   const pw = prompt('Access code:');
   if (!pw) return;
