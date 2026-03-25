@@ -3201,24 +3201,6 @@ function injectDeltaAnchor() {
   const main = document.querySelector('.main-content') || document.querySelector('main') || document.body;
   main.insertBefore(bar, main.firstChild);
 }
-// ─── BOOT ─────────────────────────────────────────────────────────────────────
-(async () => {
-  try {
-    const {data:{session}} = await sb.auth.getSession();
-    if (session?.user) {
-      currentUser = session.user;
-      await initApp();
-    } else {
-      document.getElementById('app').classList.remove('visible');
-      document.getElementById('paywall-screen').style.display = 'none';
-      document.getElementById('auth-screen').style.display = 'flex';
-    }
-    document.getElementById('auth-password').addEventListener('keydown', e => { if(e.key==='Enter') handleAuth(); });
-    document.getElementById('auth-email').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('auth-password').focus(); });
-  } catch(e) {
-    console.error('Boot error:', e);
-  }
-})();
 </script>
 </body>
 </html>
