@@ -243,6 +243,20 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
   .nav-item{flex-direction:column;gap:3px;padding:8px 12px;font-size:0.58rem;white-space:nowrap}
   .main{padding:20px;padding-bottom:100px}
   .today-grid{grid-template-columns:1fr}
+
+  /* Prevent Title and Score overlap on mobile */
+  .page-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 8px !important;
+  }
+  .page-header > div:last-child {
+    align-items: flex-start !important;
+    width: 100%;
+  }
+  .save-status {
+    font-size: 0.65rem !important;
+  }
 }
 /* ═══ MODALS ═══════════════════════════════════════════════════════ */
 .modal-overlay{position:fixed;inset:0;background:rgba(0,0,0,0.88);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(4px)}
@@ -1155,11 +1169,11 @@ textarea.p3-inp{min-height:110px;resize:vertical;line-height:1.6}
       </div>
 
       <div class="settings-section">
-        <div class="settings-title">Groq API Key (free AI feedback)</div>
-        <p style="font-size:0.73rem;color:var(--muted);margin-bottom:10px;line-height:1.6">Get a free key at <strong style="color:var(--text)">console.groq.com</strong> → API Keys → Create key.</p>
-        <input type="password" class="inp" id="set-groq-key" placeholder="gsk_..."/>
-        <div style="margin-top:10px"><button class="save-btn" onclick="saveGroqKey()">Save Key</button></div>
-      </div>
+  <div class="settings-title">Groq API Key (free AI feedback)</div>
+  <p style="font-size:0.73rem;color:var(--muted);margin-bottom:10px;line-height:1.6">Get a free key at <strong style="color:var(--text)">console.groq.com</strong> → API Keys → Create key.</p>
+  <input type="text" class="inp" id="set-groq-key" placeholder="gsk_..." autocomplete="off" style="-webkit-text-security: disc;"/>
+  <div style="margin-top:10px"><button class="save-btn" onclick="saveGroqKey()">Save Key</button></div>
+</div>
       
       <div class="settings-section">
         <div class="settings-title">Danger Zone</div>
@@ -1569,7 +1583,22 @@ async function handleLogout() {
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 async function initApp() {
+  // 1. Safety Check: Ensure we actually have a user session from Supabase
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session || !session.user) {
+    // If no session, show auth screen and stop
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('paywall-screen').style.display = 'none';
+    document.getElementById('app').classList.remove('visible');
+    return;
+  }
+
+  // Set the global currentUser to the verified session user
+  currentUser = session.user;
+
+  // 2. Access Check: Did they pay?
   const hasAccess = await checkAccess(currentUser.id);
+  
   if (!hasAccess) {
     document.getElementById('auth-screen').style.display = 'none';
     document.getElementById('app').classList.remove('visible');
@@ -1577,20 +1606,26 @@ async function initApp() {
     return;
   }
 
+  // 3. App Setup: Access granted, hide the walls and show the OS
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('paywall-screen').style.display = 'none';
   document.getElementById('app').classList.add('visible');
   document.getElementById('sidebar-email').textContent = currentUser.email;
 
-  S.groqKey = localStorage.getItem('groq_key') || '';
+  // 4. Persistence: Set account age for reviews
   if (!localStorage.getItem('vantage_account_created')) {
     localStorage.setItem('vantage_account_created', todayStr());
   }
+
+  // 5. Data Loading: Fetch settings and logs from Supabase
   await loadUserSettings();
   await loadMonthLogs();
+  
+  // 6. Systems Boot: Fire up all background modules
   updateSidebar();
   initToday(todayStr());
-  calViewMonth = S.month; calViewYear = S.year;
+  calViewMonth = S.month; 
+  calViewYear = S.year;
   setupEodTimer();
   checkTemporalReviews();
   initAdminPanel();
@@ -1625,30 +1660,42 @@ async function initApp() {
 
 // ─── SUPABASE DATA ────────────────────────────────────────────────────────────
 async function loadUserSettings() {
-  const {data} = await sb.from('user_settings').select('*').eq('user_id', currentUser.id).single();
+  const { data } = await sb.from('user_settings').select('*').eq('user_id', currentUser.id).single();
   if (data) {
     if (data.habits && Array.isArray(data.habits) && data.habits.length > 0) S.habits = data.habits;
+    
+    // Improved Goal Parsing
     if (data.goals) {
-      try { S.goals = typeof data.goals==='string' ? JSON.parse(data.goals) : data.goals; if (!Array.isArray(S.goals)) S.goals=[]; }
-      catch(e) { S.goals=[]; }
-    } else { S.goals=[]; }
+      try { 
+        S.goals = typeof data.goals === 'string' ? JSON.parse(data.goals) : data.goals; 
+        if (!Array.isArray(S.goals)) S.goals = []; 
+      } catch(e) { S.goals = []; }
+    } else { S.goals = []; }
+
     if (data.meta) {
-      const meta = typeof data.meta==='string' ? JSON.parse(data.meta) : data.meta;
-      S.lastWeeklyReview  = meta.lastWeeklyReview  || null;
-      S.lastMonthlyRecap  = meta.lastMonthlyRecap  || null;
-      S.weeklyNonNeg           = meta.weeklyNonNeg           || [];
-      S.weeklyNonNegStatus     = meta.weeklyNonNegStatus     || {};
+      const meta = typeof data.meta === 'string' ? JSON.parse(data.meta) : data.meta;
+      
+      // FIX: Ensure Groq Key is loaded from Supabase into the App State
+      S.groqKey = meta.groqKey || localStorage.getItem('groq_key') || '';
+
+      S.lastWeeklyReview = meta.lastWeeklyReview || null;
+      S.lastMonthlyRecap = meta.lastMonthlyRecap || null;
+      S.weeklyNonNeg = meta.weeklyNonNeg || [];
+      S.weeklyNonNegStatus = meta.weeklyNonNegStatus || {};
       S.weeklyNonNegBonusGiven = meta.weeklyNonNegBonusGiven || {};
-      S.lastWeekDelta          = meta.lastWeekDelta          || '';
-      S.weeklyRecaps           = meta.weeklyRecaps           || {};
-      S.monthlyAudits          = meta.monthlyAudits          || {};
-      S.pendingPruneHabit      = meta.pendingPruneHabit      || null;
-      S.dailyFrictionQuestion  = meta.dailyFrictionQuestion  || '';
-      S.monthDelta             = meta.monthDelta             || '';
+      S.lastWeekDelta = meta.lastWeekDelta || '';
+      S.weeklyRecaps = meta.weeklyRecaps || {};
+      S.monthlyAudits = meta.monthlyAudits || {};
+      S.pendingPruneHabit = meta.pendingPruneHabit || null;
+      S.dailyFrictionQuestion = meta.dailyFrictionQuestion || '';
+      S.monthDelta = meta.monthDelta || '';
+      
       const savedStakes = meta.habitStakes || {};
       S.habitStakes = Object.keys(savedStakes).length > 0 ? savedStakes : {...DEFAULT_HABIT_STAKES};
 
-    } else { S.habitStakes={...DEFAULT_HABIT_STAKES}; }
+    } else { 
+      S.habitStakes = {...DEFAULT_HABIT_STAKES}; 
+    }
   }
 }
 
@@ -2544,7 +2591,7 @@ function calcWeightedScore(days) {
       const missedDays = 7 - ph.doneCount;
       const delayDays  = Math.ceil(missedDays * 0.75);
       return {
-        name: ph.name, missedDays, vLost,
+        name: ph.name, missedDays,
         statement: `Missed ${missedDays}/7 days. Estimated trajectory delay: ${delayDays} day${delayDays !== 1 ? 's' : ''}.`
       };
     });
@@ -2860,10 +2907,19 @@ async function initApp() {
 // ─── STRIPE CHECKOUT ──────────────────────────────────────────────────────────
 async function handlePurchase() {
   const { data: { session } } = await sb.auth.getSession();
+  
+  // Base link for your Vantage Stripe checkout
   const baseUrl = 'https://buy.stripe.com/eVq6oI4PY5fC0ikfAH3sI00';
+  
+  // Create a Return URL that points back to your site
+  // This tells Stripe where to send them after they pay
+  const returnUrl = encodeURIComponent(window.location.origin);
+  
   if (session?.user?.id) {
-    window.location.href = baseUrl + '?client_reference_id=' + session.user.id;
+    // If logged in, pass their ID so your webhook knows WHO paid
+    window.location.href = `${baseUrl}?client_reference_id=${session.user.id}&return_url=${returnUrl}`;
   } else {
+    // If not logged in, send them to Stripe but they'll need to use the same email
     window.location.href = baseUrl;
   }
 }
