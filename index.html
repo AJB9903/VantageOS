@@ -670,14 +670,20 @@ textarea.p3-inp{min-height:110px;resize:vertical;line-height:1.6}
     <div class="p2-img-col">
       <div class="p2-screen-placeholder">
         <div class="p2-screen-bar" style="background:linear-gradient(90deg,var(--accent),rgba(223,255,0,0.3))"></div>
-        <div style="width:85%; background:#0a0a0a; border:1px solid #262626; border-radius:8px; padding:12px; z-index:2; text-align:left; box-shadow:0 10px 40px rgba(0,0,0,0.6);">
-          <div style="font-family:'Space Mono',monospace; font-size:0.55rem; color:#a3a3a3; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Habits — 2/3</div>
+        <div style="font-family:'Space Mono',monospace; font-size:0.55rem; color:#a3a3a3; margin-bottom:10px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Habits — 2/3</div>
+          <div style="display:flex; align-items:center; justify-content:space-between; background:#0d1a0d; border:1px solid #1a3a1a; border-radius:6px; padding:10px 12px; margin-bottom:6px;">
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="width:16px; height:16px; background:var(--green); border-radius:4px; display:flex; align-items:center; justify-content:center; color:#000; font-size:0.6rem; font-weight:bold;">✓</div>
+              <div style="font-family:'Syne',sans-serif; font-size:0.8rem; color:#fff; font-weight:600;">Morning workout</div>
+            </div>
+            <span style="font-family:'Space Mono',monospace; font-size:0.45rem; background:#1a0000; color:var(--red); border:1px solid #4a0000; padding:3px 6px; border-radius:3px; font-weight:700;">CRIT</span>
+          </div>
           <div style="display:flex; align-items:center; justify-content:space-between; background:#0d1a0d; border:1px solid #1a3a1a; border-radius:6px; padding:10px 12px; margin-bottom:6px;">
             <div style="display:flex; align-items:center; gap:10px;">
               <div style="width:16px; height:16px; background:var(--green); border-radius:4px; display:flex; align-items:center; justify-content:center; color:#000; font-size:0.6rem; font-weight:bold;">✓</div>
               <div style="font-family:'Syne',sans-serif; font-size:0.8rem; color:#fff; font-weight:600;">Deep work block</div>
             </div>
-            <span style="font-family:'Space Mono',monospace; font-size:0.45rem; background:#1a0000; color:var(--red); border:1px solid #4a0000; padding:3px 6px; border-radius:3px; font-weight:700;">CRIT</span>
+            <span style="font-family:'Space Mono',monospace; font-size:0.45rem; background:#2a1200; color:#fb923c; border:1px solid #4a2a00; padding:3px 6px; border-radius:3px; font-weight:700;">HIGH</span>
           </div>
           <div style="display:flex; align-items:center; justify-content:space-between; background:#161616; border:1px solid #262626; border-radius:6px; padding:10px 12px;">
             <div style="display:flex; align-items:center; gap:10px;">
@@ -686,8 +692,6 @@ textarea.p3-inp{min-height:110px;resize:vertical;line-height:1.6}
             </div>
             <span style="font-family:'Space Mono',monospace; font-size:0.45rem; background:#001a2e; color:var(--blue); border:1px solid #003060; padding:3px 6px; border-radius:3px; font-weight:700;">MED</span>
           </div>
-        </div>
-      </div>
     </div>
     <div class="p2-text-col">
       <div class="p2-block-num">01 / 03</div>
@@ -733,37 +737,58 @@ textarea.p3-inp{min-height:110px;resize:vertical;line-height:1.6}
       <div class="p2-screen-placeholder">
         <div class="p2-screen-bar" style="background:linear-gradient(90deg,#38bdf8,rgba(56,189,248,0.3))"></div>
         <div style="width:85%; background:#0a0a0a; border:1px solid #262626; border-radius:10px; padding:18px; z-index:2; text-align:left; box-shadow:0 10px 40px rgba(0,0,0,0.6);">
-          <div style="font-family:'Space Mono',monospace; font-size:0.55rem; color:#a3a3a3; margin-bottom:16px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Habit Heatmap — 30 Days</div>
-          <div style="display:flex; flex-direction:column; gap:10px;">
+          <div style="font-family:'Space Mono',monospace; font-size:0.55rem; color:#a3a3a3; margin-bottom:12px; text-transform:uppercase; letter-spacing:1px; font-weight:700;">Performance Audit</div>
+          <div style="display:flex; flex-direction:column; gap:8px; margin-bottom:16px;">
             <div style="display:flex; align-items:center; gap:10px;">
-              <div style="font-size:0.65rem; color:#fff; width:70px; white-space:nowrap; overflow:hidden; font-weight:600;">Deep Work</div>
+              <div style="font-size:0.6rem; color:#fff; width:65px; white-space:nowrap; overflow:hidden; font-weight:600;">Deep Work</div>
               <div style="display:flex; gap:3px;">
-                <div style="width:10px;height:10px;background:var(--green);border-radius:2px;"></div>
-                <div style="width:10px;height:10px;background:var(--green);border-radius:2px;"></div>
-                <div style="width:10px;height:10px;background:#262626;border-radius:2px;"></div>
-                <div style="width:10px;height:10px;background:var(--green);border-radius:2px;"></div>
-                <div style="width:10px;height:10px;background:var(--green);border-radius:2px;"></div>
-                <div style="width:10px;height:10px;background:var(--green);border-radius:2px;"></div>
-                <div style="width:10px;height:10px;background:var(--green);border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:var(--green);border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:var(--green);border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:#262626;border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:var(--green);border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:var(--green);border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:var(--green);border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:var(--green);border-radius:2px;"></div>
               </div>
-              <div style="font-family:'Space Mono',monospace; font-size:0.6rem; color:var(--green); font-weight:700; text-align:right; flex:1;">85%</div>
+              <div style="font-family:'Space Mono',monospace; font-size:0.55rem; color:var(--green); font-weight:700; text-align:right; flex:1;">85%</div>
             </div>
             <div style="display:flex; align-items:center; gap:10px;">
-              <div style="font-size:0.65rem; color:#fff; width:70px; white-space:nowrap; overflow:hidden; font-weight:600;">Train</div>
+              <div style="font-size:0.6rem; color:#fff; width:65px; white-space:nowrap; overflow:hidden; font-weight:600;">Gym</div>
               <div style="display:flex; gap:3px;">
-                <div style="width:10px;height:10px;background:#262626;border-radius:2px;"></div>
-                <div style="width:10px;height:10px;background:var(--green);border-radius:2px;"></div>
-                <div style="width:10px;height:10px;background:var(--green);border-radius:2px;"></div>
-                <div style="width:10px;height:10px;background:#262626;border-radius:2px;"></div>
-                <div style="width:10px;height:10px;background:var(--green);border-radius:2px;"></div>
-                <div style="width:10px;height:10px;background:#262626;border-radius:2px;"></div>
-                <div style="width:10px;height:10px;background:var(--green);border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:#262626;border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:var(--green);border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:var(--green);border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:#262626;border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:var(--green);border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:#262626;border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:var(--green);border-radius:2px;"></div>
               </div>
-              <div style="font-family:'Space Mono',monospace; font-size:0.6rem; color:var(--yellow); font-weight:700; text-align:right; flex:1;">57%</div>
+              <div style="font-family:'Space Mono',monospace; font-size:0.55rem; color:var(--yellow); font-weight:700; text-align:right; flex:1;">57%</div>
+            </div>
+            <div style="display:flex; align-items:center; gap:10px;">
+              <div style="font-size:0.6rem; color:#fff; width:65px; white-space:nowrap; overflow:hidden; font-weight:600;">Diet</div>
+              <div style="display:flex; gap:3px;">
+                <div style="width:8px;height:8px;background:var(--green);border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:var(--green);border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:var(--green);border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:var(--green);border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:#262626;border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:#262626;border-radius:2px;"></div>
+                <div style="width:8px;height:8px;background:var(--green);border-radius:2px;"></div>
+              </div>
+              <div style="font-family:'Space Mono',monospace; font-size:0.55rem; color:var(--green); font-weight:700; text-align:right; flex:1;">71%</div>
             </div>
           </div>
-        </div>
-      </div>
+          <div style="border-top:1px solid #262626; padding-top:12px; display:flex; align-items:flex-end; gap:4px; height:50px;">
+            <div style="flex:1; background:var(--green); height:40%; border-radius:2px;"></div>
+            <div style="flex:1; background:var(--green); height:60%; border-radius:2px;"></div>
+            <div style="flex:1; background:var(--yellow); height:30%; border-radius:2px;"></div>
+            <div style="flex:1; background:var(--green); height:85%; border-radius:2px;"></div>
+            <div style="flex:1; background:var(--green); height:100%; border-radius:2px;"></div>
+            <div style="flex:1; background:var(--red); height:20%; border-radius:2px;"></div>
+            <div style="flex:1; background:var(--green); height:75%; border-radius:2px;"></div>
+          </div>
+          <div style="font-family:'Space Mono',monospace; font-size:0.45rem; color:#666; text-align:center; margin-top:6px; letter-spacing:2px;">MOOD TREND</div>
     </div>
     <div class="p2-text-col">
       <div class="p2-block-num">03 / 03</div>
@@ -1541,11 +1566,20 @@ async function handleLogout() {
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
 async function initApp() {
-  document.getElementById('auth-screen').style.display='none';
+  const hasAccess = await checkAccess(currentUser.id);
+  if (!hasAccess) {
+    document.getElementById('auth-screen').style.display = 'none';
+    document.getElementById('app').classList.remove('visible');
+    document.getElementById('paywall-screen').style.display = 'flex';
+    return;
+  }
+
+  document.getElementById('auth-screen').style.display = 'none';
+  document.getElementById('paywall-screen').style.display = 'none';
   document.getElementById('app').classList.add('visible');
-  document.getElementById('sidebar-email').textContent=currentUser.email;
-  S.groqKey = localStorage.getItem('groq_key')||'';
-  // Track account creation date for recap delay
+  document.getElementById('sidebar-email').textContent = currentUser.email;
+
+  S.groqKey = localStorage.getItem('groq_key') || '';
   if (!localStorage.getItem('vantage_account_created')) {
     localStorage.setItem('vantage_account_created', todayStr());
   }
@@ -1553,7 +1587,7 @@ async function initApp() {
   await loadMonthLogs();
   updateSidebar();
   initToday(todayStr());
-  calViewMonth=S.month; calViewYear=S.year;
+  calViewMonth = S.month; calViewYear = S.year;
   setupEodTimer();
   checkTemporalReviews();
   initAdminPanel();
@@ -1561,6 +1595,25 @@ async function initApp() {
   injectDeltaAnchor();
   showGroqBanner();
 }
+
+// ─── BOOT ─────────────────────────────────────────────────────────────────────
+(async () => {
+  try {
+    const {data:{session}} = await sb.auth.getSession();
+    if (session?.user) {
+      currentUser = session.user;
+      await initApp();
+    } else {
+      document.getElementById('app').classList.remove('visible');
+      document.getElementById('auth-screen').style.display = 'none';
+      document.getElementById('paywall-screen').style.display = 'flex';
+    }
+    document.getElementById('auth-password').addEventListener('keydown', e => { if(e.key==='Enter') handleAuth(); });
+    document.getElementById('auth-email').addEventListener('keydown', e => { if(e.key==='Enter') document.getElementById('auth-password').focus(); });
+  } catch(e) {
+    console.error('Boot error:', e);
+  }
+})();
 
 // ─── SUPABASE DATA ────────────────────────────────────────────────────────────
 async function loadUserSettings() {
