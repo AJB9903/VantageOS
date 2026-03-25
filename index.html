@@ -275,14 +275,14 @@ body::before{content:'';position:fixed;inset:0;background-image:url("data:image/
 /* Theme selector cards */
 /* ─── VANTAGE GREEN HERO VARS ─────────────────────────────────────── */
 :root {
-  --vg:          #5B9A78;
-  --vg-light:    #7EC49E;
-  --vg-glow:     rgba(91,154,120,0.14);
-  --hero-bg:     #060a08;
-  --hero-surf:   #0d1511;
-  --hero-border: rgba(91,154,120,0.18);
-  --hero-text:   #EDF2EF;
-  --hero-muted:  #7A9A89;
+  --vg:          #dfff00;
+  --vg-light:    #e8ff2a;
+  --vg-glow:     rgba(223,255,0,0.14);
+  --hero-bg:     #000000;
+  --hero-surf:   #0a0a0a;
+  --hero-border: rgba(223,255,0,0.18);
+  --hero-text:   #ffffff;
+  --hero-muted:  #a3a3a3;
 }
 
 /* ─── PAYWALL / HERO SCREEN ───────────────────────────────────────── */
@@ -2746,7 +2746,6 @@ function showPaywall() {
 }
 // ─── STRIPE CHECKOUT ──────────────────────────────────────────────────────────
 async function handlePurchase() {
-  // If user is already logged in, attach their ID so webhook knows who paid
   const { data: { session } } = await sb.auth.getSession();
   const baseUrl = 'https://buy.stripe.com/eVq6oI4PY5fC0ikfAH3sI00';
   if (session?.user?.id) {
@@ -2755,16 +2754,7 @@ async function handlePurchase() {
     window.location.href = baseUrl;
   }
 }
-```
 
-Then **find every place in your HTML** that has this `href` on the buy buttons:
-```
-href="https://buy.stripe.com/eVq6oI4PY5fC0ikfAH3sI00"
-```
-
-**Change each one** from an `<a>` tag to a `<button>` calling that function. Specifically, find this line in your paywall HTML:
-```
-<a href="https://buy.stripe.com/eVq6oI4PY5fC0ikfAH3sI00" class="hero-cta">
 function operatorLogin() {
   const pw = prompt('Access code:');
   if (!pw) return;
