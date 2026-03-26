@@ -819,26 +819,7 @@ body::before { content: ''; position: fixed; inset: 0; background-image: url("da
 const SUPA_URL = 'https://eqzcdcdnddjufuwmwbml.supabase.co';
 const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxemNkY2RuZGRqdWZ1d213Ym1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyOTM1NzEsImV4cCI6MjA4OTg2OTU3MX0.cGBJxtuReOrU7_jz6Na-zhgR92nGIYJVgno22vqjqDA';
 const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
-// --- PASTE THIS AT THE TOP OF THE SCRIPT IN app.html ---
-async function authGuard() {
-  const { data: { session } } = await sb.auth.getSession();
-  
-  // Check for the specific access flags
-  const hasAccess = localStorage.getItem('vantage_access') === 'operator' || 
-                    localStorage.getItem('vantage_access') === 'purchased';
-  
-  // THE CURE: Only show the app if BOTH a session and the access flag exist.
-  if (session && hasAccess) {
-    document.getElementById('app').classList.add('visible');
-    console.log("Access Verified.");
-  } else {
-    // If one is missing, redirect to showcase and STOP the loop.
-    window.location.href = 'showcase.html';
-  }
-}
 
-// Run the check immediately
-authGuard();
   
 const HABIT_WEIGHTS = { critical: 3.0, high: 3.0, medium: 1.0, low: 0.5 }; // Fallback defaults
 function getHabitWeight(habitName) {
@@ -902,28 +883,28 @@ async function checkAccessLocal() {
 }
 
 async function authGuard() {
+  // Handle Stripe success redirect FIRST — before checking localStorage
+  const params = new URLSearchParams(window.location.search);
+  if (params.get('success') === 'true') {
+    localStorage.setItem('vantage_access', 'purchased');
+    window.history.replaceState({}, '', window.location.pathname);
+  }
+
   const { data: { session } } = await sb.auth.getSession();
-  
-  // Check both the browser flag and the Supabase session
   const access = localStorage.getItem('vantage_access');
   const hasAccess = (access === 'operator' || access === 'purchased');
-  
+
   if (session && hasAccess) {
-    // SUCCESS: Initialize the app
     currentUser = session.user;
     document.getElementById('app').classList.add('visible');
     await initApp();
-    
-    // Re-bind the login listeners if the auth screen is still in DOM
     const authPw = document.getElementById('auth-password');
-    if(authPw) authPw.addEventListener('keydown', e => { if(e.key==='Enter') handleAuth(); });
+    if (authPw) authPw.addEventListener('keydown', e => { if(e.key==='Enter') handleAuth(); });
   } else {
-    // FAIL: Stop the loop and stay on showcase
     window.location.href = 'showcase.html';
   }
 }
 
-// Execute the guard
 authGuard();
 
 function switchAuthTab(mode) {
