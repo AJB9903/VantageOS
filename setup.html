@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>VANTAGE. — Setup</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg:#000;--s:#0a0a0a;--s2:#111;--b:#1e1e1e;--b2:#2a2a2a;
+  --accent:#dfff00;--a2:#47ffd4;--muted:#555;--muted2:#333;--text:#fff;
+  --green:#4ade80;--red:#f87171;--orange:#fb923c;--blue:#38bdf8;
+}
+html,body{min-height:100vh;background:var(--bg);color:var(--text);font-family:'Syne',sans-serif;overflow-x:hidden}
+body::before{content:'';position:fixed;top:-20%;left:50%;transform:translateX(-50%);width:900px;height:700px;pointer-events:none;background:radial-gradient(ellipse,rgba(223,255,0,0.045) 0%,transparent 65%);}
+
+.wrap{min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:40px 20px;position:relative;z-index:2;}
+.wordmark{font-family:'Space Mono',monospace;font-size:0.7rem;letter-spacing:5px;text-transform:uppercase;color:var(--accent);margin-bottom:48px;display:flex;align-items:center;gap:10px;}
+.wordmark::before,.wordmark::after{content:'';width:24px;height:1px;background:var(--accent);opacity:.4}
+
+.progress-wrap{width:100%;max-width:540px;margin-bottom:40px}
+.progress-steps{display:flex;align-items:center;gap:0;margin-bottom:12px}
+.prog-step{display:flex;flex-direction:column;align-items:center;flex:1;gap:8px;}
+.prog-node{width:28px;height:28px;border-radius:50%;border:1.5px solid var(--b2);background:var(--s);display:flex;align-items:center;justify-content:center;font-family:'Space Mono',monospace;font-size:0.6rem;color:var(--muted);transition:all .3s;position:relative;z-index:2;}
+.prog-node.done{background:var(--accent);border-color:var(--accent);color:#000}
+.prog-node.active{border-color:var(--accent);color:var(--accent);box-shadow:0 0 0 4px rgba(223,255,0,0.1)}
+.prog-line{flex:1;height:1px;background:var(--b2);transition:background .3s;margin-top:-14px;position:relative;z-index:1}
+.prog-line.done{background:var(--accent)}
+.prog-label{font-family:'Space Mono',monospace;font-size:0.48rem;letter-spacing:1.5px;text-transform:uppercase;color:var(--muted);text-align:center;transition:color .3s;white-space:nowrap}
+.prog-label.active{color:var(--accent)}
+.prog-label.done{color:var(--muted)}
+
+.card{width:100%;max-width:540px;background:var(--s);border:1px solid var(--b);border-radius:20px;overflow:hidden;box-shadow:0 0 0 1px rgba(255,255,255,.02),0 32px 80px rgba(0,0,0,.6);}
+.card-accent{height:3px;background:linear-gradient(90deg,var(--accent),rgba(223,255,0,.2))}
+.card-body{padding:36px 36px 32px}
+
+.step-num{font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:3px;text-transform:uppercase;color:var(--muted);margin-bottom:12px;}
+.step-title{font-size:1.7rem;font-weight:800;letter-spacing:-1px;line-height:1.05;margin-bottom:8px}
+.step-title span{color:var(--accent)}
+.step-sub{font-size:0.82rem;color:var(--muted);line-height:1.65;margin-bottom:28px;font-family:'Space Mono',monospace}
+
+.field{margin-bottom:16px}
+.field-label{font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:block;font-weight:700;}
+.inp{width:100%;background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:13px 16px;color:var(--text);font-family:'Syne',sans-serif;font-size:0.9rem;outline:none;transition:border-color .15s,box-shadow .15s;}
+.inp:focus{border-color:rgba(223,255,0,.4);box-shadow:0 0 0 3px rgba(223,255,0,.06)}
+.inp::placeholder{color:var(--muted2)}
+
+.habit-build-row{display:flex;align-items:center;gap:8px;margin-bottom:8px;}
+.habit-build-row .inp{flex:1}
+.stake-sel{background:var(--s2);border:1px solid var(--b);border-radius:8px;padding:13px 10px;color:var(--text);font-family:'Space Mono',monospace;font-size:0.65rem;outline:none;cursor:pointer;transition:border-color .15s;}
+.del-btn{background:transparent;border:1px solid var(--b);border-radius:8px;padding:13px 12px;color:var(--muted);cursor:pointer;font-size:0.8rem;transition:all .15s;flex-shrink:0;}
+.del-btn:hover{border-color:var(--red);color:var(--red)}
+.add-habit-btn{width:100%;background:transparent;border:1px dashed var(--b);border-radius:8px;padding:11px;color:var(--muted);font-family:'Space Mono',monospace;font-size:0.65rem;letter-spacing:1px;cursor:pointer;transition:all .15s;margin-top:4px;}
+.add-habit-btn:hover{border-color:var(--accent);color:var(--accent)}
+
+.chips{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:20px}
+.chip{font-family:'Space Mono',monospace;font-size:0.58rem;letter-spacing:1px;padding:6px 12px;border-radius:6px;border:1px solid var(--b);background:var(--s2);color:var(--muted);cursor:pointer;transition:all .15s;user-select:none;}
+.chip:hover{border-color:var(--accent);color:var(--accent)}
+.chip.selected{border-color:rgba(223,255,0,.4);background:rgba(223,255,0,.07);color:var(--accent)}
+.chip-label{font-family:'Space Mono',monospace;font-size:0.5rem;letter-spacing:2px;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+
+.info-box{background:#0a0800;border:1px solid rgba(223,255,0,.12);border-radius:10px;padding:14px 16px;margin-bottom:20px;}
+.info-box-title{font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:2px;text-transform:uppercase;color:var(--accent);margin-bottom:6px;font-weight:700}
+.info-box-text{font-size:0.75rem;color:var(--muted);line-height:1.65}
+.info-box-text a{color:var(--accent);text-decoration:none}
+.info-box-text strong{color:var(--text)}
+
+.briefing-preview{background:linear-gradient(135deg,#00080d,#000);border:1px solid #1a2e3a;border-radius:10px;padding:16px;margin-top:16px;}
+.bp-label{font-family:'Space Mono',monospace;font-size:0.5rem;letter-spacing:2px;text-transform:uppercase;color:var(--a2);margin-bottom:10px;font-weight:700}
+.bp-text{font-size:0.75rem;color:#90c0d0;line-height:1.7}
+.bp-callout{margin-top:8px;padding:8px 10px;background:#0a1400;border-left:2px solid var(--accent);border-radius:0 5px 5px 0}
+.bp-callout-text{font-size:0.72rem;color:#c8e880;font-family:'Space Mono',monospace}
+
+.skip-note{font-family:'Space Mono',monospace;font-size:0.55rem;letter-spacing:1px;color:var(--muted);text-align:center;margin-top:10px;cursor:pointer;transition:color .15s;}
+.skip-note:hover{color:var(--text)}
+.skip-note span{text-decoration:underline}
+
+.btn-row{display:flex;gap:10px;margin-top:24px;align-items:center}
+.btn-back{background:transparent;border:1px solid var(--b);color:var(--muted);border-radius:10px;padding:14px 20px;font-family:'Syne',sans-serif;font-size:0.85rem;cursor:pointer;transition:all .15s;}
+.btn-back:hover{border-color:var(--b2);color:var(--text)}
+.btn-next{flex:1;background:var(--accent);color:#000;border:none;border-radius:10px;padding:15px 24px;font-family:'Syne',sans-serif;font-size:0.95rem;font-weight:800;cursor:pointer;transition:all .15s;letter-spacing:-.3px;}
+.btn-next:hover{background:#e8ff2a;transform:translateY(-1px);}
+.btn-next:disabled{opacity:.4;cursor:not-allowed;transform:none;}
+
+.complete-wrap{text-align:center;padding:16px 0}
+.complete-icon{width:72px;height:72px;border-radius:18px;background:rgba(223,255,0,.08);border:1px solid rgba(223,255,0,.2);margin:0 auto 24px;display:flex;align-items:center;justify-content:center;}
+.complete-title{font-size:2rem;font-weight:800;letter-spacing:-1.5px;margin-bottom:10px}
+.complete-title span{color:var(--accent)}
+.complete-sub{font-size:0.82rem;color:var(--muted);line-height:1.65;font-family:'Space Mono',monospace;margin-bottom:28px}
+.complete-stats{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:24px}
+.cs{background:var(--s2);border:1px solid var(--b);border-radius:10px;padding:14px 10px;text-align:center}
+.cs-val{font-family:'Space Mono',monospace;font-size:1.1rem;font-weight:700;color:var(--accent);margin-bottom:4px}
+.cs-lbl{font-family:'Space Mono',monospace;font-size:0.48rem;color:var(--muted);letter-spacing:1.5px;text-transform:uppercase}
+
+.step-wrap{display:none;animation:stepIn .35s cubic-bezier(.22,1,.36,1) both}
+.step-wrap.active{display:block}
+@keyframes stepIn{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="wordmark">VANTAGE. Setup</div>
+
+  <div class="progress-wrap">
+    <div class="progress-steps" id="progress">
+      <div class="prog-step"><div class="prog-node active" id="pn1">1</div><div class="prog-label active" id="pl1">Focus area</div></div><div class="prog-line" id="pline1"></div>
+      <div class="prog-step"><div class="prog-node" id="pn2">2</div><div class="prog-label" id="pl2">Your habits</div></div><div class="prog-line" id="pline2"></div>
+      <div class="prog-step"><div class="prog-node" id="pn3">3</div><div class="prog-label" id="pl3">AI key</div></div><div class="prog-line" id="pline3"></div>
+      <div class="prog-step"><div class="prog-node" id="pn4">4</div><div class="prog-label" id="pl4">Ready</div></div>
+    </div>
+  </div>
+
+  <div class="card">
+    <div class="card-accent" id="card-accent"></div>
+    <div class="card-body">
+      <div class="step-wrap active" id="step1">
+        <div class="step-num">Step 01 of 04</div>
+        <div class="step-title">What are you<br>optimizing <span>for?</span></div>
+        <div class="step-sub">Pick your primary focus. This shapes your habit suggestions.</div>
+        <div class="chips" id="focus-chips">
+          <div class="chip" onclick="selectFocus(this,'fitness')">Fitness & Health</div>
+          <div class="chip" onclick="selectFocus(this,'business')">Business & Work</div>
+          <div class="chip" onclick="selectFocus(this,'creative')">Creative Output</div>
+          <div class="chip" onclick="selectFocus(this,'study')">Study & Learning</div>
+          <div class="chip" onclick="selectFocus(this,'mindset')">Mindset & Discipline</div>
+          <div class="chip" onclick="selectFocus(this,'custom')">My own system</div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-next" id="btn1" onclick="goTo(2)" disabled>Set My Habits →</button>
+        </div>
+      </div>
+
+      <div class="step-wrap" id="step2">
+        <div class="step-num">Step 02 of 04</div>
+        <div class="step-title">Build your<br><span>habit stack.</span></div>
+        <div class="step-sub">Name each habit and set its stake level. Higher stake = more weight on your execution score.</div>
+        <div class="chip-label">Quick add</div>
+        <div class="chips" id="suggest-chips"></div>
+        <div id="habits-list"></div>
+        <button class="add-habit-btn" onclick="addHabitRow()">+ Add habit</button>
+        <div class="btn-row">
+          <button class="btn-back" onclick="goTo(1)">← Back</button>
+          <button class="btn-next" onclick="goTo(3)">AI Setup →</button>
+        </div>
+      </div>
+
+      <div class="step-wrap" id="step3">
+        <div class="step-num">Step 03 of 04</div>
+        <div class="step-title">Unlock the<br><span>AI brain.</span></div>
+        <div class="step-sub">Optional but worth it. Takes 60 seconds, completely free.</div>
+        <div class="info-box">
+          <div class="info-box-title">How to get your free key</div>
+          <div class="info-box-text">
+            1. Go to <a href="https://console.groq.com/keys" target="_blank"><strong>console.groq.com/keys</strong></a><br>
+            2. Sign up free → API Keys → Create key<br>
+            3. Paste it below — that's it.
+          </div>
+        </div>
+        <div class="field">
+          <label class="field-label">Groq API Key</label>
+          <input type="text" class="inp" id="groq-input" placeholder="gsk_..." autocomplete="off" spellcheck="false" data-lpignore="true" style="-webkit-text-security: disc;" oninput="checkGroqKey()"/>
+        </div>
+        <div class="briefing-preview">
+          <div class="bp-label">What you'll see every morning</div>
+          <div class="bp-text"><strong>Score: 71% (↓12% vs last week).</strong><br><br>Deep work missed 4/7 days — pattern detected. You keep scheduling it after 6pm when your energy is gone.</div>
+          <div class="bp-callout"><div class="bp-callout-text">Move it to 8am. Your data says evenings don't work.</div></div>
+        </div>
+        <div class="btn-row">
+          <button class="btn-back" onclick="goTo(2)">← Back</button>
+          <button class="btn-next" onclick="goTo(4)">→ Almost done</button>
+        </div>
+        <div class="skip-note" onclick="goTo(4)"><span>Skip for now</span> — you can add it in Settings later</div>
+      </div>
+
+      <div class="step-wrap" id="step4">
+        <div class="complete-wrap">
+          <div class="complete-icon">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#dfff00" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          </div>
+          <div class="complete-title">System <span>armed.</span></div>
+          <div class="complete-sub" id="ready-sub">Your tracker is configured.<br>Log your first day to start building data.</div>
+          <div class="complete-stats" id="ready-stats">
+            <div class="cs"><div class="cs-val" id="stat-habits">0</div><div class="cs-lbl">Habits set</div></div>
+            <div class="cs"><div class="cs-val" id="stat-ai">—</div><div class="cs-lbl">AI status</div></div>
+            <div class="cs"><div class="cs-val">Day 1</div><div class="cs-lbl">Streak starts</div></div>
+          </div>
+          <button class="btn-next" id="launch-btn" style="width:100%" onclick="handleLaunch()">Enter Vantage →</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+// Supabase Config
+const SUPA_URL = 'https://eqzcdcdnddjufuwmwbml.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxemNkY2RuZGRqdWZ1d213Ym1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyOTM1NzEsImV4cCI6MjA4OTg2OTU3MX0.cGBJxtuReOrU7_jz6Na-zhgR92nGIYJVgno22vqjqDA';
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+const FOCUS_SUGGESTIONS = {
+  fitness:  ['Morning workout','Protein target','Steps goal','Sleep 8h','Cold shower'],
+  business: ['Deep work block','No meetings AM','Daily review','Lead outreach','Shutdown ritual'],
+  creative: ['Morning pages','Creative session','Ship something','No distractions','Read 30min'],
+  study:    ['Study block','Flashcard review','No phone AM','Lecture notes','Problem sets'],
+  mindset:  ['Meditation','Journaling','Gratitude','No alcohol','Screen time limit'],
+  custom:   ['Morning routine','Exercise','Deep work','Evening review','Hydration'],
+};
+
+let selectedFocus = null;
+let groqKey = '';
+
+// Check Session on Load
+window.onload = async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session?.user) {
+    window.location.href = 'showcase.html'; // Kick out if not logged in
+  }
+};
+
+function selectFocus(el, focus) {
+  document.querySelectorAll('#focus-chips .chip').forEach(c => c.classList.remove('selected'));
+  el.classList.add('selected');
+  selectedFocus = focus;
+  document.getElementById('btn1').disabled = false;
+}
+
+function goTo(step) {
+  document.querySelectorAll('.step-wrap').forEach(s => s.classList.remove('active'));
+  document.getElementById('step' + step).classList.add('active');
+  updateProgress(step);
+  if (step === 2) buildSuggestions();
+  if (step === 4) buildSummary();
+}
+
+function updateProgress(current) {
+  for (let i = 1; i <= 4; i++) {
+    const node = document.getElementById('pn' + i);
+    const label = document.getElementById('pl' + i);
+    node.classList.remove('active','done');
+    label.classList.remove('active','done');
+    if (i < current) { node.classList.add('done'); node.textContent = '✓'; label.classList.add('done'); }
+    else if (i === current) { node.classList.add('active'); label.classList.add('active'); }
+    else { node.textContent = i; }
+    if (i < 4) {
+      const line = document.getElementById('pline' + i);
+      line.classList.toggle('done', i < current);
+    }
+  }
+  const colors = ['','linear-gradient(90deg,#dfff00,rgba(223,255,0,.2))','linear-gradient(90deg,#47ffd4,rgba(71,255,212,.2))','linear-gradient(90deg,#38bdf8,rgba(56,189,248,.2))','linear-gradient(90deg,#4ade80,rgba(74,222,128,.2))'];
+  document.getElementById('card-accent').style.background = colors[current] || colors[1];
+}
+
+function buildSuggestions() {
+  const chips = document.getElementById('suggest-chips');
+  chips.innerHTML = '';
+  const suggs = FOCUS_SUGGESTIONS[selectedFocus] || FOCUS_SUGGESTIONS.custom;
+  suggs.forEach(s => {
+    const c = document.createElement('div');
+    c.className = 'chip';
+    c.textContent = s;
+    c.onclick = () => {
+      if (c.classList.contains('selected')) { c.classList.remove('selected'); removeHabitByName(s); return; }
+      c.classList.add('selected');
+      addHabitRow(s, 'high');
+    };
+    chips.appendChild(c);
+  });
+  
+  // Only auto-add if the list is empty
+  const list = document.getElementById('habits-list');
+  if (list.children.length === 0) {
+    addHabitRow(suggs[0], 'critical');
+    addHabitRow(suggs[1], 'high');
+    chips.children[0].classList.add('selected');
+    chips.children[1].classList.add('selected');
+  }
+}
+
+function removeHabitByName(name) {
+  const list = document.getElementById('habits-list');
+  const rows = list.querySelectorAll('.habit-build-row');
+  rows.forEach(row => {
+    const inp = row.querySelector('input');
+    if (inp && inp.value === name) row.remove();
+  });
+}
+
+function addHabitRow(name='', stake='medium') {
+  const list = document.getElementById('habits-list');
+  const row = document.createElement('div');
+  row.className = 'habit-build-row';
+  row.innerHTML = `
+    <input type="text" class="inp" placeholder="Habit name" value="${name}" autocomplete="off"/>
+    <select class="stake-sel">
+      <option value="low" ${stake==='low'?'selected':''}>LOW</option>
+      <option value="medium" ${stake==='medium'?'selected':''}>MED</option>
+      <option value="high" ${stake==='high'?'selected':''}>HIGH</option>
+      <option value="critical" ${stake==='critical'?'selected':''}>CRIT</option>
+    </select>
+    <button class="del-btn" onclick="this.parentElement.remove()">✕</button>`;
+  list.appendChild(row);
+}
+
+function checkGroqKey() {
+  groqKey = document.getElementById('groq-input').value.trim();
+}
+
+function buildSummary() {
+  const rows = document.querySelectorAll('#habits-list .habit-build-row');
+  const count = Array.from(rows).filter(r => r.querySelector('input').value.trim()).length;
+  document.getElementById('stat-habits').textContent = count || '0';
+
+  groqKey = document.getElementById('groq-input').value.trim();
+  const aiEl = document.getElementById('stat-ai');
+  if (groqKey.startsWith('gsk_')) {
+    aiEl.textContent = 'Active';
+    aiEl.style.color = 'var(--green)';
+  } else {
+    aiEl.textContent = 'Off';
+    aiEl.style.color = 'var(--muted)';
+  }
+}
+
+async function handleLaunch() {
+  const btn = document.getElementById('launch-btn');
+  btn.innerHTML = 'Booting Systems...';
+  btn.disabled = true;
+
+  try {
+    const { data: { session } } = await sb.auth.getSession();
+    if (!session?.user) throw new Error("No session found");
+
+    // Gather habits
+    const habits = [];
+    const habitStakes = {};
+    document.querySelectorAll('#habits-list .habit-build-row').forEach(row => {
+      const name = row.querySelector('input').value.trim();
+      const stake = row.querySelector('select').value;
+      if (name) {
+        habits.push(name);
+        habitStakes[name] = stake;
+      }
+    });
+
+    // Save to LocalStorage immediately
+    if (groqKey) {
+      localStorage.setItem('vantage_groq_key', groqKey);
+    }
+    
+    // Save to Supabase DB
+    await sb.from('user_settings').upsert({
+      user_id: session.user.id,
+      habits: habits,
+      meta: {
+        habitStakes: habitStakes,
+        groqKey: groqKey
+      },
+      updated_at: new Date().toISOString()
+    }, { onConflict: 'user_id' });
+
+    // Transition to Main App
+    window.location.href = 'app.html';
+    
+  } catch (error) {
+    console.error(error);
+    btn.innerHTML = 'Enter Vantage →';
+    btn.disabled = false;
+    alert('Something went wrong saving your data. Please try again.');
+  }
+}
+
+updateProgress(1);
+</script>
+</body>
+</html>
