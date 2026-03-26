@@ -969,6 +969,7 @@ async function initApp() {
   document.getElementById('sidebar-email').textContent = currentUser.email;
   
   await loadUserSettings();
+  await saveUserSettings();
   await loadMonthLogs();
   
   updateSidebar();
@@ -988,7 +989,10 @@ async function initApp() {
 // ─── DB SERVICES ──────────────────────────────────────────────────────────────
 async function loadUserSettings() {
   const { data } = await sb.from('user_settings').select('*').eq('user_id', currentUser.id).single();
-  if (!data) return;
+  if (!data) {
+    await saveUserSettings();
+    return;
+  }
 
   if (data.habits && Array.isArray(data.habits) && data.habits.length > 0) S.habits = data.habits;
   
