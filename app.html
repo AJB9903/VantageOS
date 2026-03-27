@@ -873,9 +873,16 @@ function showToast(msg, dur=2200, type='') {
 // ─── AUTH & BOOTLOADER ────────────────────────────────────────────────────────
 async function authGuard() {
   const params = new URLSearchParams(window.location.search);
-  if (params.get('success') === 'true') {
+  const justPurchased = params.get('success') === 'true';
+
+  if (justPurchased) {
     localStorage.setItem('vantage_access', 'purchased');
     window.history.replaceState({}, '', window.location.pathname);
+    // Write purchase record so future logins on other devices/browsers work
+    const { data: { session: s } } = await sb.auth.getSession();
+    if (s?.user) {
+      await sb.from('purchases').upsert({ user_id: s.user.id, status: 'active' }, { onConflict: 'user_id' });
+    }
   }
 
   const { data: { session } } = await sb.auth.getSession();
@@ -888,6 +895,21 @@ async function authGuard() {
       window.location.href = 'showcase.html';
     }
     return;
+  }
+
+  // Session exists — verify they actually have paid access
+  const localAccess = localStorage.getItem('vantage_access');
+  const hasLocalAccess = localAccess === 'operator' || localAccess === 'purchased';
+
+  if (!hasLocalAccess) {
+    const { data: purchase } = await sb.from('purchases').select('user_id').eq('user_id', session.user.id).single();
+    if (purchase) {
+      localStorage.setItem('vantage_access', 'purchased');
+    } else {
+      await sb.auth.signOut();
+      window.location.href = 'showcase.html';
+      return;
+    }
   }
 
   currentUser = session.user;
@@ -924,35 +946,40 @@ async function handleAuth() {
       const res = await sb.auth.signUp({ email, password: pw });
       if (res.error) throw res.error;
 
-      await sb.auth.signInWithPassword({ email, password: pw });
-
-      // Check if they paid before signing up (pending_access) or came through Stripe redirect
-      const { data: pending } = await sb.from('pending_access')
-        .select('email')
-        .eq('email', email.toLowerCase())
-        .single();
-
-      const hasAccess = !!pending || localStorage.getItem('vantage_access') === 'purchased';
-
-      await sb.from('user_settings')
-        .update({ has_access: hasAccess })
-        .eq('user_id', res.data.user.id);
-
-      // Clean up pending row
-      if (pending) {
-        await sb.from('pending_access').delete().eq('email', email.toLowerCase());
-      }
-
-      window.location.href = 'setup.html';
+      // Sign them out immediately — they must complete purchase before accessing the app
+      await sb.auth.signOut();
+      err.style.color = 'var(--green)';
+      err.textContent = 'Account created. Complete your purchase to access Vantage.';
+      setTimeout(() => { window.location.href = 'showcase.html'; }, 2000);
+      btn.disabled = false;
+      btn.textContent = 'Create Account';
       return;
 
     } else {
       const res = await sb.auth.signInWithPassword({ email, password: pw });
       if (res.error) throw res.error;
+
+      // Check access: localStorage first, then Supabase purchases table
+      const localAccess = localStorage.getItem('vantage_access');
+      const hasLocalAccess = localAccess === 'operator' || localAccess === 'purchased';
+
+      if (!hasLocalAccess) {
+        const { data: purchase } = await sb.from('purchases').select('user_id').eq('user_id', res.data.user.id).single();
+        if (purchase) {
+          localStorage.setItem('vantage_access', 'purchased');
+        } else {
+          await sb.auth.signOut();
+          err.style.color = 'var(--red)';
+          err.textContent = 'No active subscription found. Purchase access from the main page.';
+          btn.disabled = false;
+          btn.textContent = 'Sign In';
+          return;
+        }
+      }
+
       currentUser = res.data.user;
       await initApp();
     }
-
   } catch(e) {
     err.style.color = 'var(--red)';
     err.textContent = e.message || 'System error.';
