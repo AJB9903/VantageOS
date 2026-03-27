@@ -942,12 +942,19 @@ footer { border-top: 1px solid var(--border); padding: 44px 56px; display: flex;
   const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
 
   window.onload = async () => {
-    const { data: { session } } = await sb.auth.getSession();
-    const access = localStorage.getItem('vantage_access');
-    if (session && (access === 'operator' || access === 'purchased')) {
-      window.location.href = 'app.html';
-    }
-  };
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session?.user) return;
+
+  const { data } = await sb
+    .from('user_settings')
+    .select('has_access, role')
+    .eq('user_id', session.user.id)
+    .single();
+
+  if (data && (data.has_access === true || data.role === 'operator')) {
+    window.location.href = 'app.html';
+  }
+};
 
   async function handlePurchase() {
     const { data: { session } } = await sb.auth.getSession();
