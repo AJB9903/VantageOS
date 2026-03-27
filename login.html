@@ -73,10 +73,10 @@ const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
 
 let mode = 'login';
 const params = new URLSearchParams(window.location.search);
-const returningFromStripe = params.get('payment') === 'processing';
 
-// If returning from Stripe, pre-select signup tab and show message
-if (returningFromStripe) {
+// Handle Stripe redirect — both ?success=true and ?payment=processing
+if (params.get('success') === 'true' || params.get('payment') === 'processing') {
+  localStorage.setItem('vantage_access', 'purchased');
   window.history.replaceState({}, '', window.location.pathname);
   switchTab('signup');
   const s = document.getElementById('status');
@@ -87,18 +87,10 @@ if (returningFromStripe) {
   s.textContent = 'Payment received. Create your account below to activate access.';
 }
 
-// If already logged in, check access and redirect
+// If already logged in, go straight to app
 window.onload = async () => {
   const { data: { session } } = await sb.auth.getSession();
-  if (!session?.user) return;
-
-  const { data } = await sb
-    .from('user_settings')
-    .select('has_access, role')
-    .eq('user_id', session.user.id)
-    .single();
-
-  if (data && (data.has_access === true || data.role === 'operator')) {
+  if (session?.user) {
     window.location.href = 'app.html';
   }
 };
@@ -132,56 +124,45 @@ async function handleSubmit() {
 
   try {
     if (mode === 'login') {
+      // Login — just check credentials, no has_access gate
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
       if (error) throw error;
-
-      // Check access
-      const { data: settings } = await sb
-        .from('user_settings')
-        .select('has_access, role')
-        .eq('user_id', data.user.id)
-        .single();
-
-      if (settings && (settings.has_access === true || settings.role === 'operator')) {
-        window.location.href = 'app.html';
-      } else {
-        await sb.auth.signOut();
-        err.textContent = 'No active access found. Please purchase first.';
-        btn.disabled = false;
-        btn.textContent = 'Sign In';
-      }
+      window.location.href = 'app.html';
 
     } else {
-      // Signup — check pending_access first
+      // Signup — allow if pending_access row exists OR localStorage flag is set
       const { data: pending } = await sb
         .from('pending_access')
         .select('email')
-        .eq('email', email)
+        .eq('email', email.toLowerCase())
         .single();
 
-      if (!pending) {
+      const hasStripeAccess = !!pending || localStorage.getItem('vantage_access') === 'purchased';
+
+      if (!hasStripeAccess) {
         err.textContent = 'No purchase found for this email. Please purchase first.';
         btn.disabled = false;
         btn.textContent = 'Create Account';
         return;
       }
 
-      // Create the account
       const { data: signupData, error: signupError } = await sb.auth.signUp({ email, password });
       if (signupError) throw signupError;
 
-      // Sign in immediately
       const { data: signinData, error: signinError } = await sb.auth.signInWithPassword({ email, password });
       if (signinError) throw signinError;
 
-      // Grant access + remove from pending
+      // Grant access
       await sb.from('user_settings').upsert({
         user_id: signinData.user.id,
         has_access: true,
         updated_at: new Date().toISOString()
       }, { onConflict: 'user_id' });
 
-      await sb.from('pending_access').delete().eq('email', email);
+      // Clean up pending row
+      if (pending) {
+        await sb.from('pending_access').delete().eq('email', email.toLowerCase());
+      }
 
       window.location.href = 'app.html';
     }
