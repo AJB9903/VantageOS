@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+<title>VANTAGE. — Sign In</title>
+<link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@400;600;700;800&display=swap" rel="stylesheet"/>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<style>
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+:root {
+  --bg: #000; --surface: #0a0a0a; --border: #262626;
+  --accent: #dfff00; --text: #f0ede8; --muted: #888;
+  --red: #f87171; --green: #4ade80; --radius: 8px; --radius-lg: 12px;
+}
+html, body { height: 100%; background: var(--bg); color: var(--text); font-family: 'Syne', sans-serif; display: flex; align-items: center; justify-content: center; padding: 24px; }
+.box { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius-lg); padding: 48px; width: 100%; max-width: 400px; }
+.wordmark { font-family: 'Space Mono', monospace; font-size: 0.55rem; letter-spacing: 4px; text-transform: uppercase; color: var(--accent); text-align: center; margin-bottom: 8px; }
+.logo { font-size: 2rem; font-weight: 800; letter-spacing: -1.5px; text-align: center; margin-bottom: 4px; }
+.logo span { color: var(--accent); }
+.sub { font-family: 'Space Mono', monospace; font-size: 0.6rem; color: var(--muted); text-align: center; text-transform: uppercase; letter-spacing: 2px; margin-bottom: 32px; }
+.tabs { display: flex; gap: 6px; margin-bottom: 24px; }
+.tab { flex: 1; padding: 9px; border-radius: var(--radius); border: 1px solid var(--border); background: transparent; color: var(--muted); font-family: 'Syne', sans-serif; font-size: 0.82rem; font-weight: 600; cursor: pointer; transition: all 0.15s; }
+.tab.active { background: var(--accent); border-color: var(--accent); color: #000; }
+.field { margin-bottom: 14px; }
+.label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 2px; color: var(--muted); font-family: 'Space Mono', monospace; margin-bottom: 6px; display: block; font-weight: 700; }
+.inp { background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); padding: 12px 16px; color: var(--text); font-family: 'Syne', sans-serif; font-size: 0.85rem; width: 100%; outline: none; transition: border-color 0.15s; }
+.inp:focus { border-color: var(--accent); }
+.btn { width: 100%; background: var(--accent); color: #000; border: none; border-radius: var(--radius); padding: 14px; font-family: 'Space Mono', monospace; font-size: 0.75rem; font-weight: 700; text-transform: uppercase; letter-spacing: 2px; cursor: pointer; margin-top: 12px; transition: all 0.15s; }
+.btn:hover { background: #e8ff2a; }
+.btn:disabled { opacity: 0.5; cursor: not-allowed; }
+.err { font-family: 'Space Mono', monospace; font-size: 0.65rem; min-height: 18px; margin-top: 12px; text-transform: uppercase; letter-spacing: 1px; }
+.back { display: block; text-align: center; margin-top: 20px; font-family: 'Space Mono', monospace; font-size: 0.58rem; color: var(--muted); text-decoration: none; letter-spacing: 1px; text-transform: uppercase; transition: color 0.15s; }
+.back:hover { color: var(--text); }
+.status { font-family: 'Space Mono', monospace; font-size: 0.65rem; text-align: center; padding: 10px; border-radius: var(--radius); margin-bottom: 16px; display: none; }
+</style>
+</head>
+<body>
+<div class="box">
+  <div class="wordmark">Personal OS</div>
+  <div class="logo">VANTAGE<span>.</span></div>
+  <div class="sub">Access Terminal</div>
+
+  <div class="status" id="status"></div>
+
+  <div class="tabs">
+    <button class="tab active" onclick="switchTab('login')">Sign In</button>
+    <button class="tab" onclick="switchTab('signup')">Create Account</button>
+  </div>
+
+  <div class="field">
+    <label class="label">Email</label>
+    <input class="inp" type="email" id="email" placeholder="you@email.com"/>
+  </div>
+  <div class="field">
+    <label class="label">Password</label>
+    <input class="inp" type="password" id="password" placeholder="••••••••"/>
+  </div>
+  <div class="field" id="confirm-field" style="display:none">
+    <label class="label">Confirm Password</label>
+    <input class="inp" type="password" id="confirm" placeholder="••••••••"/>
+  </div>
+
+  <button class="btn" id="submit-btn" onclick="handleSubmit()">Sign In</button>
+  <div class="err" id="err"></div>
+  <a class="back" href="showcase.html">← Back to showcase</a>
+</div>
+
+<script>
+const SUPA_URL = 'https://eqzcdcdnddjufuwmwbml.supabase.co';
+const SUPA_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImVxemNkY2RuZGRqdWZ1d213Ym1sIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyOTM1NzEsImV4cCI6MjA4OTg2OTU3MX0.cGBJxtuReOrU7_jz6Na-zhgR92nGIYJVgno22vqjqDA';
+const sb = supabase.createClient(SUPA_URL, SUPA_KEY);
+
+let mode = 'login';
+const params = new URLSearchParams(window.location.search);
+const returningFromStripe = params.get('payment') === 'processing';
+
+// If returning from Stripe, pre-select signup tab and show message
+if (returningFromStripe) {
+  window.history.replaceState({}, '', window.location.pathname);
+  switchTab('signup');
+  const s = document.getElementById('status');
+  s.style.display = 'block';
+  s.style.color = 'var(--green)';
+  s.style.background = 'rgba(74,222,128,0.08)';
+  s.style.border = '1px solid rgba(74,222,128,0.2)';
+  s.textContent = 'Payment received. Create your account below to activate access.';
+}
+
+// If already logged in, check access and redirect
+window.onload = async () => {
+  const { data: { session } } = await sb.auth.getSession();
+  if (!session?.user) return;
+
+  const { data } = await sb
+    .from('user_settings')
+    .select('has_access, role')
+    .eq('user_id', session.user.id)
+    .single();
+
+  if (data && (data.has_access === true || data.role === 'operator')) {
+    window.location.href = 'app.html';
+  }
+};
+
+function switchTab(m) {
+  mode = m;
+  document.querySelectorAll('.tab').forEach((t, i) => {
+    t.classList.toggle('active', (i === 0 && m === 'login') || (i === 1 && m === 'signup'));
+  });
+  document.getElementById('confirm-field').style.display = m === 'signup' ? 'block' : 'none';
+  document.getElementById('submit-btn').textContent = m === 'login' ? 'Sign In' : 'Create Account';
+  document.getElementById('err').textContent = '';
+}
+
+async function handleSubmit() {
+  const email    = document.getElementById('email').value.trim();
+  const password = document.getElementById('password').value;
+  const confirm  = document.getElementById('confirm').value;
+  const btn      = document.getElementById('submit-btn');
+  const err      = document.getElementById('err');
+
+  err.style.color = 'var(--red)';
+  err.textContent = '';
+
+  if (!email || !password) { err.textContent = 'Email and password required.'; return; }
+  if (mode === 'signup' && password !== confirm) { err.textContent = 'Passwords do not match.'; return; }
+  if (mode === 'signup' && password.length < 6) { err.textContent = 'Minimum 6 characters.'; return; }
+
+  btn.disabled = true;
+  btn.textContent = 'Processing...';
+
+  try {
+    if (mode === 'login') {
+      const { data, error } = await sb.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+
+      // Check access
+      const { data: settings } = await sb
+        .from('user_settings')
+        .select('has_access, role')
+        .eq('user_id', data.user.id)
+        .single();
+
+      if (settings && (settings.has_access === true || settings.role === 'operator')) {
+        window.location.href = 'app.html';
+      } else {
+        await sb.auth.signOut();
+        err.textContent = 'No active access found. Please purchase first.';
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+      }
+
+    } else {
+      // Signup — check pending_access first
+      const { data: pending } = await sb
+        .from('pending_access')
+        .select('email')
+        .eq('email', email)
+        .single();
+
+      if (!pending) {
+        err.textContent = 'No purchase found for this email. Please purchase first.';
+        btn.disabled = false;
+        btn.textContent = 'Create Account';
+        return;
+      }
+
+      // Create the account
+      const { data: signupData, error: signupError } = await sb.auth.signUp({ email, password });
+      if (signupError) throw signupError;
+
+      // Sign in immediately
+      const { data: signinData, error: signinError } = await sb.auth.signInWithPassword({ email, password });
+      if (signinError) throw signinError;
+
+      // Grant access + remove from pending
+      await sb.from('user_settings').upsert({
+        user_id: signinData.user.id,
+        has_access: true,
+        updated_at: new Date().toISOString()
+      }, { onConflict: 'user_id' });
+
+      await sb.from('pending_access').delete().eq('email', email);
+
+      window.location.href = 'app.html';
+    }
+  } catch(e) {
+    err.textContent = e.message || 'Something went wrong.';
+    btn.disabled = false;
+    btn.textContent = mode === 'login' ? 'Sign In' : 'Create Account';
+  }
+}
+
+document.addEventListener('keydown', e => {
+  if (e.key === 'Enter') handleSubmit();
+});
+</script>
+</body>
+</html>
