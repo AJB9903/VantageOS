@@ -878,15 +878,11 @@ async function authGuard() {
   if (justPurchased) {
     localStorage.setItem('vantage_access', 'purchased');
     window.history.replaceState({}, '', window.location.pathname);
-    // Write purchase record so future logins on other devices/browsers work
-    const { data: { session: s } } = await sb.auth.getSession();
-    if (s?.user) {
-      await sb.from('purchases').upsert({ user_id: s.user.id, status: 'active' }, { onConflict: 'user_id' });
-    }
   }
 
   const { data: { session } } = await sb.auth.getSession();
 
+  // 1. NO SESSION: Decide whether to show login screen or kick to showcase
   if (!session?.user) {
     const access = localStorage.getItem('vantage_access');
     if (access === 'operator' || access === 'purchased') {
@@ -897,32 +893,39 @@ async function authGuard() {
     return;
   }
 
-  // Session exists — verify they actually have paid access
-  const localAccess = localStorage.getItem('vantage_access');
-  const hasLocalAccess = localAccess === 'operator' || localAccess === 'purchased';
+  // 2. STRICT SECURITY CHECK: Database is the absolute source of truth.
+  // We check 'user_settings' (or your 'purchases' table if you prefer) to verify paid status.
+  const { data: settings, error } = await sb
+    .from('user_settings')
+    .select('has_access')
+    .eq('user_id', session.user.id)
+    .single();
 
-  if (!hasLocalAccess) {
-    const { data: purchase } = await sb.from('purchases').select('user_id').eq('user_id', session.user.id).single();
-    if (purchase) {
-      localStorage.setItem('vantage_access', 'purchased');
-    } else {
-      await sb.auth.signOut();
-      window.location.href = 'showcase.html';
-      return;
-    }
+  if (error || !settings || settings.has_access !== true) {
+    // They are logged in but DO NOT have paid access in the database
+    await sb.auth.signOut();
+    localStorage.removeItem('vantage_access');
+    alert('Unauthorized access. No active subscription found.');
+    window.location.href = 'showcase.html';
+    return;
   }
 
+  // 3. AUTHORIZED: Load the application
   currentUser = session.user;
   document.getElementById('app').classList.add('visible');
   await initApp();
 }
+
+// Bootloader initialization
 authGuard();
 
 function switchAuthTab(mode) {
   authMode = mode;
-  document.querySelectorAll('.auth-tab').forEach((t,i) => t.classList.toggle('active', (i===0&&mode==='login')||(i===1&&mode==='signup')));
-  document.getElementById('confirm-field').style.display = mode==='signup' ? 'block' : 'none';
-  document.getElementById('auth-submit-btn').textContent = mode==='login' ? 'Sign In' : 'Create Account';
+  document.querySelectorAll('.auth-tab').forEach((t, i) => {
+    t.classList.toggle('active', (i === 0 && mode === 'login') || (i === 1 && mode === 'signup'));
+  });
+  document.getElementById('confirm-field').style.display = mode === 'signup' ? 'block' : 'none';
+  document.getElementById('auth-submit-btn').textContent = mode === 'login' ? 'Sign In' : 'Create Account';
   document.getElementById('auth-err').textContent = '';
 }
 
@@ -943,41 +946,41 @@ async function handleAuth() {
 
   try {
     if (authMode === 'signup') {
-      const res = await sb.auth.signUp({ email, password: pw });
-      if (res.error) throw res.error;
+      const { data, error: signupError } = await sb.auth.signUp({ email, password: pw });
+      if (signupError) throw signupError;
 
-      // Sign them out immediately — they must complete purchase before accessing the app
+      // Force sign out - they need to purchase before they can access the dashboard
       await sb.auth.signOut();
       err.style.color = 'var(--green)';
       err.textContent = 'Account created. Complete your purchase to access Vantage.';
+      
       setTimeout(() => { window.location.href = 'showcase.html'; }, 2000);
-      btn.disabled = false;
-      btn.textContent = 'Create Account';
-      return;
 
     } else {
-      const res = await sb.auth.signInWithPassword({ email, password: pw });
-      if (res.error) throw res.error;
+      // Login Flow
+      const { data, error: signinError } = await sb.auth.signInWithPassword({ email, password: pw });
+      if (signinError) throw signinError;
 
-      // Check access: localStorage first, then Supabase purchases table
-      const localAccess = localStorage.getItem('vantage_access');
-      const hasLocalAccess = localAccess === 'operator' || localAccess === 'purchased';
+      // Check access in the Database immediately upon login
+      const { data: settings, error: dbError } = await sb
+        .from('user_settings')
+        .select('has_access')
+        .eq('user_id', data.user.id)
+        .single();
 
-      if (!hasLocalAccess) {
-        const { data: purchase } = await sb.from('purchases').select('user_id').eq('user_id', res.data.user.id).single();
-        if (purchase) {
-          localStorage.setItem('vantage_access', 'purchased');
-        } else {
-          await sb.auth.signOut();
-          err.style.color = 'var(--red)';
-          err.textContent = 'No active subscription found. Purchase access from the main page.';
-          btn.disabled = false;
-          btn.textContent = 'Sign In';
-          return;
-        }
+      if (dbError || !settings || settings.has_access !== true) {
+        await sb.auth.signOut();
+        err.style.color = 'var(--red)';
+        err.textContent = 'No active subscription found. Purchase access from the main page.';
+        btn.disabled = false;
+        btn.textContent = 'Sign In';
+        return;
       }
 
-      currentUser = res.data.user;
+      // Success - Load app
+      currentUser = data.user;
+      localStorage.setItem('vantage_access', 'purchased'); // Safe to set now for UI hints
+      document.getElementById('auth-screen').style.display = 'none';
       await initApp();
     }
   } catch(e) {
@@ -991,7 +994,9 @@ async function handleAuth() {
 
 async function handleLogout() {
   await sb.auth.signOut();
-  currentUser = null; S.days = {};
+  currentUser = null; 
+  if (typeof S !== 'undefined') S.days = {};
+  
   document.getElementById('app').classList.remove('visible');
   document.getElementById('auth-screen').style.display = 'flex';
   document.getElementById('auth-email').value = '';
@@ -1009,7 +1014,8 @@ async function initApp() {
 
   updateSidebar();
   initToday(todayStr());
-  calViewMonth = S.month; calViewYear = S.year;
+  calViewMonth = S.month; 
+  calViewYear = S.year;
 
   checkTemporalReviews();
   checkPendingPrune();
