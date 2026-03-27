@@ -872,9 +872,11 @@ function showToast(msg, dur=2200, type='') {
 
 // ─── AUTH & BOOTLOADER ────────────────────────────────────────────────────────
 async function authGuard() {
-  // Strip ?success=true from URL — no longer grants access
   const params = new URLSearchParams(window.location.search);
-  if (params.has('success')) {
+  const returningFromStripe = params.get('payment') === 'processing';
+
+  // Clean URL immediately
+  if (params.has('payment')) {
     window.history.replaceState({}, '', window.location.pathname);
   }
 
@@ -888,15 +890,34 @@ async function authGuard() {
 
   currentUser = session.user;
 
-  // Check access from Supabase DB — not localStorage
-  const { hasAccess, isOperator } = await checkUserAccess(currentUser.id);
-
-  if (!hasAccess) {
-    window.location.href = 'showcase.html';
-    return;
+  // If returning from Stripe, poll DB up to 10 times until webhook fires
+  if (returningFromStripe) {
+    showToast('Activating your access...', 10000);
+    let granted = false;
+    for (let i = 0; i < 10; i++) {
+      await new Promise(r => setTimeout(r, 1500)); // wait 1.5s between checks
+      const { hasAccess, isOperator } = await checkUserAccess(currentUser.id);
+      if (hasAccess) {
+        granted = true;
+        S.isOperator = isOperator;
+        break;
+      }
+    }
+    if (!granted) {
+      // Webhook took too long or failed — show message instead of silent redirect
+      showToast('Payment received — access is being activated. Refresh in a moment.', 6000, 'positive');
+      setTimeout(() => window.location.reload(), 6000);
+      return;
+    }
+  } else {
+    // Normal load — single DB check
+    const { hasAccess, isOperator } = await checkUserAccess(currentUser.id);
+    if (!hasAccess) {
+      window.location.href = 'showcase.html';
+      return;
+    }
+    S.isOperator = isOperator;
   }
-
-  S.isOperator = isOperator;
 
   document.getElementById('app').classList.add('visible');
   await initApp();
