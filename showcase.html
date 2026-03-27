@@ -918,6 +918,7 @@ footer { border-top: 1px solid var(--border); padding: 44px 56px; display: flex;
   <p class="cta-sub reveal">30 total Founding Operators. 26 spots filled. When this closes, the $6.99 rate is gone permanently.</p>
   <div class="reveal" style="margin-bottom:16px">
     <button class="cta-buy-btn interactive" onclick="handlePurchase()">Invest in your Trajectory $6.99</button>
+    <a href="login.html" style="display:block; margin-top:16px; font-family:'Space Mono',monospace; font-size:0.6rem; color:var(--muted); letter-spacing:2px; text-transform:uppercase; text-decoration:none; transition:color 0.15s;" onmouseover="this.style.color='#fff'" onmouseout="this.style.color='var(--muted)'">Already purchased? Sign in →</a>
   </div>
   <div class="reveal" style="font-family:'Space Mono',monospace; font-size:0.58rem; color:var(--muted); letter-spacing:1px;">
     Founding rate locked forever. Future public price: $19/mo.
@@ -959,7 +960,7 @@ footer { border-top: 1px solid var(--border); padding: 44px 56px; display: flex;
   async function handlePurchase() {
     const { data: { session } } = await sb.auth.getSession();
     const STRIPE_URL = 'https://buy.stripe.com/eVq6oI4PY5fC0ikfAH3sI00';
-    const returnUrl = encodeURIComponent(window.location.origin + '/app.html?payment=processing');
+    const returnUrl = encodeURIComponent(window.location.origin + '/login.html?payment=processing');
     if (session?.user?.id) window.location.href = `${STRIPE_URL}?client_reference_id=${session.user.id}&return_url=${returnUrl}`;
     else window.location.href = STRIPE_URL;
   }
