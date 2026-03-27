@@ -891,8 +891,8 @@ async function authGuard() {
   }
 
   currentUser = session.user;
- document.getElementById('app').classList.add('visible');
-await initApp();
+  document.getElementById('app').classList.add('visible');
+  await initApp();
 }
 authGuard();
 
@@ -926,19 +926,32 @@ async function handleAuth() {
 
       await sb.auth.signInWithPassword({ email, password: pw });
 
+      // Check if they paid before signing up (pending_access) or came through Stripe redirect
+      const { data: pending } = await sb.from('pending_access')
+        .select('email')
+        .eq('email', email.toLowerCase())
+        .single();
+
+      const hasAccess = !!pending || localStorage.getItem('vantage_access') === 'purchased';
+
       await sb.from('user_settings')
-        .update({ has_access: true })
+        .update({ has_access: hasAccess })
         .eq('user_id', res.data.user.id);
+
+      // Clean up pending row
+      if (pending) {
+        await sb.from('pending_access').delete().eq('email', email.toLowerCase());
+      }
 
       window.location.href = 'setup.html';
       return;
 
     } else {
-  const res = await sb.auth.signInWithPassword({ email, password: pw });
-  if (res.error) throw res.error;
-  currentUser = res.data.user;
-  await initApp();
-}
+      const res = await sb.auth.signInWithPassword({ email, password: pw });
+      if (res.error) throw res.error;
+      currentUser = res.data.user;
+      await initApp();
+    }
 
   } catch(e) {
     err.style.color = 'var(--red)';
@@ -962,23 +975,23 @@ async function initApp() {
   document.getElementById('auth-screen').style.display = 'none';
   document.getElementById('app').classList.add('visible');
   document.getElementById('sidebar-email').textContent = currentUser.email;
-  
+
   await loadUserSettings();
   await saveUserSettings();
   await loadMonthLogs();
-  
+
   updateSidebar();
   initToday(todayStr());
   calViewMonth = S.month; calViewYear = S.year;
-  
+
   checkTemporalReviews();
   checkPendingPrune();
   if (S.monthDelta) injectDeltaAnchor();
   setupEodTimer();
 
   if (S.isOperator) {
-  document.getElementById('operator-panel').style.display = 'block';
-}
+    document.getElementById('operator-panel').style.display = 'block';
+  }
 }
 
 // ─── DB SERVICES ──────────────────────────────────────────────────────────────
