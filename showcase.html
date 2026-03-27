@@ -959,7 +959,7 @@ footer { border-top: 1px solid var(--border); padding: 44px 56px; display: flex;
   async function handlePurchase() {
     const { data: { session } } = await sb.auth.getSession();
     const STRIPE_URL = 'https://buy.stripe.com/eVq6oI4PY5fC0ikfAH3sI00';
-    const returnUrl = encodeURIComponent(window.location.origin + '/app.html?success=true');
+    const returnUrl = encodeURIComponent(window.location.origin + '/app.html?payment=processing');
     if (session?.user?.id) window.location.href = `${STRIPE_URL}?client_reference_id=${session.user.id}&return_url=${returnUrl}`;
     else window.location.href = STRIPE_URL;
   }
