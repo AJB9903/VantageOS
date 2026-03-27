@@ -891,19 +891,8 @@ async function authGuard() {
   }
 
   currentUser = session.user;
-  const { data: settings } = await sb.from('user_settings')
-    .select('has_access')
-    .eq('user_id', session.user.id)
-    .single();
-
-  if (settings?.has_access) {
-    document.getElementById('app').classList.add('visible');
-    await initApp();
-  } else {
-    await sb.auth.signOut();
-    document.getElementById('auth-screen').style.display = 'flex';
-    document.getElementById('auth-err').textContent = 'No active purchase found.';
-  }
+ document.getElementById('app').classList.add('visible');
+await initApp();
 }
 authGuard();
 
@@ -945,22 +934,11 @@ async function handleAuth() {
       return;
 
     } else {
-      const res = await sb.auth.signInWithPassword({ email, password: pw });
-      if (res.error) throw res.error;
-
-      const { data: settings } = await sb.from('user_settings')
-        .select('has_access')
-        .eq('user_id', res.data.user.id)
-        .single();
-
-      if (!settings?.has_access) {
-        await sb.auth.signOut();
-        throw new Error('No active purchase found for this account.');
-      }
-
-      currentUser = res.data.user;
-      await initApp();
-    }
+  const res = await sb.auth.signInWithPassword({ email, password: pw });
+  if (res.error) throw res.error;
+  currentUser = res.data.user;
+  await initApp();
+}
 
   } catch(e) {
     err.style.color = 'var(--red)';
