@@ -87,11 +87,22 @@ if (params.get('success') === 'true' || params.get('payment') === 'processing') 
   s.textContent = 'Payment received. Create your account below to activate access.';
 }
 
-// If already logged in, go straight to app
+// Check session on load
 window.onload = async () => {
   const { data: { session } } = await sb.auth.getSession();
   if (session?.user) {
-    window.location.href = 'app.html';
+    // Make sure they ACTUALLY have DB access before redirecting
+    const { data: settings } = await sb
+      .from('user_settings')
+      .select('has_access')
+      .eq('user_id', session.user.id)
+      .single();
+
+    if (settings?.has_access) {
+      window.location.href = 'app.html';
+    } else {
+      await sb.auth.signOut(); // Clean up invalid session
+    }
   }
 };
 
@@ -124,13 +135,25 @@ async function handleSubmit() {
 
   try {
     if (mode === 'login') {
-      // Login — just check credentials, no has_access gate
       const { data, error } = await sb.auth.signInWithPassword({ email, password });
       if (error) throw error;
+
+      // STRICT CHECK: Verify paid status in DB before letting them in
+      const { data: settings, error: dbError } = await sb
+        .from('user_settings')
+        .select('has_access')
+        .eq('user_id', data.user.id)
+        .single();
+
+      if (dbError || !settings || settings.has_access !== true) {
+        await sb.auth.signOut();
+        throw new Error("Unauthorized access. No active subscription found.");
+      }
+
       window.location.href = 'app.html';
 
     } else {
-      // Signup — allow if pending_access row exists OR localStorage flag is set
+      // Signup Flow
       const { data: pending } = await sb
         .from('pending_access')
         .select('email')
@@ -152,12 +175,17 @@ async function handleSubmit() {
       const { data: signinData, error: signinError } = await sb.auth.signInWithPassword({ email, password });
       if (signinError) throw signinError;
 
-      // Grant access
-      await sb.from('user_settings').upsert({
+      // Grant access and catch silent database failures
+      const { error: settingsError } = await sb.from('user_settings').upsert({
         user_id: signinData.user.id,
         has_access: true,
         updated_at: new Date().toISOString()
       }, { onConflict: 'user_id' });
+
+      if (settingsError) {
+        console.error("DB Permissions Error:", settingsError);
+        throw new Error("Account created, but database access denied. Check RLS policies.");
+      }
 
       // Clean up pending row
       if (pending) {
