@@ -957,11 +957,19 @@ async function handleAuth() {
       res = await sb.auth.signInWithPassword({ email, password: pw });
     } else {
       res = await sb.auth.signUp({ email, password: pw });
-      if (res.data?.user && !res.error) {
-        await sb.auth.signInWithPassword({ email, password: pw });
-        window.location.href = 'setup.html'; 
-        return;
-      }
+if (res.data?.user && !res.error) {
+  await sb.auth.signInWithPassword({ email, password: pw });
+
+  // Grant access if they came through Stripe
+  if (localStorage.getItem('vantage_access') === 'purchased') {
+    await sb.from('user_settings')
+      .update({ has_access: true })
+      .eq('user_id', res.data.user.id);
+  }
+
+  window.location.href = 'setup.html';
+  return;
+}
     }
     if (res.error) throw res.error;
     currentUser = res.data.user;
