@@ -873,59 +873,38 @@ function showToast(msg, dur=2200, type='') {
 // ─── AUTH & BOOTLOADER ────────────────────────────────────────────────────────
 async function authGuard() {
   const params = new URLSearchParams(window.location.search);
-  const returningFromStripe = params.get('payment') === 'processing';
-
-  // Clean URL immediately
-  if (params.has('payment')) {
+  if (params.get('success') === 'true') {
+    localStorage.setItem('vantage_access', 'purchased');
     window.history.replaceState({}, '', window.location.pathname);
   }
 
   const { data: { session } } = await sb.auth.getSession();
 
-  // Not logged in → send to showcase
   if (!session?.user) {
-    window.location.href = 'showcase.html';
+    const access = localStorage.getItem('vantage_access');
+    if (access === 'operator' || access === 'purchased') {
+      document.getElementById('auth-screen').style.display = 'flex';
+    } else {
+      window.location.href = 'showcase.html';
+    }
     return;
   }
 
   currentUser = session.user;
+  const { data: settings } = await sb.from('user_settings')
+    .select('has_access')
+    .eq('user_id', session.user.id)
+    .single();
 
-  // If returning from Stripe, poll DB up to 10 times until webhook fires
-  if (returningFromStripe) {
-    showToast('Activating your access...', 10000);
-    let granted = false;
-    for (let i = 0; i < 10; i++) {
-      await new Promise(r => setTimeout(r, 1500)); // wait 1.5s between checks
-      const { hasAccess, isOperator } = await checkUserAccess(currentUser.id);
-      if (hasAccess) {
-        granted = true;
-        S.isOperator = isOperator;
-        break;
-      }
-    }
-    if (!granted) {
-      // Webhook took too long or failed — show message instead of silent redirect
-      showToast('Payment received — access is being activated. Refresh in a moment.', 6000, 'positive');
-      setTimeout(() => window.location.reload(), 6000);
-      return;
-    }
+  if (settings?.has_access) {
+    document.getElementById('app').classList.add('visible');
+    await initApp();
   } else {
-    // Normal load — single DB check
-    const { hasAccess, isOperator } = await checkUserAccess(currentUser.id);
-    if (!hasAccess) {
-      window.location.href = 'showcase.html';
-      return;
-    }
-    S.isOperator = isOperator;
+    await sb.auth.signOut();
+    document.getElementById('auth-screen').style.display = 'flex';
+    document.getElementById('auth-err').textContent = 'No active purchase found.';
   }
-
-  document.getElementById('app').classList.add('visible');
-  await initApp();
-
-  const authPw = document.getElementById('auth-password');
-  if (authPw) authPw.addEventListener('keydown', e => { if(e.key==='Enter') handleAuth(); });
 }
-
 authGuard();
 
 function switchAuthTab(mode) {
@@ -942,44 +921,53 @@ async function handleAuth() {
   const conf  = document.getElementById('auth-confirm').value;
   const btn   = document.getElementById('auth-submit-btn');
   const err   = document.getElementById('auth-err');
-  
+
   err.textContent = '';
   if (!email || !pw) { err.textContent = 'Credentials required.'; return; }
   if (authMode === 'signup' && pw !== conf) { err.textContent = 'Passwords misaligned.'; return; }
   if (authMode === 'signup' && pw.length < 6) { err.textContent = 'Minimum 6 characters.'; return; }
-  
-  btn.disabled = true; 
+
+  btn.disabled = true;
   btn.innerHTML = 'Processing...';
-  
+
   try {
-    let res;
-    if (authMode === 'login') {
-      res = await sb.auth.signInWithPassword({ email, password: pw });
+    if (authMode === 'signup') {
+      const res = await sb.auth.signUp({ email, password: pw });
+      if (res.error) throw res.error;
+
+      await sb.auth.signInWithPassword({ email, password: pw });
+
+      await sb.from('user_settings')
+        .update({ has_access: true })
+        .eq('user_id', res.data.user.id);
+
+      window.location.href = 'setup.html';
+      return;
+
     } else {
-      res = await sb.auth.signUp({ email, password: pw });
-if (res.data?.user && !res.error) {
-  await sb.auth.signInWithPassword({ email, password: pw });
+      const res = await sb.auth.signInWithPassword({ email, password: pw });
+      if (res.error) throw res.error;
 
-  // Grant access if they came through Stripe
-  if (localStorage.getItem('vantage_access') === 'purchased') {
-    await sb.from('user_settings')
-      .update({ has_access: true })
-      .eq('user_id', res.data.user.id);
-  }
+      const { data: settings } = await sb.from('user_settings')
+        .select('has_access')
+        .eq('user_id', res.data.user.id)
+        .single();
 
-  window.location.href = 'setup.html';
-  return;
-}
+      if (!settings?.has_access) {
+        await sb.auth.signOut();
+        throw new Error('No active purchase found for this account.');
+      }
+
+      currentUser = res.data.user;
+      await initApp();
     }
-    if (res.error) throw res.error;
-    currentUser = res.data.user;
-    await initApp();
-  } catch(e) { 
-    err.style.color = 'var(--red)'; 
-    err.textContent = e.message || 'System error.'; 
+
+  } catch(e) {
+    err.style.color = 'var(--red)';
+    err.textContent = e.message || 'System error.';
   }
-  
-  btn.disabled = false; 
+
+  btn.disabled = false;
   btn.textContent = authMode === 'login' ? 'Sign In' : 'Create Account';
 }
 
