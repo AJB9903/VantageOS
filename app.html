@@ -871,43 +871,38 @@ function showToast(msg, dur=2200, type='') {
 }
 
 // ─── AUTH & BOOTLOADER ────────────────────────────────────────────────────────
-async function checkAccessLocal() {
-  const access = localStorage.getItem('vantage_access');
-  const params = new URLSearchParams(window.location.search);
-  if (params.get('success') === 'true') {
-    localStorage.setItem('vantage_access', 'purchased');
-    window.history.replaceState({}, '', window.location.pathname);
-    return true;
-  }
-  return !!access;
-}
-
 async function authGuard() {
+  // Strip ?success=true from URL — no longer grants access
   const params = new URLSearchParams(window.location.search);
-  const justPurchased = params.get('success') === 'true';
-  if (justPurchased) {
-    localStorage.setItem('vantage_access', 'purchased');
+  if (params.has('success')) {
     window.history.replaceState({}, '', window.location.pathname);
   }
 
   const { data: { session } } = await sb.auth.getSession();
-  const access = localStorage.getItem('vantage_access');
-  const hasAccess = (access === 'operator' || access === 'purchased');
 
-  if (session && hasAccess) {
-    currentUser = session.user;
-    document.getElementById('app').classList.add('visible');
-    await initApp();
-    const authPw = document.getElementById('auth-password');
-    if (authPw) authPw.addEventListener('keydown', e => { if(e.key==='Enter') handleAuth(); });
-  } else if (hasAccess) {
-    // Purchased but not yet logged in — show auth screen
-    document.getElementById('auth-screen').style.display = 'flex';
-    const authPw = document.getElementById('auth-password');
-    if (authPw) authPw.addEventListener('keydown', e => { if(e.key==='Enter') handleAuth(); });
-  } else {
+  // Not logged in → send to showcase
+  if (!session?.user) {
     window.location.href = 'showcase.html';
+    return;
   }
+
+  currentUser = session.user;
+
+  // Check access from Supabase DB — not localStorage
+  const { hasAccess, isOperator } = await checkUserAccess(currentUser.id);
+
+  if (!hasAccess) {
+    window.location.href = 'showcase.html';
+    return;
+  }
+
+  S.isOperator = isOperator;
+
+  document.getElementById('app').classList.add('visible');
+  await initApp();
+
+  const authPw = document.getElementById('auth-password');
+  if (authPw) authPw.addEventListener('keydown', e => { if(e.key==='Enter') handleAuth(); });
 }
 
 authGuard();
@@ -986,9 +981,9 @@ async function initApp() {
   if (S.monthDelta) injectDeltaAnchor();
   setupEodTimer();
 
-  if (currentUser && currentUser.email === 'aidanb9903@gmail.com') {
-    document.getElementById('operator-panel').style.display = 'block';
-  }
+  if (S.isOperator) {
+  document.getElementById('operator-panel').style.display = 'block';
+}
 }
 
 // ─── DB SERVICES ──────────────────────────────────────────────────────────────
