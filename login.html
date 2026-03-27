@@ -164,7 +164,8 @@ async function handleSubmit() {
         await sb.from('pending_access').delete().eq('email', email.toLowerCase());
       }
 
-      window.location.href = 'app.html';
+      // REDIRECT TO SETUP INSTEAD OF APP
+      window.location.href = 'setup.html';
     }
   } catch(e) {
     err.textContent = e.message || 'Something went wrong.';
